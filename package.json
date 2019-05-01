@@ -10,16 +10,24 @@
 		"Other"
 	],
 	"activationEvents": [
-		"onCommand:extension.helloWorld"
+		"onCommand:extension.mermaidgen"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
 		"commands": [
 			{
-				"command": "extension.helloWorld",
-				"title": "Hello World"
+				"command": "extension.mermaidgen",
+				"title": "mmd: generate"
 			}
-		]
+		],
+		"menus": {
+			"commandPalette": [
+				{
+					"command": "extension.mermaidgen",
+					"when": "resourceExtname == .mmd"
+				}
+			]
+		}
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run compile",
@@ -34,5 +42,8 @@
 		"tslint": "^5.12.1",
 		"@types/node": "^10.12.21",
 		"@types/mocha": "^2.2.42"
+	},
+	"dependencies": {
+		"mermaid.cli": "^0.5.1"
 	}
 }
