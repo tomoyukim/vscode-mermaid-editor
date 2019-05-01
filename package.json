@@ -50,6 +50,8 @@
 		"vscode": "^1.1.28"
 	},
 	"dependencies": {
+		"@types/lodash": "^4.14.123",
+		"lodash": "^4.17.11",
 		"mermaid.cli": "^0.5.1"
 	}
 }

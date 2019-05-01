@@ -2,6 +2,7 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 import * as cp from 'child_process';
+import get from 'lodash/get';
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -22,7 +23,7 @@ export function activate(context: vscode.ExtensionContext) {
       const editor = vscode.window.activeTextEditor;
       if (!editor) return;
 
-      var filename = editor.document.uri.fsPath;
+      var filename = get('editor.document.uri.fsPath', '');
       vscode.window.showInformationMessage(editor.document.uri.toString());
       var workspaceFolder = vscode.workspace.getWorkspaceFolder(
         editor.document.uri
