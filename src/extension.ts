@@ -1,7 +1,7 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
-import * as vscode from "vscode";
-import * as cp from "child_process";
+import * as vscode from 'vscode';
+import * as cp from 'child_process';
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -16,7 +16,7 @@ export function activate(context: vscode.ExtensionContext) {
   // Now provide the implementation of the command with registerCommand
   // The commandId parameter must match the command field in package.json
   let disposable = vscode.commands.registerCommand(
-    "extension.mermaidgen",
+    'extension.mermaidgen',
     () => {
       // The code you place here will be executed every time your command is executed
       const editor = vscode.window.activeTextEditor;
@@ -27,10 +27,10 @@ export function activate(context: vscode.ExtensionContext) {
       var workspaceFolder = vscode.workspace.getWorkspaceFolder(
         editor.document.uri
       );
-      var cwd = workspaceFolder ? workspaceFolder.uri.fsPath : "/";
+      var cwd = workspaceFolder ? workspaceFolder.uri.fsPath : '/';
       vscode.window.showInformationMessage(cwd);
 
-      var command = context.extensionPath + "/node_modules/.bin/mmdc -t forest";
+      var command = context.extensionPath + '/node_modules/.bin/mmdc -t forest';
 
       cp.exec(
         `${command} -i ${filename} -o sample.svg`,
@@ -42,7 +42,7 @@ export function activate(context: vscode.ExtensionContext) {
           vscode.window.showInformationMessage(stdout);
         }
       );
-      vscode.window.showInformationMessage("Hello World!");
+      vscode.window.showInformationMessage('Hello World!');
     }
   );
 
