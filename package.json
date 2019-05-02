@@ -10,20 +10,82 @@
 		"Other"
 	],
 	"activationEvents": [
-		"onCommand:extension.mermaidgen"
+		"onCommand:mermaid-editor.generate"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
+		"configuration":[
+			{
+				"type": "object",
+				"title": "mermaid-editor configuration",
+				"properties": {
+					"mermaid-editor.theme": {
+						"type": "string",
+						"default": "default",
+						"description": "color theme for mermaid.js"
+					},
+					"mermaid-editor.backgroundColor": {
+						"type": "string",
+						"default": "white",
+						"description": "background color of the output page. Defailt: 'white'"
+					},
+					"mermaid-editor.format": {
+						"type": "string",
+						"default": "svg",
+						"description": "output file format [svg, png, pdf]"
+					},
+					"mermaid-editor.outputPath": {
+						"type": ["string", "null"],
+						"default": null,
+						"description": "relative path of the output target directory from project root"
+					},
+					"mermaid-editor.width": {
+						"type": "integer",
+						"default": "800",
+						"description": "width of the output page. Default: 800"
+					},
+					"mermaid-editor.height": {
+						"type": "integer",
+						"default": "600",
+						"description": "height of the output page. Default: 600"
+					}
+				}
+			}
+		],
 		"commands": [
 			{
-				"command": "extension.mermaidgen",
-				"title": "mmd: generate"
+				"command": "mermaid-editor.generate",
+				"title": "Generate mermaid doc",
+				"icon": {
+					"light": "./images/icon-generate.png",
+					"dark": "./images/icon-generate.png"
+				}
+			}
+		],
+		"keybindings":[
+			{
+				"command": "mermaid-editor.generate",
+				"key": "ctrl+alt+o"
 			}
 		],
 		"menus": {
+			"editor/context": [
+				{
+					"when": "resourceExtname == .mmd",
+					"command": "mermaid-editor.generate",
+					"group": "navigation"
+				}
+			],
+			"editor/title": [
+				{
+					"when": "resourceExtname == .mmd",
+					"command": "mermaid-editor.generate",
+					"group": "navigation"
+				}
+			],
 			"commandPalette": [
 				{
-					"command": "extension.mermaidgen",
+					"command": "mermaid-editor.generate",
 					"when": "resourceExtname == .mmd"
 				}
 			]

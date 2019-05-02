@@ -2,53 +2,80 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 import * as cp from 'child_process';
-import get from 'lodash/get';
+import get = require('lodash/get');
 
-// this method is called when your extension is activated
-// your extension is activated the very first time the command is executed
+const LOG_OUTPUT_CHANNEL = 'log:mermaid-editor';
+let Log: vscode.OutputChannel;
+
 export function activate(context: vscode.ExtensionContext) {
-  // Use the console to output diagnostic information (console.log) and errors (console.error)
-  // This line of code will only be executed once when your extension is activated
-  console.log(
-    'Congratulations, your extension "mermaid-editor" is now active!'
-  );
+  if (!Log) {
+    Log = vscode.window.createOutputChannel(LOG_OUTPUT_CHANNEL);
+  }
 
-  // The command has been defined in the package.json file
-  // Now provide the implementation of the command with registerCommand
-  // The commandId parameter must match the command field in package.json
   let disposable = vscode.commands.registerCommand(
-    'extension.mermaidgen',
+    'mermaid-editor.generate',
     () => {
-      // The code you place here will be executed every time your command is executed
+      const config = vscode.workspace.getConfiguration('mermaid-editor');
       const editor = vscode.window.activeTextEditor;
       if (!editor) return;
 
-      var filename = get('editor.document.uri.fsPath', '');
-      vscode.window.showInformationMessage(editor.document.uri.toString());
-      var workspaceFolder = vscode.workspace.getWorkspaceFolder(
-        editor.document.uri
-      );
-      var cwd = workspaceFolder ? workspaceFolder.uri.fsPath : '/';
-      vscode.window.showInformationMessage(cwd);
-
-      var command = context.extensionPath + '/node_modules/.bin/mmdc -t forest';
-
-      cp.exec(
-        `${command} -i ${filename} -o sample.svg`,
-        { cwd },
-        (err, stdout, stderr) => {
-          if (err) {
-            vscode.window.showInformationMessage(stderr);
-          }
-          vscode.window.showInformationMessage(stdout);
+      const getExtension = (ext: string) => {
+        switch (ext) {
+          case 'svg':
+          case 'png':
+          case 'pdf':
+            return ext;
+          default:
+            return 'svg';
         }
+      };
+
+      const {
+        theme,
+        width,
+        height,
+        backgroundColor,
+        format,
+        outputPath
+      } = config;
+      const input = get(editor, 'document.fileName', '');
+      const output = `${input.split('.')[0]}.${getExtension(format)}`;
+      const command = `${
+        context.extensionPath
+      }/node_modules/.bin/mmdc -t ${theme} -i ${input} -o ${output} -w ${width} -H ${height} -b ${backgroundColor}`;
+
+      const statusBarItem = vscode.window.createStatusBarItem(
+        vscode.StatusBarAlignment.Left,
+        100
       );
-      vscode.window.showInformationMessage('Hello World!');
+      statusBarItem.text = '$(sync) mmdc: generating...';
+      statusBarItem.tooltip = `Output to ${output}`;
+      context.subscriptions.push(statusBarItem);
+
+      const uri = get(editor, 'document.uri', {});
+      const cwd = get(
+        vscode.workspace.getWorkspaceFolder(uri),
+        'uri.fsPath',
+        '/'
+      );
+      Log.appendLine(cwd);
+      cp.exec(command, { cwd }, (err, stdout, stderr) => {
+        if (err) {
+          Log.appendLine(err.message);
+          vscode.window.showErrorMessage(err.message);
+        } else {
+          vscode.window.showInformationMessage(`mermaid-editor: generated!`);
+        }
+        statusBarItem.hide();
+        Log.show();
+      });
+      statusBarItem.show();
     }
   );
 
   context.subscriptions.push(disposable);
 }
 
-// this method is called when your extension is deactivated
-export function deactivate() {}
+export function deactivate() {
+  Log && Log.dispose();
+}
