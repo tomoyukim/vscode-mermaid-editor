@@ -10,11 +10,26 @@
 		"Other"
 	],
 	"activationEvents": [
-		"onCommand:mermaid-editor.generate"
+		"onCommand:mermaid-editor.generate",
+		"onCommand:mermaid-editor.preview",
+		"onWebviewPanel:mermaid-editor-preview",
+		"onLanguage:mermaid"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
-		"configuration":[
+		"languages": [
+			{
+				"id": "mermaid",
+				"extensions": [
+					".mmd"
+				],
+				"aliases": [
+					"Mermaid",
+					"mermaid"
+				]
+			}
+		],
+		"configuration": [
 			{
 				"type": "object",
 				"title": "mermaid-editor configuration",
@@ -35,7 +50,10 @@
 						"description": "output file format [svg, png, pdf]"
 					},
 					"mermaid-editor.outputPath": {
-						"type": ["string", "null"],
+						"type": [
+							"string",
+							"null"
+						],
 						"default": null,
 						"description": "relative path of the output target directory from project root"
 					},
@@ -60,12 +78,20 @@
 					"light": "./images/icon-generate.png",
 					"dark": "./images/icon-generate.png"
 				}
+			},
+			{
+				"command": "mermaid-editor.preview",
+				"title": "Start preview of editing mermaid doc"
 			}
 		],
-		"keybindings":[
+		"keybindings": [
 			{
 				"command": "mermaid-editor.generate",
 				"key": "ctrl+alt+o"
+			},
+			{
+				"command": "mermaid-editor.preview",
+				"key": "ctrl+alt+p"
 			}
 		],
 		"menus": {
@@ -114,6 +140,7 @@
 	"dependencies": {
 		"@types/lodash": "^4.14.123",
 		"lodash": "^4.17.11",
+		"mermaid": "^8.0.0",
 		"mermaid.cli": "^0.5.1"
 	}
 }

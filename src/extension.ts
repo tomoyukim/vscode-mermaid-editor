@@ -3,9 +3,11 @@
 import * as vscode from 'vscode';
 import * as cp from 'child_process';
 import get = require('lodash/get');
+import PreviewPanel from './PreviewPanel';
 
 const LOG_OUTPUT_CHANNEL = 'log:mermaid-editor';
 let Log: vscode.OutputChannel;
+let isRevived = false;
 
 export function activate(context: vscode.ExtensionContext) {
   if (!Log) {
@@ -74,6 +76,61 @@ export function activate(context: vscode.ExtensionContext) {
   );
 
   context.subscriptions.push(disposable);
+
+  // webview
+  const getDiagram = () => {
+    const editor = vscode.window.activeTextEditor;
+    if (!editor) return '';
+
+    return editor.document.getText();
+  };
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand('mermaid-editor.previewz', () => {
+      PreviewPanel.createOrShow(context.extensionPath, getDiagram());
+    })
+  );
+
+  if (vscode.window.registerWebviewPanelSerializer) {
+    vscode.window.registerWebviewPanelSerializer(PreviewPanel.viewType, {
+      async deserializeWebviewPanel(
+        webviewPanel: vscode.WebviewPanel,
+        state: any
+      ) {
+        isRevived = true;
+        PreviewPanel.revive(webviewPanel, context.extensionPath, getDiagram());
+      }
+    });
+  }
+
+  // TODO: should be refactoring -> instance reference is broken!
+  setTimeout(() => {
+    // if previous webView is available when vscode restarts, prevend opening new webView
+    if (!isRevived) {
+      vscode.commands.executeCommand('mermaid-editor.preview');
+    }
+  }, 1000);
+
+  const updatePreview = () => {
+    PreviewPanel.currentPanel &&
+      PreviewPanel.currentPanel.renderDiagram(getDiagram());
+  };
+
+  vscode.workspace.onDidChangeTextDocument(e => {
+    if (e.document === get(vscode, 'window.activeTextEditor', {}).document) {
+      updatePreview();
+    }
+  });
+
+  vscode.workspace.onDidChangeConfiguration(e => {
+    updatePreview();
+  });
+
+  vscode.window.onDidChangeTextEditorSelection(e => {
+    if (e.textEditor === get(vscode, 'window.activeTextEditor', {})) {
+      updatePreview();
+    }
+  });
 }
 
 export function deactivate() {
