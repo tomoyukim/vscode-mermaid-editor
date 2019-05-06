@@ -1,14 +1,28 @@
 {
-	"name": "mermaid-editor",
-	"displayName": "mermaid-editor",
-	"description": "editor for mermaid.js",
-	"version": "0.0.1",
+	"name": "vscode-mermaid-editor",
+	"displayName": "Mermaid Editor",
+	"description": "Live editor for mermaid.js in Visual Studio Code",
+	"version": "0.1.0",
+	"publisher": "tomoyukim",
+	"license": "MIT",
 	"engines": {
 		"vscode": "^1.33.0"
 	},
 	"categories": [
 		"Other"
 	],
+	"keywords": ["mermaid", "uml", "diagram"],
+	"galleryBanner": {
+		"color": "#333333",
+		"theme": "dark"
+	},
+	"icon": "images/logo.png",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/tomoyukim/vscode-mermaid-editor.git"
+	},
+	"homepage": "https://github.com/tomoyukim/vscode-mermaid-editor",
+	"bugs": "https://github.com/tomoyukim/vscode-mermaid-editor/issues",
 	"activationEvents": [
 		"onWebviewPanel:mermaid-editor-preview",
 		"onLanguage:mermaid"
@@ -35,12 +49,12 @@
 					"mermaid-editor.preview.theme": {
 						"type": "string",
 						"default": "default",
-						"description": "color theme for preview"
+						"description": "color theme for live preview [default, forest, dark, natural]"
 					},
 					"mermaid-editor.generate.theme": {
 						"type": "string",
 						"default": "default",
-						"description": "color theme for generated document"
+						"description": "color theme for generating image file [default, forest, dark, natural]"
 					},
 					"mermaid-editor.ganerate.backgroundColor": {
 						"type": "string",
@@ -76,7 +90,7 @@
 		"commands": [
 			{
 				"command": "mermaid-editor.generate",
-				"title": "Generate mermaid doc",
+				"title": "Generate image from mermaid diagram",
 				"icon": {
 					"light": "./images/light/icon-dl.svg",
 					"dark": "./images/dark/icon-dl.svg"
@@ -84,7 +98,7 @@
 			},
 			{
 				"command": "mermaid-editor.preview",
-				"title": "Preview mermaid doc",
+				"title": "Preview mermaid diagram",
 				"icon": {
 					"light": "./images/light/icon-eye.svg",
 					"dark": "./images/dark/icon-eye.svg"
