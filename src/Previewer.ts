@@ -1,40 +1,49 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
+import get = require('lodash/get');
 
-export default class PreviewPanel {
+const getDiagram = () => {
+  const editor = vscode.window.activeTextEditor;
+  if (!editor) return '';
+
+  return editor.document.getText();
+};
+
+export default class Previewer {
   /**
    * Track the currently panel. Only allow a single panel to exist at a time.
    */
-  public static currentPanel: PreviewPanel | undefined;
+  public static currentPanel: Previewer | undefined;
 
   public static readonly viewType = 'mermaid-editor-preview';
 
   private readonly _panel: vscode.WebviewPanel;
   private readonly _extensionPath: string;
-  private readonly _initDiagram: string;
+  private _diagram: string | undefined;
   private _disposables: vscode.Disposable[] = [];
 
-  public static createOrShow(extensionPath: string, diagram: string) {
-    const column = vscode.window.activeTextEditor
-      ? vscode.window.activeTextEditor.viewColumn
-      : undefined;
+  public static createOrShow(extensionPath: string) {
+    const showOptions = {
+      preserveFocus: false,
+      viewColumn: vscode.ViewColumn.Beside
+    };
 
     // If we already have a panel, show it.
-    if (PreviewPanel.currentPanel) {
-      PreviewPanel.currentPanel._panel.reveal(column);
+    if (Previewer.currentPanel) {
+      Previewer.currentPanel._panel.reveal(
+        showOptions.viewColumn,
+        showOptions.preserveFocus
+      );
       return;
     }
 
     // Otherwise, create a new panel.
     const panel = vscode.window.createWebviewPanel(
-      PreviewPanel.viewType,
+      Previewer.viewType,
       'Mermaid Editor Preview',
-      { preserveFocus: false, viewColumn: vscode.ViewColumn.Beside },
+      showOptions,
       {
-        // Enable javascript in the webview
         enableScripts: true,
-
-        // And restrict the webview to only loading content from our extension's `node_modules` directory.
         localResourceRoots: [
           vscode.Uri.file(path.join(extensionPath, 'node_modules')),
           vscode.Uri.file(path.join(extensionPath, 'media'))
@@ -42,28 +51,19 @@ export default class PreviewPanel {
       }
     );
 
-    PreviewPanel.currentPanel = new PreviewPanel(panel, extensionPath, diagram);
+    Previewer.currentPanel = new Previewer(panel, extensionPath);
   }
 
-  public static revive(
-    panel: vscode.WebviewPanel,
-    extensionPath: string,
-    diagram: string
-  ) {
-    PreviewPanel.currentPanel = new PreviewPanel(panel, extensionPath, diagram);
+  public static revive(panel: vscode.WebviewPanel, extensionPath: string) {
+    Previewer.currentPanel = new Previewer(panel, extensionPath);
   }
 
-  private constructor(
-    panel: vscode.WebviewPanel,
-    extensionPath: string,
-    diagram: string
-  ) {
+  private constructor(panel: vscode.WebviewPanel, extensionPath: string) {
     this._panel = panel;
     this._extensionPath = extensionPath;
-    this._initDiagram = diagram;
 
     // Set the webview's initial html content
-    this._update();
+    this._loadContent(true);
 
     // Listen for when the panel is disposed
     // This happens when the user closes the panel or when the panel is closed programatically
@@ -73,35 +73,47 @@ export default class PreviewPanel {
     this._panel.onDidChangeViewState(
       e => {
         if (this._panel.visible) {
-          this._update();
+          this._loadContent(false);
         }
       },
       null,
       this._disposables
     );
 
-    // Handle messages from the webview
-    this._panel.webview.onDidReceiveMessage(
-      message => {
-        switch (message.command) {
-          case 'alert':
-            vscode.window.showErrorMessage(message.text);
-            return;
+    vscode.workspace.onDidChangeTextDocument(
+      e => {
+        if (
+          e.document === get(vscode, 'window.activeTextEditor', {}).document
+        ) {
+          this._updateDiagram();
         }
       },
       null,
       this._disposables
     );
-  }
 
-  public renderDiagram(diagram: String) {
-    // Send a message to the webview webview.
-    // You can send any JSON serializable data.
-    this._panel.webview.postMessage({ diagram });
+    vscode.workspace.onDidChangeConfiguration(
+      e => {
+        // this._updateDiagram();
+        this._loadContent(false);
+      },
+      null,
+      this._disposables
+    );
+
+    vscode.window.onDidChangeTextEditorSelection(
+      e => {
+        if (e.textEditor === get(vscode, 'window.activeTextEditor', {})) {
+          this._updateDiagram();
+        }
+      },
+      null,
+      this._disposables
+    );
   }
 
   public dispose() {
-    PreviewPanel.currentPanel = undefined;
+    Previewer.currentPanel = undefined;
 
     // Clean up our resources
     this._panel.dispose();
@@ -114,8 +126,15 @@ export default class PreviewPanel {
     }
   }
 
-  private _update() {
-    this._panel.webview.html = this._getHtmlForWebview(this._initDiagram);
+  private _updateDiagram() {
+    this._panel.webview.postMessage({ diagram: getDiagram() });
+  }
+
+  private _loadContent(requireLatest: boolean) {
+    if (requireLatest || !this._diagram) {
+      this._diagram = getDiagram();
+    }
+    this._panel.webview.html = this._getHtmlForWebview(this._diagram);
   }
 
   private _getHtmlForWebview(diagram: string) {
@@ -135,6 +154,14 @@ export default class PreviewPanel {
       scheme: 'vscode-resource'
     });
 
+    const userConfig = vscode.workspace.getConfiguration(
+      'mermaid-editor.preview'
+    );
+    const config = {
+      ...userConfig,
+      startOnLoad: true
+    };
+
     return `
     <!DOCTYPE html>
     <html lang="en">
@@ -148,7 +175,7 @@ export default class PreviewPanel {
       ${diagram}
       </div>
       <script src="${mermaidUri}"></script>
-      <script>mermaid.initialize({startOnLoad:true,theme:"dark"});</script>
+      <script>mermaid.initialize(${JSON.stringify(config)});</script>
       <script src="${scriptUri}"></script>
     </body>
     </html>`;

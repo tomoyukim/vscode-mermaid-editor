@@ -10,8 +10,6 @@
 		"Other"
 	],
 	"activationEvents": [
-		"onCommand:mermaid-editor.generate",
-		"onCommand:mermaid-editor.preview",
 		"onWebviewPanel:mermaid-editor-preview",
 		"onLanguage:mermaid"
 	],
@@ -34,22 +32,27 @@
 				"type": "object",
 				"title": "mermaid-editor configuration",
 				"properties": {
-					"mermaid-editor.theme": {
+					"mermaid-editor.preview.theme": {
 						"type": "string",
 						"default": "default",
-						"description": "color theme for mermaid.js"
+						"description": "color theme for preview"
 					},
-					"mermaid-editor.backgroundColor": {
+					"mermaid-editor.generate.theme": {
+						"type": "string",
+						"default": "default",
+						"description": "color theme for generated document"
+					},
+					"mermaid-editor.ganerate.backgroundColor": {
 						"type": "string",
 						"default": "white",
 						"description": "background color of the output page. Defailt: 'white'"
 					},
-					"mermaid-editor.format": {
+					"mermaid-editor.generate.format": {
 						"type": "string",
 						"default": "svg",
 						"description": "output file format [svg, png, pdf]"
 					},
-					"mermaid-editor.outputPath": {
+					"mermaid-editor.generate.outputPath": {
 						"type": [
 							"string",
 							"null"
@@ -57,12 +60,12 @@
 						"default": null,
 						"description": "relative path of the output target directory from project root"
 					},
-					"mermaid-editor.width": {
+					"mermaid-editor.generate.width": {
 						"type": "integer",
 						"default": "800",
 						"description": "width of the output page. Default: 800"
 					},
-					"mermaid-editor.height": {
+					"mermaid-editor.generate.height": {
 						"type": "integer",
 						"default": "600",
 						"description": "height of the output page. Default: 600"
@@ -75,23 +78,27 @@
 				"command": "mermaid-editor.generate",
 				"title": "Generate mermaid doc",
 				"icon": {
-					"light": "./images/icon-generate.png",
-					"dark": "./images/icon-generate.png"
+					"light": "./images/light/icon-dl.svg",
+					"dark": "./images/dark/icon-dl.svg"
 				}
 			},
 			{
 				"command": "mermaid-editor.preview",
-				"title": "Start preview of editing mermaid doc"
+				"title": "Preview mermaid doc",
+				"icon": {
+					"light": "./images/light/icon-eye.svg",
+					"dark": "./images/dark/icon-eye.svg"
+				}
 			}
 		],
 		"keybindings": [
 			{
 				"command": "mermaid-editor.generate",
-				"key": "ctrl+alt+o"
+				"key": "ctrl+alt+]"
 			},
 			{
 				"command": "mermaid-editor.preview",
-				"key": "ctrl+alt+p"
+				"key": "ctrl+alt+["
 			}
 		],
 		"menus": {
@@ -100,6 +107,11 @@
 					"when": "resourceExtname == .mmd",
 					"command": "mermaid-editor.generate",
 					"group": "navigation"
+				},
+				{
+					"when": "resourceExtname == .mmd",
+					"command": "mermaid-editor.preview",
+					"group": "navigation"
 				}
 			],
 			"editor/title": [
@@ -107,11 +119,20 @@
 					"when": "resourceExtname == .mmd",
 					"command": "mermaid-editor.generate",
 					"group": "navigation"
+				},
+				{
+					"when": "resourceExtname == .mmd",
+					"command": "mermaid-editor.preview",
+					"group": "navigation"
 				}
 			],
 			"commandPalette": [
 				{
 					"command": "mermaid-editor.generate",
+					"when": "resourceExtname == .mmd"
+				},
+				{
+					"command": "mermaid-editor.preview",
 					"when": "resourceExtname == .mmd"
 				}
 			]
