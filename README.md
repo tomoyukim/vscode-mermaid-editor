@@ -1,6 +1,6 @@
 # Mermaid Editor
 
-Mermaid Editor is vscode extension for editing [mermaid.js](https://mermaidjs.github.io/) inspired by [official mermaid live editor](https://mermaidjs.github.io/mermaid-live-editor/). This extension provides live preview and creating the image file.
+Mermaid Editor is vscode extension for editing [mermaid.js](https://mermaidjs.github.io/) diagram inspired by [official mermaid live editor](https://mermaidjs.github.io/mermaid-live-editor/). This extension provides live preview and creating the image file.
 
 ## Usage
 
