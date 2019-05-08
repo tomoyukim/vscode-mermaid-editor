@@ -112,17 +112,19 @@
 		"keybindings": [
 			{
 				"command": "mermaid-editor.generate",
-				"key": "ctrl+alt+]"
+				"key": "ctrl+alt+]",
+				"when": "mermaidPreviewEnabled"
 			},
 			{
 				"command": "mermaid-editor.preview",
-				"key": "ctrl+alt+["
+				"key": "ctrl+alt+[",
+				"when": "resourceExtname == .mmd"
 			}
 		],
 		"menus": {
 			"editor/context": [
 				{
-					"when": "resourceExtname == .mmd",
+					"when": "mermaidPreviewEnabled",
 					"command": "mermaid-editor.generate",
 					"group": "navigation"
 				},
@@ -134,7 +136,7 @@
 			],
 			"editor/title": [
 				{
-					"when": "resourceExtname == .mmd",
+					"when": "mermaidPreviewEnabled",
 					"command": "mermaid-editor.generate",
 					"group": "navigation"
 				},
@@ -147,7 +149,7 @@
 			"commandPalette": [
 				{
 					"command": "mermaid-editor.generate",
-					"when": "resourceExtname == .mmd"
+					"when": "mermaidPreviewEnabled"
 				},
 				{
 					"command": "mermaid-editor.preview",

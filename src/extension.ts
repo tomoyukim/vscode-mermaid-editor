@@ -4,28 +4,28 @@ import * as vscode from 'vscode';
 import Previewer from './Previewer';
 import Generator from './Generator';
 import Logger from './Logger';
-
-function isMmd() {
-  const editor = vscode.window.activeTextEditor;
-  if (!editor) return false;
-
-  return /\.mmd$/.test(editor.document.fileName);
-}
+import { isMermaid } from './util';
 
 export function activate(context: vscode.ExtensionContext) {
   const generator = new Generator(context);
 
   context.subscriptions.push(
-    vscode.commands.registerCommand(
-      'mermaid-editor.generate',
-      () => isMmd() && generator.generate()
-    )
+    vscode.commands.registerCommand('mermaid-editor.generate', () => {
+      if (isMermaid(vscode.window.activeTextEditor) && Previewer.currentPanel) {
+        Previewer.currentPanel.onTakeImage(svg => {
+          generator.generate(svg);
+        });
+        Previewer.currentPanel.takeImage();
+      }
+    })
   );
 
   context.subscriptions.push(
     vscode.commands.registerCommand(
       'mermaid-editor.preview',
-      () => isMmd() && Previewer.createOrShow(context.extensionPath)
+      () =>
+        isMermaid(vscode.window.activeTextEditor) &&
+        Previewer.createOrShow(context.extensionPath)
     )
   );
 
@@ -35,7 +35,7 @@ export function activate(context: vscode.ExtensionContext) {
         webviewPanel: vscode.WebviewPanel,
         state: any
       ) {
-        Previewer.revive(webviewPanel, context.extensionPath);
+        Previewer.revive(webviewPanel, state, context.extensionPath);
       }
     });
   }

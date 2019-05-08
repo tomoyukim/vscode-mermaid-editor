@@ -1,4 +1,5 @@
 import * as vscode from 'vscode';
+import * as fs from 'fs';
 import * as cp from 'child_process';
 import * as path from 'path';
 import get = require('lodash/get');
@@ -24,13 +25,13 @@ export default class Generator {
       vscode.StatusBarAlignment.Left,
       100
     );
-    this._statusBarItem.text = '$(sync) mmdc: generating...';
+    this._statusBarItem.text = '$(sync) generating image...';
     context.subscriptions.push(this._statusBarItem);
 
     this._extensionPath = context.extensionPath;
   }
 
-  public async generate() {
+  public async generate(svg: string) {
     const editor = vscode.window.activeTextEditor;
     if (!editor) return;
 
@@ -62,16 +63,16 @@ export default class Generator {
       config.outputDirPath = this._extensionPath;
     }
 
-    try {
-      await this._mmdc(editor, config, workingDir);
-      vscode.window.showInformationMessage(`mermaid-editor: generated!`);
-    } catch (e) {
-      Logger.instance().appendLine(e.message);
-      vscode.window.showErrorMessage(e.message);
-    } finally {
+    fs.writeFile(`${outputDirPath}/test.svg`, svg, e => {
+      if (e) {
+        Logger.instance().appendLine(e.message);
+        vscode.window.showErrorMessage(e.message);
+      } else {
+        vscode.window.showInformationMessage(`mermaid-editor: generated!`);
+      }
       this._statusBarItem.hide();
       Logger.instance().show();
-    }
+    });
   }
 
   private _mkdir(outputPath: string, cwd: string) {

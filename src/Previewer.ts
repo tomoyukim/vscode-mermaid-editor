@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 import get = require('lodash/get');
+import { isMermaid } from './util';
 
 const getDiagram = () => {
   const editor = vscode.window.activeTextEditor;
@@ -19,8 +20,8 @@ export default class Previewer {
 
   private readonly _panel: vscode.WebviewPanel;
   private readonly _extensionPath: string;
-  private _diagram: string | undefined;
   private _disposables: vscode.Disposable[] = [];
+  private _onTakeImage: ((svg: string) => void) | undefined;
 
   public static createOrShow(extensionPath: string) {
     const showOptions = {
@@ -51,19 +52,29 @@ export default class Previewer {
       }
     );
 
-    Previewer.currentPanel = new Previewer(panel, extensionPath);
+    Previewer.currentPanel = new Previewer(panel, {}, extensionPath);
   }
 
-  public static revive(panel: vscode.WebviewPanel, extensionPath: string) {
-    Previewer.currentPanel = new Previewer(panel, extensionPath);
+  public static revive(
+    panel: vscode.WebviewPanel,
+    state: any,
+    extensionPath: string
+  ) {
+    Previewer.currentPanel = new Previewer(panel, state, extensionPath);
   }
 
-  private constructor(panel: vscode.WebviewPanel, extensionPath: string) {
+  private constructor(
+    panel: vscode.WebviewPanel,
+    state: any,
+    extensionPath: string
+  ) {
     this._panel = panel;
     this._extensionPath = extensionPath;
 
     // Set the webview's initial html content
-    this._loadContent(true);
+    this._loadContent(state.diagram);
+
+    vscode.commands.executeCommand('setContext', 'mermaidPreviewEnabled', true);
 
     // Listen for when the panel is disposed
     // This happens when the user closes the panel or when the panel is closed programatically
@@ -73,7 +84,19 @@ export default class Previewer {
     this._panel.onDidChangeViewState(
       e => {
         if (this._panel.visible) {
-          this._loadContent(false);
+          this._loadContent(undefined);
+        }
+      },
+      null,
+      this._disposables
+    );
+
+    this._panel.webview.onDidReceiveMessage(
+      message => {
+        switch (message.command) {
+          case 'onTakeImage':
+            this._onTakeImage && this._onTakeImage(message.payload);
+            return;
         }
       },
       null,
@@ -94,16 +117,15 @@ export default class Previewer {
 
     vscode.workspace.onDidChangeConfiguration(
       e => {
-        // this._updateDiagram();
-        this._loadContent(false);
+        this._loadContent(undefined);
       },
       null,
       this._disposables
     );
 
-    vscode.window.onDidChangeTextEditorSelection(
-      e => {
-        if (e.textEditor === get(vscode, 'window.activeTextEditor', {})) {
+    vscode.window.onDidChangeActiveTextEditor(
+      editor => {
+        if (editor && isMermaid(editor)) {
           this._updateDiagram();
         }
       },
@@ -113,6 +135,11 @@ export default class Previewer {
   }
 
   public dispose() {
+    vscode.commands.executeCommand(
+      'setContext',
+      'mermaidPreviewEnabled',
+      false
+    );
     Previewer.currentPanel = undefined;
 
     // Clean up our resources
@@ -126,15 +153,27 @@ export default class Previewer {
     }
   }
 
-  private _updateDiagram() {
-    this._panel.webview.postMessage({ diagram: getDiagram() });
+  public takeImage() {
+    this._panel.webview.postMessage({
+      command: 'takeImage'
+    });
   }
 
-  private _loadContent(requireLatest: boolean) {
-    if (requireLatest || !this._diagram) {
-      this._diagram = getDiagram();
-    }
-    this._panel.webview.html = this._getHtmlForWebview(this._diagram);
+  public onTakeImage(callback: (svg: string) => void) {
+    this._onTakeImage = callback;
+  }
+
+  private _updateDiagram() {
+    this._panel.webview.postMessage({
+      command: 'update',
+      diagram: getDiagram()
+    });
+  }
+
+  private _loadContent(diagram: string | undefined) {
+    this._panel.webview.html = this._getHtmlForWebview(
+      diagram ? diagram : getDiagram()
+    );
   }
 
   private _getHtmlForWebview(diagram: string) {
