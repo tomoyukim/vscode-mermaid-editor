@@ -13,6 +13,12 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ### Fixed
 ### Security
 
+## [0.3.0] - 2019-05-09
+
+### Added
+
+- Support `jpg` and `webp` type for generating image.
+
 ## [0.2.0] - 2019-05-09
 
 ### Changed
