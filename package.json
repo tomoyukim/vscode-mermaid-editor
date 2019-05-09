@@ -58,7 +58,7 @@
 					"mermaid-editor.generate.backgroundColor": {
 						"type": "string",
 						"default": "transparent",
-						"description": "background color of the output page."
+						"description": "background color of the output image."
 					},
 					"mermaid-editor.generate.type": {
 						"type": "string",
@@ -76,12 +76,12 @@
 					"mermaid-editor.generate.width": {
 						"type": "integer",
 						"default": "800",
-						"description": "width of the output page."
+						"description": "width of the output image."
 					},
 					"mermaid-editor.generate.height": {
 						"type": "integer",
 						"default": "600",
-						"description": "height of the output page."
+						"description": "height of the output image."
 					}
 				}
 			}

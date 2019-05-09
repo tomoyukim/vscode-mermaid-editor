@@ -6,13 +6,15 @@ Mermaid Editor is vscode extension for editing [mermaid.js](https://mermaidjs.gi
 
 The extension is activated when opening `.mmd` file.
 
-### Live edit
+### Open live preview
 
 - Select `Preview mermaid diagram` from context menu or command palette
 - Click `Preview mermaid diagram` icon
 - `ctrl+alt+[` on `.mmd` file
 
 ### Generate image
+
+Generate command is only available when `.mmd` file is opened and live preview is activated.
 
 - Select `Generate image from mermaid diagram` from context menu or command palette
 - Click `Generate image from mermaid diagram` icon
@@ -22,13 +24,12 @@ The extension is activated when opening `.mmd` file.
 
 |Setting|Default|Description|
 |---|---|---|
-|mermaid-editor.preview.theme|default|color theme for live preview [default, forest, dark, natural]|
-|mermaid-editor.generate.theme|default|color theme for generating image file [default, forest, dark, natural]|
-|mermaid-editor.generate.backgroundColor|white|background color of the output page|
-|mermaid-editor.generate.format|svg|output file format [svg, png, pdf]|
+|mermaid-editor.preview.theme|default|color theme for live preview and generated image [default, forest, dark, natural]|
+|mermaid-editor.generate.backgroundColor|transparent|background color of the output image|
+|mermaid-editor.generate.type|svg|output image file type [svg, png]|
 |mermaid-editor.generate.outputPath||relative path of the output target directory from project root|
-|mermaid-editor.generate.width|800|width of the output page|
-|mermaid-editor.generate.height|600|height of the output page|
+|mermaid-editor.generate.width|800|width of the output image|
+|mermaid-editor.generate.height|600|height of the output image|
 
 
 ## Credits
