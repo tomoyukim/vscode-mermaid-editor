@@ -11,7 +11,19 @@
     vscode.setState({ diagram: preview.textContent });
   }
 
-  function convertToPng(svgBase64, width, height, backgroundColor, callback) {
+  function convertToImg(
+    svgBase64,
+    type,
+    width,
+    height,
+    backgroundColor,
+    callback
+  ) {
+    if (type === 'svg') {
+      callback(svgBase64);
+      return;
+    }
+
     const elem = document.createElement('canvas');
     elem.setAttribute('width', width);
     elem.setAttribute('height', height);
@@ -33,7 +45,12 @@
         ctx.fillRect(0, 0, width, height);
       }
 
-      callback(canvas.toDataURL().replace(/^data:image\/png;base64,/, ''));
+      const mimeType = type === 'jpg' ? 'image/jpeg' : `image/${type}`;
+      callback(
+        canvas
+          .toDataURL(mimeType /*, default quality */)
+          .replace(new RegExp(`^data:${mimeType};base64,`), '')
+      );
       canvas.parentNode.removeChild(canvas);
     };
     img.src = imgSrc;
@@ -54,15 +71,10 @@
         const { type, width, height, backgroundColor } = message;
         const data = btoa(unescape(encodeURIComponent(preview.innerHTML))); // svg base64
 
-        if (type !== 'png') {
-          vscode.postMessage({ command: 'onTakeImage', data, type });
-          return;
-        }
-
-        convertToPng(data, width, height, backgroundColor, pngBase64 => {
+        convertToImg(data, type, width, height, backgroundColor, imgBase64 => {
           vscode.postMessage({
             command: 'onTakeImage',
-            data: pngBase64,
+            data: imgBase64,
             type
           });
         });

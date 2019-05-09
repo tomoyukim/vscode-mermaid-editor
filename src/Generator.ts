@@ -9,6 +9,8 @@ function getExtension(type: string) {
   switch (type) {
     case 'svg':
     case 'png':
+    case 'jpg':
+    case 'webp':
       return type;
     default:
       return 'svg';

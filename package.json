@@ -63,7 +63,7 @@
 					"mermaid-editor.generate.type": {
 						"type": "string",
 						"default": "svg",
-						"description": "output file type [svg, png]"
+						"description": "output file type [svg, png, jpg, webp]"
 					},
 					"mermaid-editor.generate.outputPath": {
 						"type": [
