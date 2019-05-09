@@ -5,7 +5,7 @@ import { isMermaid } from './util';
 
 const getDiagram = () => {
   const editor = vscode.window.activeTextEditor;
-  if (!editor) return '';
+  if (!editor || !isMermaid(editor)) return '';
 
   return editor.document.getText();
 };
@@ -21,7 +21,7 @@ export default class Previewer {
   private readonly _panel: vscode.WebviewPanel;
   private readonly _extensionPath: string;
   private _disposables: vscode.Disposable[] = [];
-  private _onTakeImage: ((svg: string) => void) | undefined;
+  private _onTakeImage: ((data: string, type: string) => void) | undefined;
 
   public static createOrShow(extensionPath: string) {
     const showOptions = {
@@ -95,7 +95,7 @@ export default class Previewer {
       message => {
         switch (message.command) {
           case 'onTakeImage':
-            this._onTakeImage && this._onTakeImage(message.payload);
+            this._onTakeImage && this._onTakeImage(message.data, message.type);
             return;
         }
       },
@@ -104,10 +104,8 @@ export default class Previewer {
     );
 
     vscode.workspace.onDidChangeTextDocument(
-      e => {
-        if (
-          e.document === get(vscode, 'window.activeTextEditor', {}).document
-        ) {
+      editor => {
+        if (editor && isMermaid(editor)) {
           this._updateDiagram();
         }
       },
@@ -153,13 +151,14 @@ export default class Previewer {
     }
   }
 
-  public takeImage() {
+  public takeImage(config: any) {
     this._panel.webview.postMessage({
+      ...config,
       command: 'takeImage'
     });
   }
 
-  public onTakeImage(callback: (svg: string) => void) {
+  public onTakeImage(callback: (data: string, type: string) => void) {
     this._onTakeImage = callback;
   }
 
@@ -172,7 +171,11 @@ export default class Previewer {
 
   private _loadContent(diagram: string | undefined) {
     this._panel.webview.html = this._getHtmlForWebview(
-      diagram ? diagram : getDiagram()
+      diagram
+        ? diagram
+        : isMermaid(vscode.window.activeTextEditor)
+        ? getDiagram()
+        : ''
     );
   }
 

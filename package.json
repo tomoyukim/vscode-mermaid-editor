@@ -53,22 +53,17 @@
 					"mermaid-editor.preview.theme": {
 						"type": "string",
 						"default": "default",
-						"description": "color theme for live preview [default, forest, dark, natural]"
+						"description": "color theme for live preview and generated image [default, forest, dark, natural]"
 					},
-					"mermaid-editor.generate.theme": {
+					"mermaid-editor.generate.backgroundColor": {
 						"type": "string",
-						"default": "default",
-						"description": "color theme for generating image file [default, forest, dark, natural]"
+						"default": "transparent",
+						"description": "background color of the output page."
 					},
-					"mermaid-editor.ganerate.backgroundColor": {
-						"type": "string",
-						"default": "white",
-						"description": "background color of the output page. Defailt: 'white'"
-					},
-					"mermaid-editor.generate.format": {
+					"mermaid-editor.generate.type": {
 						"type": "string",
 						"default": "svg",
-						"description": "output file format [svg, png, pdf]"
+						"description": "output file type [svg, png]"
 					},
 					"mermaid-editor.generate.outputPath": {
 						"type": [
@@ -81,12 +76,12 @@
 					"mermaid-editor.generate.width": {
 						"type": "integer",
 						"default": "800",
-						"description": "width of the output page. Default: 800"
+						"description": "width of the output page."
 					},
 					"mermaid-editor.generate.height": {
 						"type": "integer",
 						"default": "600",
-						"description": "height of the output page. Default: 600"
+						"description": "height of the output page."
 					}
 				}
 			}
@@ -113,7 +108,7 @@
 			{
 				"command": "mermaid-editor.generate",
 				"key": "ctrl+alt+]",
-				"when": "mermaidPreviewEnabled"
+				"when": "mermaidPreviewEnabled && resourceExtname == .mmd"
 			},
 			{
 				"command": "mermaid-editor.preview",
@@ -124,7 +119,7 @@
 		"menus": {
 			"editor/context": [
 				{
-					"when": "mermaidPreviewEnabled",
+					"when": "mermaidPreviewEnabled && resourceExtname == .mmd",
 					"command": "mermaid-editor.generate",
 					"group": "navigation"
 				},
@@ -136,7 +131,7 @@
 			],
 			"editor/title": [
 				{
-					"when": "mermaidPreviewEnabled",
+					"when": "mermaidPreviewEnabled && resourceExtname == .mmd",
 					"command": "mermaid-editor.generate",
 					"group": "navigation"
 				},
@@ -149,7 +144,7 @@
 			"commandPalette": [
 				{
 					"command": "mermaid-editor.generate",
-					"when": "mermaidPreviewEnabled"
+					"when": "mermaidPreviewEnabled && resourceExtname == .mmd"
 				},
 				{
 					"command": "mermaid-editor.preview",
@@ -182,7 +177,6 @@
 		"@types/lodash": "^4.14.123",
 		"d3": "^4.13.0",
 		"lodash": "^4.17.11",
-		"mermaid": "^8.0.0",
-		"mermaid.cli": "^0.5.1"
+		"mermaid": "^8.0.0"
 	}
 }

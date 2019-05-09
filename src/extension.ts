@@ -12,10 +12,10 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(
     vscode.commands.registerCommand('mermaid-editor.generate', () => {
       if (isMermaid(vscode.window.activeTextEditor) && Previewer.currentPanel) {
-        Previewer.currentPanel.onTakeImage(svg => {
-          generator.generate(svg);
+        Previewer.currentPanel.onTakeImage((data, type) => {
+          generator.generate(data, type);
         });
-        Previewer.currentPanel.takeImage();
+        Previewer.currentPanel.takeImage(Generator.getConfiguration());
       }
     })
   );

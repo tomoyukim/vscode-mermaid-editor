@@ -5,12 +5,11 @@ import * as path from 'path';
 import get = require('lodash/get');
 import Logger from './Logger';
 
-function getExtension(ext: string) {
-  switch (ext) {
+function getExtension(type: string) {
+  switch (type) {
     case 'svg':
     case 'png':
-    case 'pdf':
-      return ext;
+      return type;
     default:
       return 'svg';
   }
@@ -31,7 +30,11 @@ export default class Generator {
     this._extensionPath = context.extensionPath;
   }
 
-  public async generate(svg: string) {
+  public static getConfiguration() {
+    return vscode.workspace.getConfiguration('mermaid-editor.generate');
+  }
+
+  public async generate(data: string, type: string) {
     const editor = vscode.window.activeTextEditor;
     if (!editor) return;
 
@@ -44,9 +47,7 @@ export default class Generator {
 
     this._statusBarItem.show();
 
-    const userConfig = vscode.workspace.getConfiguration(
-      'mermaid-editor.generate'
-    );
+    const userConfig = Generator.getConfiguration();
     const outputDirPath = userConfig.outputPath
       ? path.join(workingDir, userConfig.outputPath)
       : workingDir;
@@ -63,7 +64,12 @@ export default class Generator {
       config.outputDirPath = this._extensionPath;
     }
 
-    fs.writeFile(`${outputDirPath}/test.svg`, svg, e => {
+    const input = get(editor, 'document.fileName', '');
+    const _intermediate = input.split('/');
+    const _fileName = _intermediate[_intermediate.length - 1].split('.')[0];
+    const output = `${outputDirPath}/${_fileName}.${getExtension(type)}`;
+
+    fs.writeFile(output, data, 'base64', e => {
       if (e) {
         Logger.instance().appendLine(e.message);
         vscode.window.showErrorMessage(e.message);
@@ -79,32 +85,7 @@ export default class Generator {
     return this._execCommand(`mkdir -p ${outputPath}`, cwd);
   }
 
-  private _mmdc(editor: any, config: any, cwd: string) {
-    const {
-      theme,
-      width,
-      height,
-      backgroundColor,
-      format,
-      outputDirPath
-    } = config;
-
-    const input = get(editor, 'document.fileName', '');
-
-    const _intermediate = input.split('/');
-    const _fileName = _intermediate[_intermediate.length - 1].split('.')[0];
-
-    const output = `${outputDirPath}/${_fileName}.${getExtension(format)}`;
-    const command = `${
-      this._extensionPath
-    }/node_modules/.bin/mmdc -t ${theme} -i ${input} -o ${output} -w ${width} -H ${height} -b ${backgroundColor}`;
-
-    return this._execCommand(command, cwd);
-  }
-
   private _execCommand(command: string, cwd: string) {
-    Logger.instance().appendLine(command);
-
     return new Promise((resolve, reject) => {
       cp.exec(command, { cwd }, (err: any) => {
         if (err) {
