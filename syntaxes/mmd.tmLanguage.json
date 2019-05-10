@@ -1,0 +1,36 @@
+{
+  "scopeName": "diagram.mmd",
+  "patterns": [{"include": "#mermaid"}],
+  "repository": {
+    "mermaid": {
+      "patterns": [
+        {
+          "match": "graph|stateDiagram|sequenceDiagram|classDiagram|pie|flowchart|gantt",
+          "name": "storage.type.mermaid"
+        },
+        {
+          "match": "participant|as",
+          "name": "keyword.other.mermaid"
+        },
+        {
+          "match": "%%.*",
+          "name": "comment.line.percentage.mermaid"
+        },
+        {
+          "begin": "\\[",
+          "end": "\\]",
+          "name": "string.quoted.other.mermaid"
+        },
+        {
+          "begin": "\"",
+          "end": "\"",
+          "name": "string.quated.double.mermaid"
+        },
+        {
+          "pattern": "---|-->|===|==>",
+          "name": "variable.language.mermaid"
+        }
+      ]
+    }
+  }
+}
