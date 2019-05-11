@@ -35,7 +35,7 @@ Zoom in/out is supported for live preview.
 |Setting|Default|Description|
 |---|---|---|
 |mermaid-editor.preview.theme|default|color theme for live preview and generated image [default, forest, dark, natural]|
-|mermaid-editor.generate.backgroundColor|transparent|background color for live preview and generated image|
+|mermaid-editor.preview.backgroundColor|transparent|background color for live preview and generated image|
 |mermaid-editor.generate.type|svg|output image file type [svg, png, jpg, webp]|
 |mermaid-editor.generate.outputPath||relative path of the output target directory from project root|
 |mermaid-editor.generate.width|800|width of the output image|
