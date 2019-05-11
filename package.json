@@ -89,7 +89,7 @@
 		"commands": [
 			{
 				"command": "mermaid-editor.generate",
-				"title": "Generate image from mermaid diagram",
+				"title": "Mermaid:Generate image",
 				"icon": {
 					"light": "./images/light/icon-dl.svg",
 					"dark": "./images/dark/icon-dl.svg"
@@ -97,11 +97,35 @@
 			},
 			{
 				"command": "mermaid-editor.preview",
-				"title": "Preview mermaid diagram",
+				"title": "Mermaid:Preview diagram",
 				"icon": {
 					"light": "./images/light/icon-eye.svg",
 					"dark": "./images/dark/icon-eye.svg"
 				}
+			},
+			{
+				"command": "mermaid-editor.preview.zoomin",
+				"title": "Mermaid:Zoom in",
+				"icon": {
+					"light": "./images/light/icon-zoom-in.svg",
+					"dark": "./images/dark/icon-zoom-in.svg"
+				}
+			},
+			{
+				"command": "mermaid-editor.preview.zoomout",
+				"title": "Mermaid:Zoom out",
+				"icon": {
+					"light": "./images/light/icon-zoom-out.svg",
+					"dark": "./images/dark/icon-zoom-out.svg"
+				}
+			},
+			{
+				"command": "mermaid-editor.preview.zoomreset",
+				"title": "Mermaid:Reset zoom"
+			},
+			{
+				"command": "mermaid-editor.preview.zoomto",
+				"title": "Mermaid:Zoom to specific scale"
 			}
 		],
 		"keybindings": [
@@ -114,6 +138,21 @@
 				"command": "mermaid-editor.preview",
 				"key": "ctrl+alt+[",
 				"when": "resourceExtname == .mmd"
+			},
+			{
+				"command": "mermaid-editor.preview.zoomin",
+				"key": "ctrl+alt+=",
+				"when": "mermaidPreviewVisible"
+			},
+			{
+				"command": "mermaid-editor.preview.zoomout",
+				"key": "ctrl+alt+-",
+				"when": "mermaidPreviewVisible"
+			},
+			{
+				"command": "mermaid-editor.preview.zoomreset",
+				"key": "ctrl+alt+0",
+				"when": "mermaidPreviewVisible"
 			}
 		],
 		"menus": {
@@ -139,6 +178,16 @@
 					"when": "resourceExtname == .mmd",
 					"command": "mermaid-editor.preview",
 					"group": "navigation"
+				},
+				{
+					"when": "mermaidPreviewActive",
+					"command": "mermaid-editor.preview.zoomin",
+					"group": "navigation"
+				},
+				{
+					"when": "mermaidPreviewActive",
+					"command": "mermaid-editor.preview.zoomout",
+					"group": "navigation"
 				}
 			],
 			"commandPalette": [
@@ -149,6 +198,22 @@
 				{
 					"command": "mermaid-editor.preview",
 					"when": "resourceExtname == .mmd"
+				},
+				{
+					"command": "mermaid-editor.preview.zoomin",
+					"when": "mermaidPreviewVisible"
+				},
+				{
+					"command": "mermaid-editor.preview.zoomout",
+					"when": "mermaidPreviewVisible"
+				},
+				{
+					"command": "mermaid-editor.preview.zoomreset",
+					"when": "mermaidPreviewVisible"
+				},
+				{
+					"command": "mermaid-editor.preview.zoomto",
+					"when": "mermaidPreviewVisible"
 				}
 			]
 		}

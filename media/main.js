@@ -4,11 +4,32 @@
   const vscode = acquireVsCodeApi();
   const preview = document.getElementById('preview');
 
-  const prevState = vscode.getState();
-  if (preview.textContent.trim() === '') {
-    preview.textContent = prevState ? prevState.diagram : preview.textContent;
-  } else {
-    vscode.setState({ diagram: preview.textContent });
+  const DEFAULT_STATE = {
+    scale: 1.0,
+    diagram: preview.textContent
+  };
+
+  function setState(state) {
+    const current = vscode.getState();
+    vscode.setState({
+      ...current,
+      ...state
+    });
+  }
+
+  function getState() {
+    const prevState = vscode.getState();
+    if (!prevState) {
+      setState(DEFAULT_STATE);
+      return DEFAULT_STATE;
+    }
+    return prevState;
+  }
+
+  function zoom(value) {
+    const style = preview.style;
+    style.transform = `scale(${value})`;
+    style.transformOrigin = 'left top';
   }
 
   function convertToImg(
@@ -56,6 +77,12 @@
     img.src = imgSrc;
   }
 
+  // init
+  zoom(getState().scale);
+  if (preview.textContent.trim() === '') {
+    preview.textContent = getState().diagram;
+  }
+
   // Handle messages sent from the extension to the webview
   window.addEventListener('message', event => {
     const message = event.data; // The json data that the extension sent
@@ -65,7 +92,7 @@
         preview.textContent = diagram;
         preview.removeAttribute('data-processed');
         mermaid.init();
-        vscode.setState({ diagram });
+        setState({ diagram });
         return;
       case 'takeImage':
         const { type, width, height, backgroundColor } = message;
@@ -78,6 +105,11 @@
             type
           });
         });
+        return;
+      case 'zoomTo':
+        const { value } = message;
+        zoom(value);
+        setState({ scale: value });
         return;
     }
   });

@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
-import get = require('lodash/get');
+import isNumber = require('lodash/isNumber');
 import { isMermaid } from './util';
 
 const getDiagram = () => {
@@ -9,6 +9,10 @@ const getDiagram = () => {
 
   return editor.document.getText();
 };
+
+const ZOOM_MIN_SCALE = 0.1;
+const ZOOM_MAX_SCALE = 2.5;
+const ZOOM_SCALE_INTERVAL = 0.2;
 
 export default class Previewer {
   /**
@@ -20,6 +24,7 @@ export default class Previewer {
 
   private readonly _panel: vscode.WebviewPanel;
   private readonly _extensionPath: string;
+  private _scale: number;
   private _disposables: vscode.Disposable[] = [];
   private _onTakeImage: ((data: string, type: string) => void) | undefined;
 
@@ -67,6 +72,17 @@ export default class Previewer {
     return vscode.workspace.getConfiguration('mermaid-editor.preview');
   }
 
+  private static setContext(contextName: string, value: boolean) {
+    vscode.commands.executeCommand('setContext', contextName, value);
+  }
+
+  private scaleInRange() {
+    if (this._scale < ZOOM_MIN_SCALE || ZOOM_MAX_SCALE < this._scale) {
+      return false;
+    }
+    return true;
+  }
+
   private constructor(
     panel: vscode.WebviewPanel,
     state: any,
@@ -74,11 +90,14 @@ export default class Previewer {
   ) {
     this._panel = panel;
     this._extensionPath = extensionPath;
+    this._scale = state.scale || 1.0;
 
     // Set the webview's initial html content
     this._loadContent(state.diagram);
 
-    vscode.commands.executeCommand('setContext', 'mermaidPreviewEnabled', true);
+    Previewer.setContext('mermaidPreviewEnabled', true);
+    Previewer.setContext('mermaidPreviewActive', this._panel.active);
+    Previewer.setContext('mermaidPreviewVisible', this._panel.visible);
 
     // Listen for when the panel is disposed
     // This happens when the user closes the panel or when the panel is closed programatically
@@ -87,6 +106,8 @@ export default class Previewer {
     // Update the content based on view changes
     this._panel.onDidChangeViewState(
       e => {
+        Previewer.setContext('mermaidPreviewActive', this._panel.active);
+        Previewer.setContext('mermaidPreviewVisible', this._panel.visible);
         if (this._panel.visible) {
           this._loadContent(undefined);
         }
@@ -165,6 +186,36 @@ export default class Previewer {
 
   public onTakeImage(callback: (data: string, type: string) => void) {
     this._onTakeImage = callback;
+  }
+
+  public zoomIn() {
+    this.zoomTo(this._scale + ZOOM_SCALE_INTERVAL);
+  }
+
+  public zoomOut() {
+    this.zoomTo(this._scale - ZOOM_SCALE_INTERVAL);
+  }
+
+  public zoomReset() {
+    this.zoomTo(1.0);
+  }
+
+  public zoomTo(value: number) {
+    if (!this._panel.visible || !isNumber(value) || Number.isNaN(value)) {
+      return;
+    }
+
+    const prev = this._scale;
+    this._scale = value;
+    if (!this.scaleInRange()) {
+      this._scale = prev;
+      return;
+    }
+
+    this._panel.webview.postMessage({
+      command: 'zoomTo',
+      value: this._scale
+    });
   }
 
   private _updateDiagram() {

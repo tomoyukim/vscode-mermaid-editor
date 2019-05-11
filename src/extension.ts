@@ -29,6 +29,42 @@ export function activate(context: vscode.ExtensionContext) {
     )
   );
 
+  context.subscriptions.push(
+    vscode.commands.registerCommand(
+      'mermaid-editor.preview.zoomin',
+      () => Previewer.currentPanel && Previewer.currentPanel.zoomIn()
+    )
+  );
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand(
+      'mermaid-editor.preview.zoomout',
+      () => Previewer.currentPanel && Previewer.currentPanel.zoomOut()
+    )
+  );
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand(
+      'mermaid-editor.preview.zoomreset',
+      () => Previewer.currentPanel && Previewer.currentPanel.zoomReset()
+    )
+  );
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand(
+      'mermaid-editor.preview.zoomto',
+      async () => {
+        const value = await vscode.window.showInputBox({
+          placeHolder: 'scale'
+        });
+        if (value) {
+          Previewer.currentPanel &&
+            Previewer.currentPanel.zoomTo(parseFloat(value));
+        }
+      }
+    )
+  );
+
   if (vscode.window.registerWebviewPanelSerializer) {
     vscode.window.registerWebviewPanelSerializer(Previewer.viewType, {
       async deserializeWebviewPanel(
