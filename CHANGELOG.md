@@ -13,6 +13,13 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ### Fixed
 ### Security
 
+## [0.4.0] - 2019-05-11
+
+### Added
+
+- Support zoom in/out for live preview
+- Support background color configuration for live preview
+
 ## [0.3.0] - 2019-05-09
 
 ### Added
