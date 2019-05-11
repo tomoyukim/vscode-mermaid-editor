@@ -13,12 +13,27 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ### Fixed
 ### Security
 
-## [0.4.0] - 2019-05-11
+## [0.4.1] - 2019-05-11
 
 ### Added
 
 - Support zoom in/out for live preview
 - Support background color configuration for live preview
+
+### Changed
+
+- `mermaid-editor.generate.backgroundColor` is renamed to `mermaid-editor.preview.backgroundColor`
+
+## [0.4.0] - 2019-05-11
+
+### Added
+
+- ~~Support zoom in/out for live preview~~
+- ~~Support background color configuration for live preview~~
+
+### Note
+
+- This version is a mistake. Please do not use.
 
 ## [0.3.0] - 2019-05-09
 
