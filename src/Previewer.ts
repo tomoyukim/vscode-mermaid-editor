@@ -63,6 +63,10 @@ export default class Previewer {
     Previewer.currentPanel = new Previewer(panel, state, extensionPath);
   }
 
+  private static getConfiguration() {
+    return vscode.workspace.getConfiguration('mermaid-editor.preview');
+  }
+
   private constructor(
     panel: vscode.WebviewPanel,
     state: any,
@@ -154,6 +158,7 @@ export default class Previewer {
   public takeImage(config: any) {
     this._panel.webview.postMessage({
       ...config,
+      backgroundColor: Previewer.getConfiguration().backgroundColor,
       command: 'takeImage'
     });
   }
@@ -196,11 +201,9 @@ export default class Previewer {
       scheme: 'vscode-resource'
     });
 
-    const userConfig = vscode.workspace.getConfiguration(
-      'mermaid-editor.preview'
-    );
+    const { theme, backgroundColor } = Previewer.getConfiguration();
     const config = {
-      ...userConfig,
+      theme,
       startOnLoad: true
     };
 
@@ -211,6 +214,11 @@ export default class Previewer {
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <title>Mermaid Editor Preview</title>
+      <style>
+      body {
+        background-color: ${backgroundColor};
+      }
+      </style>
     </head>
     <body>
       <div id="preview" class="mermaid">

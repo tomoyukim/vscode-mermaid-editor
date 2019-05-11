@@ -55,10 +55,10 @@
 						"default": "default",
 						"description": "color theme for live preview and generated image [default, forest, dark, natural]"
 					},
-					"mermaid-editor.generate.backgroundColor": {
+					"mermaid-editor.preview.backgroundColor": {
 						"type": "string",
 						"default": "transparent",
-						"description": "background color of the output image."
+						"description": "background color for live preview and generated image."
 					},
 					"mermaid-editor.generate.type": {
 						"type": "string",
