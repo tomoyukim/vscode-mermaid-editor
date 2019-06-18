@@ -240,8 +240,10 @@
 	},
 	"dependencies": {
 		"@types/lodash": "^4.14.123",
+		"@types/mkdirp": "^0.5.2",
 		"d3": "^4.13.0",
 		"lodash": "^4.17.11",
-		"mermaid": "^8.0.0"
+		"mermaid": "^8.0.0",
+		"mkdirp": "^0.5.1"
 	}
 }

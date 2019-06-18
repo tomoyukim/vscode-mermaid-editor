@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
-import * as cp from 'child_process';
 import * as path from 'path';
+import mkdirp = require('mkdirp');
 import get = require('lodash/get');
 import Logger from './Logger';
 
@@ -40,11 +40,13 @@ export default class Generator {
     const editor = vscode.window.activeTextEditor;
     if (!editor) return;
 
+    const input = get(editor, 'document.fileName', '');
     const uri = get(editor, 'document.uri', {});
+    const currentDir = path.dirname(input);
     const workingDir = get(
       vscode.workspace.getWorkspaceFolder(uri),
       'uri.fsPath',
-      '/' // XXX
+      currentDir
     );
 
     this._statusBarItem.show();
@@ -66,10 +68,8 @@ export default class Generator {
       config.outputDirPath = this._extensionPath;
     }
 
-    const input = get(editor, 'document.fileName', '');
-    const _intermediate = input.split('/');
-    const _fileName = _intermediate[_intermediate.length - 1].split('.')[0];
-    const output = `${outputDirPath}/${_fileName}.${getExtension(type)}`;
+    const _fileName = `${path.basename(input, '.mmd')}.${getExtension(type)}`;
+    const output = path.join(outputDirPath, _fileName);
 
     fs.writeFile(output, data, 'base64', e => {
       if (e) {
@@ -84,12 +84,8 @@ export default class Generator {
   }
 
   private _mkdir(outputPath: string, cwd: string) {
-    return this._execCommand(`mkdir -p ${outputPath}`, cwd);
-  }
-
-  private _execCommand(command: string, cwd: string) {
     return new Promise((resolve, reject) => {
-      cp.exec(command, { cwd }, (err: any) => {
+      mkdirp(outputPath, (err: any) => {
         if (err) {
           reject(err);
         } else {
