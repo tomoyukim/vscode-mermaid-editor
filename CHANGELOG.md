@@ -13,6 +13,17 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ### Fixed
 ### Security
 
+## [0.4.2] - 2019-06-18
+
+### Changed
+
+- Change default output directory in case of outside of workspace from `/` to same directory of current edit file
+
+### Fixed
+
+ - Fixed generating image on windows was not worked
+
+
 ## [0.4.1] - 2019-05-11
 
 ### Added
