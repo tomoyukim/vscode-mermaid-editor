@@ -57,7 +57,7 @@
 					},
 					"mermaid-editor.preview.backgroundColor": {
 						"type": "string",
-						"default": "transparent",
+						"default": "white",
 						"description": "background color for live preview and generated image."
 					},
 					"mermaid-editor.generate.type": {
