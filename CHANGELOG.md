@@ -13,6 +13,19 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ### Fixed
 ### Security
 
+## [0.4.3] - 2019-10-06
+
+### Added
+- Add new setting item: `useCurrentPath` to use current path of editing mmd file as outputPath
+
+### Changed
+
+- Change default background color from 'transparent' to 'white'
+
+### Security
+
+ - Update depencency 'lodash' version by github security alert
+
 ## [0.4.2] - 2019-06-18
 
 ### Changed
