@@ -52,9 +52,15 @@ export default class Generator {
     this._statusBarItem.show();
 
     const userConfig = Generator.getConfiguration();
-    const outputDirPath = userConfig.outputPath
-      ? path.join(workingDir, userConfig.outputPath)
-      : workingDir;
+    const _getOutputPath = (): string => {
+      if (userConfig.useCurrentPath) {
+        return currentDir;
+      }
+      return userConfig.outputPath
+        ? path.join(workingDir, userConfig.outputPath)
+        : workingDir;
+    };
+    const outputDirPath = _getOutputPath();
 
     const config = {
       ...userConfig,

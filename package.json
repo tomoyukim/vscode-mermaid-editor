@@ -73,6 +73,11 @@
 						"default": null,
 						"description": "relative path of the output target directory from project root"
 					},
+					"mermaid-editor.generate.useCurrentPath": {
+						"type": "boolean",
+						"default": true,
+						"description": "use relative output path as same as target mmd file instead of 'outputPath'"
+					},
 					"mermaid-editor.generate.width": {
 						"type": "integer",
 						"default": "800",

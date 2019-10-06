@@ -38,6 +38,7 @@ Zoom in/out is supported for live preview.
 |mermaid-editor.preview.backgroundColor|transparent|background color for live preview and generated image|
 |mermaid-editor.generate.type|svg|output image file type [svg, png, jpg, webp]|
 |mermaid-editor.generate.outputPath||relative path of the output target directory from project root|
+|mermaid-editor.generate.useCurrentPath|true|use relative output path as same as target mmd file instead of 'outputPath'|
 |mermaid-editor.generate.width|800|width of the output image|
 |mermaid-editor.generate.height|600|height of the output image|
 
