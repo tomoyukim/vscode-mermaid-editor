@@ -265,6 +265,7 @@ export default class Previewer {
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <title>Mermaid Editor Preview</title>
+      <link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.css">
       <style>
       body {
         background-color: ${backgroundColor};

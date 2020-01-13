@@ -13,6 +13,15 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ### Fixed
 ### Security
 
+## [Unreleased]
+
+### Added
+- Support for `fontawesome` icons
+
+### Changed
+
+- Update dependency 'mermaid'
+
 ## [0.4.3] - 2019-10-06
 
 ### Added
