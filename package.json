@@ -235,20 +235,20 @@
 		"singleQuote": true
 	},
 	"devDependencies": {
-		"@types/mocha": "^2.2.42",
-		"@types/node": "^10.12.21",
-		"prettier": "^1.17.0",
-		"tslint": "^5.12.1",
-		"tslint-config-prettier": "^1.18.0",
-		"typescript": "^3.3.1",
-		"vscode": "^1.1.28"
+		"@types/mocha": "2.2.42",
+		"@types/node": "10.12.21",
+		"prettier": "1.19.x",
+		"tslint": "5.20.x",
+		"tslint-config-prettier": "1.18.0",
+		"typescript": "3.7.x",
+		"vscode": "1.1.36"
 	},
 	"dependencies": {
-		"@types/lodash": "^4.14.123",
-		"@types/mkdirp": "^0.5.2",
-		"d3": "^4.13.0",
+		"@types/lodash": "4.14.x",
+		"@types/mkdirp": "0.5.2",
+		"d3": "5.7.x",
 		"lodash": ">=4.17.13",
-		"mermaid": "^8.0.0",
-		"mkdirp": "^0.5.1"
+		"mermaid": "8.4.x",
+		"mkdirp": "0.5.x"
 	}
 }
