@@ -13,14 +13,15 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ### Fixed
 ### Security
 
-## [Unreleased]
+## [0.4.4] - 2020-1-15
 
 ### Added
-- Support for `fontawesome` icons
+- Support for `fontawesome` icons - thanks to [PR#8](https://github.com/tomoyukim/vscode-mermaid-editor/pull/8) by Peter Garland ([@pngarland](https://github.com/pngarland))
 
 ### Changed
 
-- Update dependency 'mermaid'
+- Update dependency 'mermaid' to version 8.4
+- Migrage vscode extension test modules following by [official guide](https://code.visualstudio.com/api/working-with-extensions/testing-extension#migrating-from-vscode)
 
 ## [0.4.3] - 2019-10-06
 
