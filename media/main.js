@@ -1,12 +1,23 @@
 // This script will be run within the webview itself
 // It cannot access the main VS Code APIs directly.
+let timer;
+function debouncedRunloop(fn) {
+  if (!timer) { // prevent multiple setTimer
+    timer = setTimeout(() => {
+      timer = null;
+      fn();
+    }, 0);
+  }
+}
+
 (function() {
   const vscode = acquireVsCodeApi();
   const preview = document.getElementById('preview');
 
   const DEFAULT_STATE = {
     scale: 1.0,
-    diagram: preview.textContent
+    diagram: preview.textContent,
+    scroll: 0
   };
 
   function setState(state) {
@@ -89,10 +100,14 @@
     switch (message.command) {
       case 'update':
         const { diagram } = message;
+        const { scroll } = getState();
         preview.textContent = diagram;
         preview.removeAttribute('data-processed');
         mermaid.init();
         setState({ diagram });
+        debouncedRunloop(() => {
+          window.scrollBy(0, scroll);
+        });
         return;
       case 'takeImage':
         const { type, width, height, backgroundColor } = message;
@@ -113,4 +128,14 @@
         return;
     }
   });
+
+  window.onscroll = function () {
+    // suppress update scroll position during 'update' command
+    // Note: When 'update' is occurred, content is rerenderred and
+    // this event is called with 'zero' multipletimes.
+    if (!timer) {
+      const scroll = document.documentElement.scrollTop;
+      setState({ scroll });
+    }
+  };
 })();

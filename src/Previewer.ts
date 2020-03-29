@@ -27,6 +27,7 @@ export default class Previewer {
   private _scale: number;
   private _disposables: vscode.Disposable[] = [];
   private _onTakeImage: ((data: string, type: string) => void) | undefined;
+  private _timer: NodeJS.Timeout | null;
 
   public static createOrShow(extensionPath: string) {
     const showOptions = {
@@ -91,6 +92,7 @@ export default class Previewer {
     this._panel = panel;
     this._extensionPath = extensionPath;
     this._scale = state.scale || 1.0;
+    this._timer = null;
 
     // Set the webview's initial html content
     this._loadContent(state.diagram);
@@ -219,10 +221,16 @@ export default class Previewer {
   }
 
   private _updateDiagram() {
-    this._panel.webview.postMessage({
-      command: 'update',
-      diagram: getDiagram()
-    });
+    if (this._timer) {
+      clearTimeout(this._timer);
+    }
+    this._timer = setTimeout(() => {
+      this._panel.webview.postMessage({
+        command: 'update',
+        diagram: getDiagram()
+      });
+      this._timer = null;
+    }, 200);
   }
 
   private _loadContent(diagram: string | undefined) {
