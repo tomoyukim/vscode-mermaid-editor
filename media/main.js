@@ -94,12 +94,23 @@ function debouncedRunloop(fn) {
     preview.textContent = getState().diagram;
   }
 
+  window.addEventListener('error', error => {
+    preview.textContent = error.message;
+  });
+
   // Handle messages sent from the extension to the webview
   window.addEventListener('message', event => {
     const message = event.data; // The json data that the extension sent
     switch (message.command) {
       case 'update':
         const { diagram } = message;
+        /* API doesn't work: parse returns false always
+        if (!mermaid.parse(diagram)) {
+          // no update in case of syntax error
+          // TODO: keep scroll position to restore it
+          return;
+        }
+        */
         const { scroll } = getState();
         preview.textContent = diagram;
         preview.removeAttribute('data-processed');
