@@ -1,6 +1,15 @@
 # Mermaid Editor
 
-Mermaid Editor is vscode extension for editing [mermaid.js](https://mermaidjs.github.io/) diagram inspired by [official mermaid live editor](https://mermaidjs.github.io/mermaid-live-editor/). This extension provides live preview and creating the image file.
+[![Version](https://vsmarketplacebadge.apphb.com/version/tomoyukim.vscode-mermaid-editor.svg
+)](https://marketplace.visualstudio.com/items?itemName=tomoyukim.vscode-mermaid-editor)
+[![Installs](https://vsmarketplacebadge.apphb.com/installs/tomoyukim.vscode-mermaid-editor.svg
+)](https://marketplace.visualstudio.com/items?itemName=tomoyukim.vscode-mermaid-editor)
+[![Ratings](https://vsmarketplacebadge.apphb.com/rating-short/tomoyukim.vscode-mermaid-editor.svg
+)](https://marketplace.visualstudio.com/items?itemName=tomoyukim.vscode-mermaid-editor)
+
+Mermaid Editor is vscode extension inspired by [official mermaid live editor](https://mermaidjs.github.io/mermaid-live-editor/) to provide the following features:
+- Live edit `.mmd` file with [mermaid.js](https://mermaidjs.github.io/) diagram
+- Generate image file from `.mmd` file with preferred format (png, jpg, webp and svg).
 
 ## Usage
 
@@ -9,8 +18,11 @@ The extension is activated when opening `.mmd` file.
 ### Open live preview
 
 - Select `Mermaid:Preview mermaid` from context menu or command palette
-- Click `Mermaid:Preview diagram` icon
+- Click `Mermaid:Preview diagram` icon at right corner
 - `ctrl+alt+[` on `.mmd` file
+
+![](https://user-images.githubusercontent.com/1187581/78126099-efef5f00-744c-11ea-9a07-370d9714621d.png)
+![](https://user-images.githubusercontent.com/1187581/78126199-1e6d3a00-744d-11ea-8c79-25f6f1c08517.png)
 
 ### Generate image
 
@@ -19,6 +31,9 @@ Generate command is only available when `.mmd` file is opened and live preview i
 - Select `Mermaid:Generate image` from context menu or command palette
 - Click `Mermaid:Generate image` icon
 - `ctrl+alt+]` on `.mmd` file
+
+![](https://user-images.githubusercontent.com/1187581/78126965-4e690d00-744e-11ea-96be-d59cf0965e26.png)
+![](https://user-images.githubusercontent.com/1187581/78127020-6345a080-744e-11ea-9ad0-d2f24dec4d1e.png)
 
 ### Change scale of live preview
 
@@ -30,7 +45,12 @@ Zoom in/out is supported for live preview.
 - Zoom in: `ctrl+alt+=`
 - Reset zoom: `ctrl+alt+0`
 
+![](https://user-images.githubusercontent.com/1187581/78127053-76587080-744e-11ea-9861-c4a4dc71a4fe.png)
+
+
 ## Configuration
+
+Settings for look & feel in preview or image generator.
 
 |Setting|Default|Description|
 |---|---|---|
