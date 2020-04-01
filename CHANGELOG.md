@@ -13,6 +13,22 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ### Fixed
 ### Security
 
+## [0.5.0] - 2020-4-1
+
+### Added
+
+- Support for keeping scroll position in preview as much as possible
+  - Scroll position will be kept during editing `mmd` file but will be reset when parse error is occurred so far.
+- Display error message in preview in case of pase error
+
+### Changed
+
+- Replace tslint with eslint
+
+### Security
+
+- Update dependencies by security alert from Github
+
 ## [0.4.4] - 2020-1-15
 
 ### Added
