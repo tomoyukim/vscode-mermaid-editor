@@ -13,7 +13,9 @@ export default class Logger {
   }
 
   public static dispose() {
-    if (!this._instance) return;
+    if (!this._instance) {
+      return;
+    }
 
     this._instance._channel.dispose();
     this._instance = undefined;

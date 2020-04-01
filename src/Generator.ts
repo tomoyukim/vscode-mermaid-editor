@@ -38,7 +38,9 @@ export default class Generator {
 
   public async generate(data: string, type: string) {
     const editor = vscode.window.activeTextEditor;
-    if (!editor) return;
+    if (!editor) {
+      return;
+    }
 
     const input = get(editor, 'document.fileName', '');
     const uri = get(editor, 'document.uri', {});

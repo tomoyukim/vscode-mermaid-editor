@@ -5,7 +5,9 @@ import { isMermaid } from './util';
 
 const getDiagram = () => {
   const editor = vscode.window.activeTextEditor;
-  if (!editor || !isMermaid(editor)) return '';
+  if (!editor || !isMermaid(editor)) {
+    return '';
+  }
 
   return editor.document.getText();
 };
