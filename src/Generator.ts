@@ -68,7 +68,7 @@ export default class Generator {
     };
 
     try {
-      await this._mkdir(outputDirPath, workingDir);
+      await mkdirp(outputDirPath);
     } catch (e) {
       Logger.instance().appendLine(e.message);
       config.outputDirPath = this._extensionPath;
@@ -86,18 +86,6 @@ export default class Generator {
       }
       this._statusBarItem.hide();
       Logger.instance().show();
-    });
-  }
-
-  private _mkdir(outputPath: string, cwd: string) {
-    return new Promise((resolve, reject) => {
-      mkdirp(outputPath, (err: any) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve();
-        }
-      });
     });
   }
 }
