@@ -13,6 +13,18 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ### Fixed
 ### Security
 
+## [0.5.1] - 2020-5-17
+
+### Changed
+
+- Adopt `webview.asWebviewUri` API for local resource. - Thank to [Issue#11](https://github.com/tomoyukim/vscode-mermaid-editor/issues/11) by Matt Bierner ([@mjbvz](https://github.com/mjbvz))
+
+
+### Security
+
+- Update dependencies by security alert from Github
+
+
 ## [0.5.0] - 2020-4-1
 
 ### Added
