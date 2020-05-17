@@ -74,9 +74,9 @@
   version "10.17.21"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-10.17.21.tgz#c00e9603399126925806bed2d9a1e37da506965e"
 
-"@types/vscode@1.33.x":
-  version "1.33.0"
-  resolved "https://registry.yarnpkg.com/@types/vscode/-/vscode-1.33.0.tgz#da400abcb4caaeea18fd37287a3f48b18c785c94"
+"@types/vscode@1.44.x":
+  version "1.44.0"
+  resolved "https://registry.yarnpkg.com/@types/vscode/-/vscode-1.44.0.tgz#62ecfe3d0e38942fce556574da54ee1013c775b7"
 
 "@typescript-eslint/eslint-plugin@2.33.x":
   version "2.33.0"

@@ -6,7 +6,7 @@
 	"publisher": "tomoyukim",
 	"license": "MIT",
 	"engines": {
-		"vscode": "^1.33.0"
+		"vscode": "^1.44.0"
 	},
 	"categories": [
 		"Other"
@@ -238,7 +238,7 @@
 		"@types/glob": "7.1.x",
 		"@types/mocha": "7.0.x",
 		"@types/node": "10.17.x",
-		"@types/vscode": "1.33.x",
+		"@types/vscode": "1.44.x",
 		"@typescript-eslint/eslint-plugin": "2.33.x",
 		"@typescript-eslint/parser": "2.33.x",
 		"eslint": "6.x.x",

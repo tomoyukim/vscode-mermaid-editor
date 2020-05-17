@@ -246,21 +246,19 @@ export default class Previewer {
   }
 
   private _getHtmlForWebview(diagram: string) {
-    const scriptUri = vscode.Uri.file(
-      path.join(this._extensionPath, 'media', 'main.js')
-    ).with({
-      scheme: 'vscode-resource'
-    });
+    const scriptUri = this._panel.webview.asWebviewUri(
+      vscode.Uri.file(path.join(this._extensionPath, 'media', 'main.js'))
+    );
 
-    const mermaidUri = vscode.Uri.file(
-      path.join(
-        this._extensionPath,
-        'node_modules',
-        'mermaid/dist/mermaid.min.js'
+    const mermaidUri = this._panel.webview.asWebviewUri(
+      vscode.Uri.file(
+        path.join(
+          this._extensionPath,
+          'node_modules',
+          'mermaid/dist/mermaid.min.js'
+        )
       )
-    ).with({
-      scheme: 'vscode-resource'
-    });
+    );
 
     const { theme, backgroundColor } = Previewer.getConfiguration();
     const config = {
