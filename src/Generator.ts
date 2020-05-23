@@ -5,7 +5,7 @@ import mkdirp = require('mkdirp');
 import get = require('lodash/get');
 import Logger from './Logger';
 
-function getExtension(type: string) {
+function getExtension(type: string): string {
   switch (type) {
     case 'svg':
     case 'png':
@@ -21,7 +21,7 @@ export default class Generator {
   private readonly _extensionPath: string;
   private readonly _statusBarItem: vscode.StatusBarItem;
 
-  public constructor(context: any) {
+  public constructor(context: vscode.ExtensionContext) {
     this._statusBarItem = vscode.window.createStatusBarItem(
       vscode.StatusBarAlignment.Left,
       100
@@ -32,11 +32,11 @@ export default class Generator {
     this._extensionPath = context.extensionPath;
   }
 
-  public static getConfiguration() {
+  public static getConfiguration(): vscode.WorkspaceConfiguration {
     return vscode.workspace.getConfiguration('mermaid-editor.generate');
   }
 
-  public async generate(data: string, type: string) {
+  public async generate(data: string, type: string): Promise<void> {
     const editor = vscode.window.activeTextEditor;
     if (!editor) {
       return;

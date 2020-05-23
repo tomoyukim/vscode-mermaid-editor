@@ -2,8 +2,9 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 import isNumber = require('lodash/isNumber');
 import { isMermaid } from './util';
+import Logger from './Logger';
 
-const getDiagram = () => {
+const getDiagram = (): string => {
   const editor = vscode.window.activeTextEditor;
   if (!editor || !isMermaid(editor)) {
     return '';
@@ -31,7 +32,7 @@ export default class Previewer {
   private _onTakeImage: ((data: string, type: string) => void) | undefined;
   private _timer: NodeJS.Timeout | null;
 
-  public static createOrShow(extensionPath: string) {
+  public static createOrShow(extensionPath: string): void {
     const showOptions = {
       preserveFocus: false,
       viewColumn: vscode.ViewColumn.Beside
@@ -67,19 +68,19 @@ export default class Previewer {
     panel: vscode.WebviewPanel,
     state: any,
     extensionPath: string
-  ) {
+  ): void {
     Previewer.currentPanel = new Previewer(panel, state, extensionPath);
   }
 
-  private static getConfiguration() {
+  private static getConfiguration(): vscode.WorkspaceConfiguration {
     return vscode.workspace.getConfiguration('mermaid-editor.preview');
   }
 
-  private static setContext(contextName: string, value: boolean) {
+  private static setContext(contextName: string, value: boolean): void {
     vscode.commands.executeCommand('setContext', contextName, value);
   }
 
-  private scaleInRange() {
+  private scaleInRange(): boolean {
     if (this._scale < ZOOM_MIN_SCALE || ZOOM_MAX_SCALE < this._scale) {
       return false;
     }
@@ -109,7 +110,7 @@ export default class Previewer {
 
     // Update the content based on view changes
     this._panel.onDidChangeViewState(
-      e => {
+      () => {
         Previewer.setContext('mermaidPreviewActive', this._panel.active);
         Previewer.setContext('mermaidPreviewVisible', this._panel.visible);
         if (this._panel.visible) {
@@ -125,6 +126,14 @@ export default class Previewer {
         switch (message.command) {
           case 'onTakeImage':
             this._onTakeImage && this._onTakeImage(message.data, message.type);
+            return;
+          case 'onParseError':
+            Logger.instance().appendLine(message.error.str);
+            Logger.instance().appendDivider();
+            Logger.instance().show();
+            return;
+          case 'onParseSuccess':
+            Logger.instance().clear();
             return;
         }
       },
@@ -143,7 +152,7 @@ export default class Previewer {
     );
 
     vscode.workspace.onDidChangeConfiguration(
-      e => {
+      () => {
         this._loadContent(undefined);
       },
       null,
@@ -161,7 +170,7 @@ export default class Previewer {
     );
   }
 
-  public dispose() {
+  public dispose(): void {
     vscode.commands.executeCommand(
       'setContext',
       'mermaidPreviewEnabled',
@@ -180,7 +189,7 @@ export default class Previewer {
     }
   }
 
-  public takeImage(config: any) {
+  public takeImage(config: vscode.WorkspaceConfiguration): void {
     this._panel.webview.postMessage({
       ...config,
       backgroundColor: Previewer.getConfiguration().backgroundColor,
@@ -188,23 +197,23 @@ export default class Previewer {
     });
   }
 
-  public onTakeImage(callback: (data: string, type: string) => void) {
+  public onTakeImage(callback: (data: string, type: string) => void): void {
     this._onTakeImage = callback;
   }
 
-  public zoomIn() {
+  public zoomIn(): void {
     this.zoomTo(this._scale + ZOOM_SCALE_INTERVAL);
   }
 
-  public zoomOut() {
+  public zoomOut(): void {
     this.zoomTo(this._scale - ZOOM_SCALE_INTERVAL);
   }
 
-  public zoomReset() {
+  public zoomReset(): void {
     this.zoomTo(1.0);
   }
 
-  public zoomTo(value: number) {
+  public zoomTo(value: number): void {
     if (!this._panel.visible || !isNumber(value) || Number.isNaN(value)) {
       return;
     }
@@ -222,7 +231,7 @@ export default class Previewer {
     });
   }
 
-  private _updateDiagram() {
+  private _updateDiagram(): void {
     if (this._timer) {
       clearTimeout(this._timer);
     }
@@ -235,7 +244,7 @@ export default class Previewer {
     }, 200);
   }
 
-  private _loadContent(diagram: string | undefined) {
+  private _loadContent(diagram: string | undefined): void {
     this._panel.webview.html = this._getHtmlForWebview(
       diagram
         ? diagram
@@ -245,7 +254,7 @@ export default class Previewer {
     );
   }
 
-  private _getHtmlForWebview(diagram: string) {
+  private _getHtmlForWebview(diagram: string): string {
     const scriptUri = this._panel.webview.asWebviewUri(
       vscode.Uri.file(path.join(this._extensionPath, 'media', 'main.js'))
     );

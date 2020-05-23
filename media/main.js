@@ -2,7 +2,8 @@
 // It cannot access the main VS Code APIs directly.
 let timer;
 function debouncedRunloop(fn) {
-  if (!timer) { // prevent multiple setTimer
+  if (!timer) {
+    // prevent multiple setTimer
     timer = setTimeout(() => {
       timer = null;
       fn();
@@ -88,14 +89,27 @@ function debouncedRunloop(fn) {
     img.src = imgSrc;
   }
 
+  function postParseError(error) {
+    vscode.postMessage({
+      command: 'onParseError',
+      error
+    });
+  }
+
   // init
   zoom(getState().scale);
   if (preview.textContent.trim() === '') {
     preview.textContent = getState().diagram;
   }
 
-  window.addEventListener('error', error => {
-    preview.textContent = error.message;
+  window.addEventListener('error', () => {
+    // Try to catch parse error in initialized time
+    try {
+      mermaid.parse(preview.textContent);
+    } catch (error) {
+      postParseError(error);
+      preview.textContent = '';
+    }
   });
 
   // Handle messages sent from the extension to the webview
@@ -104,15 +118,19 @@ function debouncedRunloop(fn) {
     switch (message.command) {
       case 'update':
         const { diagram } = message;
-        /* API doesn't work: parse returns false always
-        if (!mermaid.parse(diagram)) {
-          // no update in case of syntax error
-          // TODO: keep scroll position to restore it
+        const _diagram = diagram.trim();
+        try {
+          mermaid.parse(_diagram);
+        } catch (error) {
+          postParseError(error);
           return;
         }
-        */
+        vscode.postMessage({
+          command: 'onParseSuccess'
+        });
+
         const { scroll } = getState();
-        preview.textContent = diagram;
+        preview.textContent = _diagram;
         preview.removeAttribute('data-processed');
         mermaid.init();
         setState({ diagram });
@@ -140,7 +158,7 @@ function debouncedRunloop(fn) {
     }
   });
 
-  window.onscroll = function () {
+  window.onscroll = function() {
     // suppress update scroll position during 'update' command
     // Note: When 'update' is occurred, content is rerenderred and
     // this event is called with 'zero' multipletimes.

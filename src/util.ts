@@ -1,6 +1,6 @@
 const MERMAID_LANGUAGE_ID = 'mermaid';
 
-export function isMermaid(editor: any) {
+export function isMermaid(editor: any): boolean {
   if (!editor) {
     return false;
   }

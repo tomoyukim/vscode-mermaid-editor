@@ -255,7 +255,7 @@
 		"@types/mkdirp": "1.0.x",
 		"d3": "5.7.x",
 		"lodash": ">=4.17.13",
-		"mermaid": "8.4.x",
+		"mermaid": "8.5.x",
 		"mkdirp": "1.0.x"
 	}
 }

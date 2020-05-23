@@ -6,7 +6,7 @@ import Generator from './Generator';
 import Logger from './Logger';
 import { isMermaid } from './util';
 
-export function activate(context: vscode.ExtensionContext) {
+export function activate(context: vscode.ExtensionContext): void {
   const generator = new Generator(context);
 
   context.subscriptions.push(
@@ -77,6 +77,6 @@ export function activate(context: vscode.ExtensionContext) {
   }
 }
 
-export function deactivate() {
+export function deactivate(): void {
   Logger.dispose();
 }
