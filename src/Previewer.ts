@@ -1,12 +1,13 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 import isNumber = require('lodash/isNumber');
+import get = require('lodash/get');
 import { isMermaid } from './util';
 import Logger from './Logger';
 
 const getDiagram = (): string => {
   const editor = vscode.window.activeTextEditor;
-  if (!editor || !isMermaid(editor)) {
+  if (!editor || !isMermaid(editor.document)) {
     return '';
   }
 
@@ -143,7 +144,7 @@ export default class Previewer {
 
     vscode.workspace.onDidChangeTextDocument(
       editor => {
-        if (editor && isMermaid(editor)) {
+        if (editor && isMermaid(editor.document)) {
           this._updateDiagram();
         }
       },
@@ -161,7 +162,7 @@ export default class Previewer {
 
     vscode.window.onDidChangeActiveTextEditor(
       editor => {
-        if (editor && isMermaid(editor)) {
+        if (editor && isMermaid(editor.document)) {
           this._updateDiagram();
         }
       },
@@ -248,7 +249,7 @@ export default class Previewer {
     this._panel.webview.html = this._getHtmlForWebview(
       diagram
         ? diagram
-        : isMermaid(vscode.window.activeTextEditor)
+        : isMermaid(get(vscode.window.activeTextEditor, 'document'))
         ? getDiagram()
         : ''
     );

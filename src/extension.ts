@@ -5,13 +5,17 @@ import Previewer from './Previewer';
 import Generator from './Generator';
 import Logger from './Logger';
 import { isMermaid } from './util';
+import get from 'lodash/get';
 
 export function activate(context: vscode.ExtensionContext): void {
   const generator = new Generator(context);
 
   context.subscriptions.push(
     vscode.commands.registerCommand('mermaid-editor.generate', () => {
-      if (isMermaid(vscode.window.activeTextEditor) && Previewer.currentPanel) {
+      if (
+        isMermaid(get(vscode.window.activeTextEditor, 'document')) &&
+        Previewer.currentPanel
+      ) {
         Previewer.currentPanel.onTakeImage((data, type) => {
           generator.generate(data, type);
         });
@@ -24,7 +28,7 @@ export function activate(context: vscode.ExtensionContext): void {
     vscode.commands.registerCommand(
       'mermaid-editor.preview',
       () =>
-        isMermaid(vscode.window.activeTextEditor) &&
+        isMermaid(get(vscode.window.activeTextEditor, 'document')) &&
         Previewer.createOrShow(context.extensionPath)
     )
   );

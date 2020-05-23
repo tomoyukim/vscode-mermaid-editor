@@ -1,8 +1,10 @@
+import * as vscode from 'vscode';
+
 const MERMAID_LANGUAGE_ID = 'mermaid';
 
-export function isMermaid(editor: any): boolean {
-  if (!editor) {
+export function isMermaid(document: vscode.TextDocument | undefined): boolean {
+  if (!document) {
     return false;
   }
-  return editor.document.languageId === MERMAID_LANGUAGE_ID;
+  return document.languageId === MERMAID_LANGUAGE_ID;
 }
