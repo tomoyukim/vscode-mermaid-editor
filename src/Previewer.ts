@@ -101,7 +101,7 @@ export default class Previewer {
     this._timer = null;
 
     // Set the webview's initial html content
-    this._loadContent(state.diagram);
+    this._loadContent(state.diagram, state.configuration);
 
     Previewer.setContext('mermaidPreviewEnabled', true);
     Previewer.setContext('mermaidPreviewActive', this._panel.active);
@@ -117,7 +117,7 @@ export default class Previewer {
         Previewer.setContext('mermaidPreviewActive', this._panel.active);
         Previewer.setContext('mermaidPreviewVisible', this._panel.visible);
         if (this._panel.visible) {
-          this._loadContent(undefined);
+          this._loadContent(undefined, undefined);
         }
       },
       null,
@@ -151,7 +151,7 @@ export default class Previewer {
 
     vscode.workspace.onDidChangeConfiguration(
       () => {
-        this._loadContent(undefined);
+        this._loadContent(undefined, undefined);
       },
       null,
       this._disposables
@@ -238,7 +238,6 @@ export default class Previewer {
           theme: 'default'
         });
       }
-      // TODO: support when activeTextEditor is undefined but diagram is available by state.
       const editor = vscode.window.activeTextEditor;
       const uri = vscode.Uri.file(
         path.join(
@@ -279,19 +278,27 @@ export default class Previewer {
     }, 200);
   }
 
-  private _loadContent(text: string | undefined): void {
+  private _loadContent(
+    text: string | undefined,
+    configText: string | undefined
+  ): void {
     const diagram = text
       ? text
       : isMermaid(get(vscode.window.activeTextEditor, 'document'))
       ? getDiagram()
       : '';
 
-    this._getMermaidConfig(diagram).then((configuration: string) => {
+    const setHtml = (configuration: string): void => {
       this._panel.webview.html = this._getHtmlForWebview(
         diagram,
         configuration
       );
-    });
+    };
+    if (configText) {
+      setHtml(configText);
+    } else {
+      this._getMermaidConfig(diagram).then(setHtml);
+    }
   }
 
   private _getHtmlForWebview(diagram: string, configuration: string): string {
