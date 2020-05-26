@@ -47,6 +47,19 @@ Zoom in/out is supported for live preview.
 
 ![](https://user-images.githubusercontent.com/1187581/78127053-76587080-744e-11ea-9861-c4a4dc71a4fe.png)
 
+## Attributes
+
+This extension supports attribute to specify preferred configuration for each `.mmd` file. The attribute have to be described in comment of mermaid syntax.
+
+### @config{path_to_config}
+
+Each `.mmd` file can be associated with [mermaid configuration](https://mermaid-js.github.io/mermaid/#/mermaidAPI?id=configuration). With this attribute, `.mmd` file can read specified configuration. `path_to_config` have to be described as relative path to the config json file from associated `.mmd` file.
+
+```
+sequenceDiagram
+%% @config{./path/to/config.json}
+    Alice->>John: Hello John, how are you?
+```
 
 ## Configuration
 

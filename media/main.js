@@ -117,22 +117,19 @@ function debouncedRunloop(fn) {
     const message = event.data; // The json data that the extension sent
     switch (message.command) {
       case 'update':
-        const { diagram } = message;
-        const _diagram = diagram.trim();
+        const { diagram, configuration } = message;
         try {
-          mermaid.parse(_diagram);
+          mermaid.parse(diagram);
+          mermaid.initialize(JSON.parse(configuration));
         } catch (error) {
           postParseError(error);
           return;
         }
-        vscode.postMessage({
-          command: 'onParseSuccess'
-        });
 
         const { scroll } = getState();
-        preview.textContent = _diagram;
+        preview.textContent = diagram;
         preview.removeAttribute('data-processed');
-        mermaid.init();
+        mermaid.init(); // render
         setState({ diagram });
         debouncedRunloop(() => {
           window.scrollBy(0, scroll);

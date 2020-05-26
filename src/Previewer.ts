@@ -1,9 +1,12 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
+import isEmpty = require('lodash/isEmpty');
 import isNumber = require('lodash/isNumber');
 import get = require('lodash/get');
 import { isMermaid } from './util';
 import Logger from './Logger';
+import AttributeParser from './AttributeParser';
+import { TextDecoder } from 'util';
 
 const getDiagram = (): string => {
   const editor = vscode.window.activeTextEditor;
@@ -11,7 +14,7 @@ const getDiagram = (): string => {
     return '';
   }
 
-  return editor.document.getText();
+  return editor.document.getText().trim();
 };
 
 const ZOOM_MIN_SCALE = 0.1;
@@ -81,11 +84,10 @@ export default class Previewer {
     vscode.commands.executeCommand('setContext', contextName, value);
   }
 
-  private scaleInRange(): boolean {
-    if (this._scale < ZOOM_MIN_SCALE || ZOOM_MAX_SCALE < this._scale) {
-      return false;
-    }
-    return true;
+  private static outputError(message: string): void {
+    Logger.instance().appendLine(message);
+    Logger.instance().appendDivider();
+    Logger.instance().show();
   }
 
   private constructor(
@@ -129,12 +131,7 @@ export default class Previewer {
             this._onTakeImage && this._onTakeImage(message.data, message.type);
             return;
           case 'onParseError':
-            Logger.instance().appendLine(message.error.str);
-            Logger.instance().appendDivider();
-            Logger.instance().show();
-            return;
-          case 'onParseSuccess':
-            Logger.instance().clear();
+            Previewer.outputError(message.error.str);
             return;
         }
       },
@@ -221,7 +218,7 @@ export default class Previewer {
 
     const prev = this._scale;
     this._scale = value;
-    if (!this.scaleInRange()) {
+    if (!this._scaleInRange()) {
       this._scale = prev;
       return;
     }
@@ -232,30 +229,72 @@ export default class Previewer {
     });
   }
 
+  private async _getMermaidConfig(text: string): Promise<string> {
+    try {
+      const pathToConfig = AttributeParser.parseConfig(text);
+      if (isEmpty(pathToConfig)) {
+        // TODO: default configuration
+        return JSON.stringify({
+          theme: 'default'
+        });
+      }
+      // TODO: support when activeTextEditor is undefined but diagram is available by state.
+      const editor = vscode.window.activeTextEditor;
+      const uri = vscode.Uri.file(
+        path.join(
+          editor ? path.dirname(editor.document.fileName) : this._extensionPath,
+          pathToConfig
+        )
+      );
+      const config = await vscode.workspace.fs.readFile(uri);
+      const decoder = new TextDecoder('utf-8');
+      return decoder.decode(config);
+    } catch (error) {
+      Previewer.outputError(error.message);
+      return '{}';
+    }
+  }
+
+  private _scaleInRange(): boolean {
+    if (this._scale < ZOOM_MIN_SCALE || ZOOM_MAX_SCALE < this._scale) {
+      return false;
+    }
+    return true;
+  }
+
   private _updateDiagram(): void {
     if (this._timer) {
       clearTimeout(this._timer);
     }
     this._timer = setTimeout(() => {
-      this._panel.webview.postMessage({
-        command: 'update',
-        diagram: getDiagram()
+      const diagram = getDiagram();
+      this._getMermaidConfig(diagram).then((configuration: string) => {
+        this._panel.webview.postMessage({
+          command: 'update',
+          diagram,
+          configuration
+        });
       });
       this._timer = null;
     }, 200);
   }
 
-  private _loadContent(diagram: string | undefined): void {
-    this._panel.webview.html = this._getHtmlForWebview(
-      diagram
-        ? diagram
-        : isMermaid(get(vscode.window.activeTextEditor, 'document'))
-        ? getDiagram()
-        : ''
-    );
+  private _loadContent(text: string | undefined): void {
+    const diagram = text
+      ? text
+      : isMermaid(get(vscode.window.activeTextEditor, 'document'))
+      ? getDiagram()
+      : '';
+
+    this._getMermaidConfig(diagram).then((configuration: string) => {
+      this._panel.webview.html = this._getHtmlForWebview(
+        diagram,
+        configuration
+      );
+    });
   }
 
-  private _getHtmlForWebview(diagram: string): string {
+  private _getHtmlForWebview(diagram: string, configuration: string): string {
     const scriptUri = this._panel.webview.asWebviewUri(
       vscode.Uri.file(path.join(this._extensionPath, 'media', 'main.js'))
     );
@@ -270,9 +309,17 @@ export default class Previewer {
       )
     );
 
-    const { theme, backgroundColor } = Previewer.getConfiguration();
+    let configObject = {};
+    try {
+      configObject = JSON.parse(configuration);
+    } catch (error) {
+      Previewer.outputError(error.message);
+    }
+
+    // TODO: background attribute for each file
+    const { backgroundColor } = Previewer.getConfiguration();
     const config = {
-      theme,
+      ...configObject,
       startOnLoad: true
     };
 
