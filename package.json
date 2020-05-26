@@ -50,10 +50,13 @@
 				"type": "object",
 				"title": "mermaid-editor configuration",
 				"properties": {
-					"mermaid-editor.preview.theme": {
-						"type": "string",
-						"default": "default",
-						"description": "color theme for live preview and generated image [default, forest, dark, natural]"
+					"mermaid-editor.preview.defaultMermaidConfig": {
+						"type": [
+							"string",
+							"null"
+						],
+						"default": null,
+						"description": "relative path to the default configuration json file for mermaid.js"
 					},
 					"mermaid-editor.preview.backgroundColor": {
 						"type": "string",
@@ -71,7 +74,7 @@
 							"null"
 						],
 						"default": null,
-						"description": "relative path of the output target directory from project root"
+						"description": "relative path to the output target directory from project root"
 					},
 					"mermaid-editor.generate.useCurrentPath": {
 						"type": "boolean",

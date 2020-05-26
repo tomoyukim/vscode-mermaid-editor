@@ -230,24 +230,40 @@ export default class Previewer {
   }
 
   private async _getMermaidConfig(text: string): Promise<string> {
+    const _readFile = async (uri: vscode.Uri): Promise<string> => {
+      const config = await vscode.workspace.fs.readFile(uri);
+      const decoder = new TextDecoder('utf-8');
+      return decoder.decode(config);
+    };
+
     try {
       const pathToConfig = AttributeParser.parseConfig(text);
-      if (isEmpty(pathToConfig)) {
-        // TODO: default configuration
+      if (!isEmpty(pathToConfig)) {
+        const editor = vscode.window.activeTextEditor;
+        const uri = vscode.Uri.file(
+          path.join(
+            editor
+              ? path.dirname(editor.document.fileName)
+              : this._extensionPath,
+            pathToConfig
+          )
+        );
+        return await _readFile(uri);
+      }
+
+      const pathToDefaultConfig = Previewer.getConfiguration()
+        .defaultMermaidConfig;
+      const workspaceFolders = vscode.workspace.workspaceFolders;
+      if (pathToDefaultConfig && workspaceFolders) {
+        const uri = vscode.Uri.file(
+          path.join(workspaceFolders[0].uri.fsPath, pathToDefaultConfig)
+        );
+        return await _readFile(uri);
+      } else {
         return JSON.stringify({
           theme: 'default'
         });
       }
-      const editor = vscode.window.activeTextEditor;
-      const uri = vscode.Uri.file(
-        path.join(
-          editor ? path.dirname(editor.document.fileName) : this._extensionPath,
-          pathToConfig
-        )
-      );
-      const config = await vscode.workspace.fs.readFile(uri);
-      const decoder = new TextDecoder('utf-8');
-      return decoder.decode(config);
     } catch (error) {
       Previewer.outputError(error.message);
       return '{}';

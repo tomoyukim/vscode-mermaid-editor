@@ -53,7 +53,7 @@ This extension supports attribute to specify preferred configuration for each `.
 
 ### @config{path_to_config}
 
-Each `.mmd` file can be associated with [mermaid configuration](https://mermaid-js.github.io/mermaid/#/mermaidAPI?id=configuration). With this attribute, `.mmd` file can read specified configuration. `path_to_config` have to be described as relative path to the config json file from associated `.mmd` file.
+Each `.mmd` file can be associated with [mermaid configuration](https://mermaid-js.github.io/mermaid/#/mermaidAPI?id=configuration). With this attribute, `.mmd` file can read specified configuration. `path_to_config` have to be described as relative path to the config json file from associated `.mmd` file. If this attribute is not provided, default config file setting up in `mermaid-editor.preview.defaultMermaidConfig` is applied.
 
 ```
 sequenceDiagram
@@ -67,10 +67,10 @@ Settings for look & feel in preview or image generator.
 
 |Setting|Default|Description|
 |---|---|---|
-|mermaid-editor.preview.theme|default|color theme for live preview and generated image [default, forest, dark, natural]|
+|mermaid-editor.preview.defaultMermaidConfig||relative path to the default configuration json file for mermaidjs.|
 |mermaid-editor.preview.backgroundColor|transparent|background color for live preview and generated image|
 |mermaid-editor.generate.type|svg|output image file type [svg, png, jpg, webp]|
-|mermaid-editor.generate.outputPath||relative path of the output target directory from project root|
+|mermaid-editor.generate.outputPath||relative path to the output target directory from project root|
 |mermaid-editor.generate.useCurrentPath|true|use relative output path as same as target mmd file instead of 'outputPath'|
 |mermaid-editor.generate.width|800|width of the output image|
 |mermaid-editor.generate.height|600|height of the output image|
