@@ -136,7 +136,12 @@ function debouncedRunloop(fn) {
         });
         return;
       case 'takeImage':
-        const { type, width, height, backgroundColor } = message;
+        const { type, width, height } = message;
+
+        const body = document.querySelector('body');
+        const style = getComputedStyle(body);
+        const backgroundColor = style.backgroundColor;
+
         const data = btoa(unescape(encodeURIComponent(preview.innerHTML))); // svg base64
 
         convertToImg(data, type, width, height, backgroundColor, imgBase64 => {

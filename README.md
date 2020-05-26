@@ -61,6 +61,27 @@ sequenceDiagram
     Alice->>John: Hello John, how are you?
 ```
 
+### @backgroundColor{color}
+
+Each `.mmd` file can be associated with preferred background color. With this attribute, `.mmd` can read specifed background color with CSS style property format.If this attribute is not provided, default background color setting up in `mermaid-editor.preview.backgroundColor` is applied. The followings are example.
+
+```
+sequenceDiagram
+%% @backgroundColor{red}
+    Alice->>John: Hello John, how are you?
+```
+
+```
+sequenceDiagram
+%% @backgroundColor{#ff0000}
+    Alice->>John: Hello John, how are you?
+```
+```
+sequenceDiagram
+%% @backgroundColor{rgb(255, 0, 0)}
+    Alice->>John: Hello John, how are you?
+```
+
 ## Configuration
 
 Settings for look & feel in preview or image generator.
@@ -68,7 +89,7 @@ Settings for look & feel in preview or image generator.
 |Setting|Default|Description|
 |---|---|---|
 |mermaid-editor.preview.defaultMermaidConfig||relative path to the default configuration json file for mermaidjs.|
-|mermaid-editor.preview.backgroundColor|transparent|background color for live preview and generated image|
+|mermaid-editor.preview.backgroundColor|white|default background color for live preview and generated image|
 |mermaid-editor.generate.type|svg|output image file type [svg, png, jpg, webp]|
 |mermaid-editor.generate.outputPath||relative path to the output target directory from project root|
 |mermaid-editor.generate.useCurrentPath|true|use relative output path as same as target mmd file instead of 'outputPath'|

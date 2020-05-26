@@ -190,7 +190,6 @@ export default class Previewer {
   public takeImage(config: vscode.WorkspaceConfiguration): void {
     this._panel.webview.postMessage({
       ...config,
-      backgroundColor: Previewer.getConfiguration().backgroundColor,
       command: 'takeImage'
     });
   }
@@ -227,6 +226,11 @@ export default class Previewer {
       command: 'zoomTo',
       value: this._scale
     });
+  }
+
+  private _getBackgroundColor(text: string): string {
+    const ret = AttributeParser.parseBackgroundColor(text);
+    return ret ? ret : Previewer.getConfiguration().backgroundColor;
   }
 
   private async _getMermaidConfig(text: string): Promise<string> {
@@ -339,8 +343,7 @@ export default class Previewer {
       Previewer.outputError(error.message);
     }
 
-    // TODO: background attribute for each file
-    const { backgroundColor } = Previewer.getConfiguration();
+    const backgroundColor = this._getBackgroundColor(diagram);
     const config = {
       ...configObject,
       startOnLoad: true
