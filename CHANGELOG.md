@@ -13,6 +13,27 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ### Fixed
 ### Security
 
+## [0.6.0] - 2020-5-27
+
+### Added
+
+- Newly support __attribute__ description to specify mermaidjs config or preview background color in each `.mmd` file. For the detail, please refer to README
+- Add new VSCode config; `mermaid-editor.preview.defaultMermaidConfig` to setup default mermaidjs config file
+
+### Changed
+
+- Remove `mermaid-editor.preview.theme` from VSCode configuration for Mermaid Editor extension
+  - Instead, `mermaid-editor.preview.defaultMermaidConfig` is added
+- Change `mermaid-editor.preview.backgroundColor` to be used as default background color for the preview
+- Change handling parse error
+  - Keep previous diagram in case of parse error during edit
+  - Change error message to put in output channel with the detail
+
+### Removed
+
+- Remove tslint.config (internal)
+- Remove eslint warnings (internal)
+
 ## [0.5.1] - 2020-5-17
 
 ### Changed
