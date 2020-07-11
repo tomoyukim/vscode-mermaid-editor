@@ -8,6 +8,9 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ### Added
 ### Changed
+
+- Support restoring horizontal scroll position in addition. - Thank to [PR#14](https://github.com/tomoyukim/vscode-mermaid-editor/issues/14) by Yedid ([@Yerhabe](https://github.com/Yerhabe))
+
 ### Deprecated
 ### Removed
 ### Fixed
