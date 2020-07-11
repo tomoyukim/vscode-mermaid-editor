@@ -18,7 +18,8 @@ function debouncedRunloop(fn) {
   const DEFAULT_STATE = {
     scale: 1.0,
     diagram: preview.textContent,
-    scroll: 0
+    scrollTop: 0,
+    scrollLeft: 0
   };
 
   function setState(state) {
@@ -126,13 +127,13 @@ function debouncedRunloop(fn) {
           return;
         }
 
-        const { scroll } = getState();
+        const { scrollTop, scrollLeft } = getState();
         preview.textContent = diagram;
         preview.removeAttribute('data-processed');
         mermaid.init(); // render
         setState({ diagram });
         debouncedRunloop(() => {
-          window.scrollBy(0, scroll);
+          window.scrollBy(scrollLeft, scrollTop);
         });
         return;
       case 'takeImage':
@@ -165,8 +166,8 @@ function debouncedRunloop(fn) {
     // Note: When 'update' is occurred, content is rerenderred and
     // this event is called with 'zero' multipletimes.
     if (!timer) {
-      const scroll = document.documentElement.scrollTop;
-      setState({ scroll });
+      const { scrollTop, scrollLeft } = document.documentElement;
+      setState({ scrollTop, scrollLeft });
     }
   };
 })();
