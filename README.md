@@ -88,6 +88,7 @@ Settings for look & feel in preview or image generator.
 
 |Setting|Default|Description|
 |---|---|---|
+|mermaid-editor.preview.theme|default|color theme for live preview and generated image [default, forest, dark, natural]|
 |mermaid-editor.preview.defaultMermaidConfig||relative path to the default configuration json file for mermaidjs.|
 |mermaid-editor.preview.backgroundColor|white|default background color for live preview and generated image|
 |mermaid-editor.generate.type|svg|output image file type [svg, png, jpg, webp]|

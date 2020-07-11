@@ -50,13 +50,19 @@
 				"type": "object",
 				"title": "mermaid-editor configuration",
 				"properties": {
+					"mermaid-editor.preview.theme": {
+						"type": "string",
+						"default": "default",
+						"enum":["default","forest","dark","natural"],
+						"descriptions": "default color theme for live preview and generated image"
+					},
 					"mermaid-editor.preview.defaultMermaidConfig": {
 						"type": [
 							"string",
 							"null"
 						],
 						"default": null,
-						"description": "relative path to the default configuration json file for mermaid.js"
+						"description": "Relative or absolute path to the default configuration json file for mermaid.js"
 					},
 					"mermaid-editor.preview.backgroundColor": {
 						"type": "string",
@@ -66,6 +72,7 @@
 					"mermaid-editor.generate.type": {
 						"type": "string",
 						"default": "svg",
+						"enum": ["svg","png","jpg","webp"],
 						"description": "output file type [svg, png, jpg, webp]"
 					},
 					"mermaid-editor.generate.outputPath": {

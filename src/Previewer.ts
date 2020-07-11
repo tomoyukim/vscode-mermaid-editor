@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
+import * as process from 'process';
 import isEmpty = require('lodash/isEmpty');
 import isNumber = require('lodash/isNumber');
 import get = require('lodash/get');
@@ -255,17 +256,28 @@ export default class Previewer {
         return await _readFile(uri);
       }
 
-      const pathToDefaultConfig = Previewer.getConfiguration()
-        .defaultMermaidConfig;
+      const { defaultMermaidConfig } = Previewer.getConfiguration();
       const workspaceFolders = vscode.workspace.workspaceFolders;
-      if (pathToDefaultConfig && workspaceFolders) {
-        const uri = vscode.Uri.file(
-          path.join(workspaceFolders[0].uri.fsPath, pathToDefaultConfig)
-        );
+      if (defaultMermaidConfig && workspaceFolders) {
+        const _resolvePath = (filePath: string): string => {
+          if (filePath[0] === '~') {
+            if (process && process.env['HOME']) {
+              return path.join(process.env['HOME'], filePath.slice(1));
+            } else {
+              throw new Error('"~" cannot be resolved in your environment.');
+            }
+          } else if (path.isAbsolute(filePath)) {
+            return filePath;
+          }
+          return path.join(workspaceFolders[0].uri.fsPath, filePath);
+        };
+        const pathToDefaultConfig = _resolvePath(defaultMermaidConfig);
+        const uri = vscode.Uri.file(pathToDefaultConfig);
         return await _readFile(uri);
       } else {
+        const { theme } = Previewer.getConfiguration();
         return JSON.stringify({
-          theme: 'default'
+          theme
         });
       }
     } catch (error) {
