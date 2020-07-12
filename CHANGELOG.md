@@ -8,13 +8,28 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ### Added
 ### Changed
-
-- Support restoring horizontal scroll position in addition. - Thank to [PR#14](https://github.com/tomoyukim/vscode-mermaid-editor/issues/14) by Yedid ([@Yerhabe](https://github.com/Yerhabe))
-
 ### Deprecated
 ### Removed
 ### Fixed
 ### Security
+
+## [0.7.0] - 2020-7-12
+
+### Added
+
+- Revert `mermaid-editor.preview.theme` in order to support default theme config without mermaid config
+
+### Changed
+
+- Support restoring horizontal scroll position - Thank to [PR#14](https://github.com/tomoyukim/vscode-mermaid-editor/issues/14) by Yedid ([@Yerhabe](https://github.com/Yerhabe))
+- Change enum from free word for `mermaid-editor.preview theme` and `mermaid-editor.generate.type` VS code config
+- Support absolute path and `~` for HOME in `mermaid-editor.preview.defaultMermaidConfig` in VS code config
+
+### Fixed
+
+- `<br>` tag in `graph` diagram is changed to be ignored in order to avoid image generation error reported by [Issue#12](https://github.com/tomoyukim/vscode-mermaid-editor/issues/12). It's not expected behavior maybe but I hope it can be fixed by original library; mermaid.js
+  - This symptom is caused by unescaped `<br>` tag in generated `svg` tag. Current image generation depends on `canvas` which loads `svg` image. It fails to load the image if `<br>` tag is contained as raw tag. It should be treated as `<text>` in SVG or line feed correctly. I put a bug report for mermaid.js about it. [mermaid.js Issue$1504](https://github.com/mermaid-js/mermaid/issues/1504)
+  - **Note**: The patch implemented in this version is not perfect. mermaid.js seems to ignore the escape letters for `<br>` tag and render it as line feed when starting this extension or VS code with the preview. In the case, you can escape it correctly by changing active editor or editting your diagram.
 
 ## [0.6.0] - 2020-5-27
 
