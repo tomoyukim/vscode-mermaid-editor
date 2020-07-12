@@ -19,6 +19,9 @@ export function activate(context: vscode.ExtensionContext): void {
         Previewer.currentPanel.onTakeImage((data, type) => {
           generator.generate(data, type);
         });
+        Previewer.currentPanel.onFailTakeImage(() => {
+          vscode.window.showErrorMessage('Fail to generate image.');
+        });
         Previewer.currentPanel.takeImage(Generator.getConfiguration());
       }
     })

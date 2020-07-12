@@ -35,6 +35,7 @@ export default class Previewer {
   private _scale: number;
   private _disposables: vscode.Disposable[] = [];
   private _onTakeImage: ((data: string, type: string) => void) | undefined;
+  private _onFailTakeImage: ((error: Error) => void) | undefined;
   private _timer: NodeJS.Timeout | null;
 
   public static createOrShow(extensionPath: string): void {
@@ -131,6 +132,9 @@ export default class Previewer {
           case 'onTakeImage':
             this._onTakeImage && this._onTakeImage(message.data, message.type);
             return;
+          case 'onFailTakeImage':
+            this._onFailTakeImage && this._onFailTakeImage(message.error);
+            return;
           case 'onParseError':
             Previewer.outputError(message.error.str);
             return;
@@ -197,6 +201,10 @@ export default class Previewer {
 
   public onTakeImage(callback: (data: string, type: string) => void): void {
     this._onTakeImage = callback;
+  }
+
+  public onFailTakeImage(callback: (error: Error) => void): void {
+    this._onFailTakeImage = callback;
   }
 
   public zoomIn(): void {
@@ -293,12 +301,22 @@ export default class Previewer {
     return true;
   }
 
+  private _escapeTag(content: string): string {
+    // <br> tag is not escaped by mermaid.js (https://github.com/mermaid-js/mermaid/issues/1504)
+    // and it causes error to load canvas image in convertToImg
+    if (content.indexOf('graph') === 0) {
+      const regex = /<(br\/?)>/gi;
+      return content.replace(regex, '&lt;$1&gt;');
+    }
+    return content;
+  }
+
   private _updateDiagram(): void {
     if (this._timer) {
       clearTimeout(this._timer);
     }
     this._timer = setTimeout(() => {
-      const diagram = getDiagram();
+      const diagram = this._escapeTag(getDiagram());
       this._getMermaidConfig(diagram).then((configuration: string) => {
         this._panel.webview.postMessage({
           command: 'update',
@@ -314,11 +332,12 @@ export default class Previewer {
     text: string | undefined,
     configText: string | undefined
   ): void {
-    const diagram = text
+    const content = text
       ? text
       : isMermaid(get(vscode.window.activeTextEditor, 'document'))
       ? getDiagram()
       : '';
+    const diagram = this._escapeTag(content);
 
     const setHtml = (configuration: string): void => {
       this._panel.webview.html = this._getHtmlForWebview(

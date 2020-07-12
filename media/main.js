@@ -54,7 +54,7 @@ function debouncedRunloop(fn) {
     callback
   ) {
     if (type === 'svg') {
-      callback(svgBase64);
+      callback(svgBase64, undefined);
       return;
     }
 
@@ -70,6 +70,9 @@ function debouncedRunloop(fn) {
 
     const imgSrc = `data:image/svg+xml;charset=utf-8;base64,${svgBase64}`;
     const img = new Image();
+    img.onerror = function () {
+      callback(undefined, new Error('Failed to load imgSrc in Image object.'));
+    };
     img.onload = function() {
       ctx.drawImage(img, 0, 0);
 
@@ -83,7 +86,8 @@ function debouncedRunloop(fn) {
       callback(
         canvas
           .toDataURL(mimeType /*, default quality */)
-          .replace(new RegExp(`^data:${mimeType};base64,`), '')
+          .replace(new RegExp(`^data:${mimeType};base64,`), ''),
+        undefined
       );
       canvas.parentNode.removeChild(canvas);
     };
@@ -145,12 +149,16 @@ function debouncedRunloop(fn) {
 
         const data = btoa(unescape(encodeURIComponent(preview.innerHTML))); // svg base64
 
-        convertToImg(data, type, width, height, backgroundColor, imgBase64 => {
-          vscode.postMessage({
+        convertToImg(data, type, width, height, backgroundColor, (imgBase64, error) => {
+          const message = error ? {
+            command: 'onFailTakeImage',
+            error
+          } : {
             command: 'onTakeImage',
             data: imgBase64,
             type
-          });
+          };
+          vscode.postMessage(message);
         });
         return;
       case 'zoomTo':
