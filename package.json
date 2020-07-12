@@ -2,7 +2,7 @@
 	"name": "vscode-mermaid-editor",
 	"displayName": "Mermaid Editor",
 	"description": "Live editor for mermaid.js in Visual Studio Code",
-	"version": "0.6.0",
+	"version": "0.7.0",
 	"publisher": "tomoyukim",
 	"license": "MIT",
 	"engines": {
@@ -53,7 +53,12 @@
 					"mermaid-editor.preview.theme": {
 						"type": "string",
 						"default": "default",
-						"enum":["default","forest","dark","natural"],
+						"enum": [
+							"default",
+							"forest",
+							"dark",
+							"natural"
+						],
 						"descriptions": "default color theme for live preview and generated image"
 					},
 					"mermaid-editor.preview.defaultMermaidConfig": {
@@ -72,7 +77,12 @@
 					"mermaid-editor.generate.type": {
 						"type": "string",
 						"default": "svg",
-						"enum": ["svg","png","jpg","webp"],
+						"enum": [
+							"svg",
+							"png",
+							"jpg",
+							"webp"
+						],
 						"description": "output file type [svg, png, jpg, webp]"
 					},
 					"mermaid-editor.generate.outputPath": {
