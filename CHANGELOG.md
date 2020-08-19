@@ -13,6 +13,12 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ### Fixed
 ### Security
 
+## [0.7.1] - 2020-8-19
+
+### Security
+
+- Bump lodash from 4.17.15 to 4.17.19
+
 ## [0.7.0] - 2020-7-12
 
 ### Added
