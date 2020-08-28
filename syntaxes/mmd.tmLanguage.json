@@ -1,4 +1,5 @@
 {
+  "comment": "Refer to official live editor (https://github.com/mermaid-js/mermaid-live-editor/blob/master/src/components/editor-utils.js)",
   "scopeName": "diagram.mmd",
   "patterns": [{"include": "#mermaid"}],
   "repository": {
@@ -13,6 +14,10 @@
           "name": "keyword.other.mermaid"
         },
         {
+          "match": "---|-->|===|==>",
+          "name": "keyword.operator.mermaid"
+        },
+        {
           "match": "%%.*",
           "name": "comment.line.percentage.mermaid"
         },
@@ -22,13 +27,19 @@
           "name": "string.quoted.other.mermaid"
         },
         {
+          "begin": "\\{",
+          "end": "\\}",
+          "name": "string.quoted.other.mermaid"
+        },
+        {
+          "begin": "\\(",
+          "end": "\\)",
+          "name": "string.quoted.other.mermaid"
+        },
+        {
           "begin": "\"",
           "end": "\"",
           "name": "string.quated.double.mermaid"
-        },
-        {
-          "pattern": "---|-->|===|==>",
-          "name": "variable.language.mermaid"
         }
       ]
     }
