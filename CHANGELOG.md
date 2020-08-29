@@ -13,6 +13,12 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ### Fixed
 ### Security
 
+## [0.8.0] - 2020-8-29
+
+### Added
+
+- Support syntax hightlight referring to [official live editor](https://github.com/mermaid-js/mermaid-live-editor/blob/master/src/components/editor-utils.js).
+
 ## [0.7.1] - 2020-8-19
 
 ### Security
