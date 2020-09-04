@@ -1,5 +1,5 @@
 # Mermaid Editor
-
+[![Build Status](https://dev.azure.com/tomoyukim-vscode-extension/vscode-mermaid-editor-pipeline/_apis/build/status/tomoyukim.vscode-mermaid-editor?branchName=master)](https://dev.azure.com/tomoyukim-vscode-extension/vscode-mermaid-editor-pipeline/_build/latest?definitionId=1&branchName=master)
 [![Version](https://vsmarketplacebadge.apphb.com/version/tomoyukim.vscode-mermaid-editor.svg
 )](https://marketplace.visualstudio.com/items?itemName=tomoyukim.vscode-mermaid-editor)
 [![Installs](https://vsmarketplacebadge.apphb.com/installs/tomoyukim.vscode-mermaid-editor.svg
