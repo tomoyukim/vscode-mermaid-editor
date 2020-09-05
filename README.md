@@ -9,7 +9,9 @@
 
 Mermaid Editor is vscode extension inspired by [official mermaid live editor](https://mermaidjs.github.io/mermaid-live-editor/) to provide the following features:
 - Live edit `.mmd` file with [mermaid.js](https://mermaidjs.github.io/) diagram
+- Syntax highliting.
 - Generate image file from `.mmd` file with preferred format (png, jpg, webp and svg).
+- Customize configuration for individual `mmd` diagram by using atrribute which is available in this extension.
 
 ## Usage
 
