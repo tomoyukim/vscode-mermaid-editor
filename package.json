@@ -256,7 +256,8 @@
 		"watch": "tsc -watch -p ./",
 		"test": "node ./out/test/runTest",
 		"pretest": "yarn run compile && yarn run lint",
-		"lint": "eslint src --ext ts"
+		"lint": "eslint src --ext ts",
+		"deploy": "vsce publish --yarn"
 	},
 	"prettier": {
 		"singleQuote": true
@@ -275,6 +276,7 @@
 		"mocha": "7.1.x",
 		"prettier": "1.19.x",
 		"typescript": "3.7.x",
+		"vsce": "1.79.x",
 		"vscode-test": "1.3.x"
 	},
 	"dependencies": {
