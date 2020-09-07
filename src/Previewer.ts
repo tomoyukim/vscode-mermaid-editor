@@ -301,22 +301,12 @@ export default class Previewer {
     return true;
   }
 
-  private _escapeTag(content: string): string {
-    // <br> tag is not escaped by mermaid.js (https://github.com/mermaid-js/mermaid/issues/1504)
-    // and it causes error to load canvas image in convertToImg
-    if (content.indexOf('graph') === 0) {
-      const regex = /<(br\/?)>/gi;
-      return content.replace(regex, '&lt;$1&gt;');
-    }
-    return content;
-  }
-
   private _updateDiagram(): void {
     if (this._timer) {
       clearTimeout(this._timer);
     }
     this._timer = setTimeout(() => {
-      const diagram = this._escapeTag(getDiagram());
+      const diagram = getDiagram();
       this._getMermaidConfig(diagram).then((configuration: string) => {
         this._panel.webview.postMessage({
           command: 'update',
@@ -337,7 +327,7 @@ export default class Previewer {
       : isMermaid(get(vscode.window.activeTextEditor, 'document'))
       ? getDiagram()
       : '';
-    const diagram = this._escapeTag(content);
+    const diagram = content;
 
     const setHtml = (configuration: string): void => {
       this._panel.webview.html = this._getHtmlForWebview(

@@ -147,7 +147,9 @@ function debouncedRunloop(fn) {
         const style = getComputedStyle(body);
         const backgroundColor = style.backgroundColor;
 
-        const data = btoa(unescape(encodeURIComponent(preview.innerHTML))); // svg base64
+        const svg = preview.querySelector('svg');
+        const xml = new XMLSerializer().serializeToString(svg);
+        const data = btoa(xml); // svg base64
 
         convertToImg(data, type, width, height, backgroundColor, (imgBase64, error) => {
           const message = error ? {
