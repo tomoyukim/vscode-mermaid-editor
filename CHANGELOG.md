@@ -13,6 +13,22 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ### Fixed
 ### Security
 
+## [0.8.1] - 2020-9-07
+
+### Fixed
+
+- Fix generator error around canvas operation for svg tag by correcting xml serialization process. [5fd6a76](https://github.com/tomoyukim/vscode-mermaid-editor/commit/5fd6a7604084eac65770a11b7b1e4bd6994e8929)
+    - To [Issue#12](https://github.com/tomoyukim/vscode-mermaid-editor/issues/12): remove previous patch to escapse `<br/>` tag in svg
+    - To [Issue#18](https://github.com/tomoyukim/vscode-mermaid-editor/issues/18): fix the behavior by above patch
+
+### Note
+
+- Setup CI pipeline on Azure
+  - Setup extension test project configuration
+  - Add `azure-pipeline.yaml` to run pipeline for master
+  - Add publish step in the pipeline to publish the extension on Azure
+- Change main package manager from `npm` to `yarn`
+
 ## [0.8.0] - 2020-8-29
 
 ### Added
