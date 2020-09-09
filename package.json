@@ -31,7 +31,7 @@
 		"onWebviewPanel:mermaid-editor-preview",
 		"onLanguage:mermaid"
 	],
-	"main": "./out/extension.js",
+	"main": "./dist/extension",
 	"contributes": {
 		"languages": [
 			{
@@ -251,7 +251,9 @@
 		}
 	},
 	"scripts": {
-		"vscode:prepublish": "yarn run compile",
+		"vscode:prepublish": "webpack --mode production",
+		"webpack": "webpack --mode development",
+		"webpack-dev": "webpack --mode development --watch",
 		"compile": "tsc -p ./",
 		"watch": "tsc -watch -p ./",
 		"test": "node ./out/test/runTest",
@@ -275,9 +277,12 @@
 		"glob": "7.1.x",
 		"mocha": "7.1.x",
 		"prettier": "1.19.x",
+		"ts-loader": "^8.0.3",
 		"typescript": "3.7.x",
 		"vsce": "1.79.x",
-		"vscode-test": "1.3.x"
+		"vscode-test": "1.3.x",
+		"webpack": "^4.44.1",
+		"webpack-cli": "^3.3.12"
 	},
 	"dependencies": {
 		"@types/lodash": "4.14.x",
