@@ -1,12 +1,11 @@
-import * as vscode from 'vscode';
+import VSCodeWrapper from './VSCodeWrapper';
+import * as constants from './constants';
 
 export default class Logger {
-  private static readonly LOG_OUTPUT_CHANNEL = 'mermaid-editor';
-  private static readonly LOG_OUTPUT_DIVIDER =
-    '\n============================\n';
   private static _instance: Logger | undefined;
-  private readonly _channel: vscode.OutputChannel;
+  private readonly _vscodeWrapper: VSCodeWrapper;
 
+  // TODO: remove singleton
   public static instance(): Logger {
     if (!this._instance) {
       this._instance = new Logger();
@@ -19,29 +18,27 @@ export default class Logger {
       return;
     }
 
-    this._instance._channel.dispose();
+    this._instance._vscodeWrapper.outputChannel.dispose();
     this._instance = undefined;
   }
 
   public appendLine(message: string): void {
-    this._channel.appendLine(message);
+    this._vscodeWrapper.logToOutputChannel(message);
   }
 
   public appendDivider(): void {
-    this._channel.appendLine(Logger.LOG_OUTPUT_DIVIDER);
+    this._vscodeWrapper.logToOutputChannel(constants.LOG_OUTPUT_DIVIDER);
   }
 
   public clear(): void {
-    this._channel.clear();
+    this._vscodeWrapper.outputChannel.clear();
   }
 
   public show(): void {
-    this._channel.show(true);
+    this._vscodeWrapper.outputChannel.show(true);
   }
 
   private constructor() {
-    this._channel = vscode.window.createOutputChannel(
-      Logger.LOG_OUTPUT_CHANNEL
-    );
+    this._vscodeWrapper = new VSCodeWrapper();
   }
 }
