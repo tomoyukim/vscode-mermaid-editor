@@ -1,14 +1,22 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
-import * as vscode from 'vscode';
+import * as vscode from 'vscode'; // TODO: replace with wrapper
+import * as constants from './constants';
+import VSCodeWrapper from './VSCodeWrapper';
 import Previewer from './Previewer';
-import Generator from './Generator';
+import * as generator from './fileGenerator';
 import Logger from './Logger';
 import { isMermaid } from './util';
 import get from 'lodash/get';
 
 export function activate(context: vscode.ExtensionContext): void {
-  const generator = new Generator(context);
+  const vscodeWrapper = new VSCodeWrapper();
+  const statusBarItem = vscode.window.createStatusBarItem(
+    vscode.StatusBarAlignment.Left,
+    100
+  );
+  statusBarItem.text = constants.STATUSBAR_MESSAGE_GENERATE_IMAGE;
+  context.subscriptions.push(statusBarItem);
 
   context.subscriptions.push(
     vscode.commands.registerCommand('mermaid-editor.generate', () => {
@@ -17,12 +25,30 @@ export function activate(context: vscode.ExtensionContext): void {
         Previewer.currentPanel
       ) {
         Previewer.currentPanel.onTakeImage((data, type) => {
-          generator.generate(data, type);
+          statusBarItem.show();
+          generator
+            .outputFile(context, data, type)
+            .then(() => {
+              vscode.window.showInformationMessage(
+                `mermaid-editor: generated!`
+              );
+              statusBarItem.hide();
+            })
+            .catch(e => {
+              Logger.instance().appendLine(e.message);
+              vscode.window.showErrorMessage(e.message);
+            })
+            .finally(() => {
+              statusBarItem.hide();
+              Logger.instance().show();
+            });
         });
         Previewer.currentPanel.onFailTakeImage(() => {
           vscode.window.showErrorMessage('Fail to generate image.');
         });
-        Previewer.currentPanel.takeImage(Generator.getConfiguration());
+        Previewer.currentPanel.takeImage(
+          vscodeWrapper.getConfiguration(constants.CONFIG_SECTION_ME_GENERATE)
+        );
       }
     })
   );
