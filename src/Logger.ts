@@ -1,44 +1,37 @@
+import * as vscode from 'vscode';
 import VSCodeWrapper from './VSCodeWrapper';
 import * as constants from './constants';
 
 export default class Logger {
-  private static _instance: Logger | undefined;
+  private static _outputChannel: vscode.OutputChannel;
   private readonly _vscodeWrapper: VSCodeWrapper;
 
-  // TODO: remove singleton
-  public static instance(): Logger {
-    if (!this._instance) {
-      this._instance = new Logger();
+  constructor() {
+    this._vscodeWrapper = new VSCodeWrapper();
+    if (typeof Logger._outputChannel === 'undefined') {
+      Logger._outputChannel = this._vscodeWrapper.createOutputChannel(
+        constants.LOG_OUTPUT_CHANNEL
+      );
     }
-    return this._instance;
   }
 
   public static dispose(): void {
-    if (!this._instance) {
-      return;
-    }
-
-    this._instance._vscodeWrapper.outputChannel.dispose();
-    this._instance = undefined;
+    this._outputChannel.dispose();
   }
 
   public appendLine(message: string): void {
-    this._vscodeWrapper.logToOutputChannel(message);
+    Logger._outputChannel.appendLine(message);
   }
 
   public appendDivider(): void {
-    this._vscodeWrapper.logToOutputChannel(constants.LOG_OUTPUT_DIVIDER);
+    Logger._outputChannel.appendLine(constants.LOG_OUTPUT_DIVIDER);
   }
 
   public clear(): void {
-    this._vscodeWrapper.outputChannel.clear();
+    Logger._outputChannel.clear();
   }
 
   public show(): void {
-    this._vscodeWrapper.outputChannel.show(true);
-  }
-
-  private constructor() {
-    this._vscodeWrapper = new VSCodeWrapper();
+    Logger._outputChannel.show(true);
   }
 }

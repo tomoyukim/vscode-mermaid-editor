@@ -11,6 +11,7 @@ import get from 'lodash/get';
 
 export function activate(context: vscode.ExtensionContext): void {
   const vscodeWrapper = new VSCodeWrapper();
+  const logger = new Logger();
   const statusBarItem = vscode.window.createStatusBarItem(
     vscode.StatusBarAlignment.Left,
     100
@@ -35,12 +36,12 @@ export function activate(context: vscode.ExtensionContext): void {
               statusBarItem.hide();
             })
             .catch(e => {
-              Logger.instance().appendLine(e.message);
+              logger.appendLine(e.message);
               vscode.window.showErrorMessage(e.message);
             })
             .finally(() => {
               statusBarItem.hide();
-              Logger.instance().show();
+              logger.show();
             });
         });
         Previewer.currentPanel.onFailTakeImage(() => {

@@ -59,6 +59,7 @@ export async function outputFile(
   type: string
 ): Promise<void> {
   const vscodeWrapper = new VSCodeWrapper();
+  const logger = new Logger();
   const editor = vscodeWrapper.activeTextEditor;
   if (!editor) {
     return;
@@ -70,7 +71,7 @@ export async function outputFile(
   try {
     await mkdirp(outputDirPath);
   } catch (e) {
-    Logger.instance().appendLine(e.message);
+    logger.appendLine(e.message);
     outputDirPath = context.extensionPath;
   }
 

@@ -87,9 +87,10 @@ export default class Previewer {
   }
 
   private static outputError(message: string): void {
-    Logger.instance().appendLine(message);
-    Logger.instance().appendDivider();
-    Logger.instance().show();
+    const logger = new Logger();
+    logger.appendLine(message);
+    logger.appendDivider();
+    logger.show();
   }
 
   private constructor(
