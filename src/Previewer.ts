@@ -6,7 +6,7 @@ import isNumber = require('lodash/isNumber');
 import get = require('lodash/get');
 import { isMermaid } from './util';
 import Logger from './Logger';
-import AttributeParser from './AttributeParser';
+import * as attributeParser from './attributeParser';
 import { TextDecoder } from 'util';
 
 const getDiagram = (): string => {
@@ -238,7 +238,7 @@ export default class Previewer {
   }
 
   private _getBackgroundColor(text: string): string {
-    const ret = AttributeParser.parseBackgroundColor(text);
+    const ret = attributeParser.parseBackgroundColor(text);
     return ret ? ret : Previewer.getConfiguration().backgroundColor;
   }
 
@@ -250,7 +250,7 @@ export default class Previewer {
     };
 
     try {
-      const pathToConfig = AttributeParser.parseConfig(text);
+      const pathToConfig = attributeParser.parseConfig(text);
       if (!isEmpty(pathToConfig)) {
         const editor = vscode.window.activeTextEditor;
         const uri = vscode.Uri.file(

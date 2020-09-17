@@ -1,6 +1,6 @@
 import * as assert from 'assert';
 
-import AtrributeParser from '../../AttributeParser';
+import * as atrributeParser from '../../attributeParser';
 
 suite('AttributeParser Tests', function() {
   const backgroundColorAcceptableDiagrams = [
@@ -89,7 +89,7 @@ suite('AttributeParser Tests', function() {
 
   test('parseBackgrondColor should return correct color code', () => {
     for (const diagram of backgroundColorAcceptableDiagrams) {
-      const bgColor = AtrributeParser.parseBackgroundColor(diagram);
+      const bgColor = atrributeParser.parseBackgroundColor(diagram);
       assert.equal(bgColor, '#ff0000');
     }
   });
@@ -101,13 +101,13 @@ suite('AttributeParser Tests', function() {
     Alice->>John: Hello
     Alice->>John: Bye
     `;
-    const bgColor = AtrributeParser.parseBackgroundColor(diagram);
+    const bgColor = atrributeParser.parseBackgroundColor(diagram);
     assert.equal(bgColor, '');
   });
 
   test('parseConfig should return correct color code', () => {
     for (const diagram of configAcceptableDiagrams) {
-      const config = AtrributeParser.parseConfig(diagram);
+      const config = atrributeParser.parseConfig(diagram);
       assert.equal(config, './test_config.json');
     }
   });
@@ -119,7 +119,7 @@ suite('AttributeParser Tests', function() {
     Alice->>John: Hello
     Alice->>John: Bye
     `;
-    const config = AtrributeParser.parseConfig(diagram);
+    const config = atrributeParser.parseConfig(diagram);
     assert.equal(config, '');
   });
 });
