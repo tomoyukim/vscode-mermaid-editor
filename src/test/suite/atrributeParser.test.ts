@@ -1,6 +1,6 @@
 import * as assert from 'assert';
 
-import * as atrributeParser from '../../attributeParser';
+import * as atrributeParser from '../../controllers/attributeParser';
 
 suite('AttributeParser Tests', function() {
   const backgroundColorAcceptableDiagrams = [

@@ -3,9 +3,9 @@ import * as fs from 'fs';
 import * as path from 'path';
 import mkdirp = require('mkdirp');
 import get = require('lodash/get');
-import * as constants from './constants';
-import Logger from './Logger';
-import VSCodeWrapper from './VSCodeWrapper';
+import * as constants from '../constants';
+import Logger from '../Logger';
+import VSCodeWrapper from '../VSCodeWrapper';
 
 function getSupportedExtension(type: string): string {
   switch (type) {

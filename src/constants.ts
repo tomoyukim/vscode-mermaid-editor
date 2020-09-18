@@ -3,5 +3,8 @@ export const LOG_OUTPUT_CHANNEL = 'mermaid-editor';
 export const LOG_OUTPUT_DIVIDER = '\n============================\n';
 
 export const CONFIG_SECTION_ME_GENERATE = 'mermaid-editor.generate';
+export const CONFIG_SECTION_ME_PREVIEW = 'mermaid-editor.preview';
 
 export const STATUSBAR_MESSAGE_GENERATE_IMAGE = '$(sync) generating image...';
+
+export const MERMAID_LANGUAGE_ID = 'mermaid';

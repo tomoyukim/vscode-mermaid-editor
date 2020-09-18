@@ -3,8 +3,8 @@
 import * as vscode from 'vscode'; // TODO: replace with wrapper
 import * as constants from './constants';
 import VSCodeWrapper from './VSCodeWrapper';
-import Previewer from './Previewer';
-import * as generator from './fileGenerator';
+import Previewer from './controllers/Previewer';
+import * as generator from './controllers/fileGenerator';
 import Logger from './Logger';
 import { isMermaid } from './util';
 import get from 'lodash/get';
