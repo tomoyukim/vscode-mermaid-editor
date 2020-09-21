@@ -4,8 +4,16 @@ import VSCodeWrapper from '../VSCodeWrapper';
 import * as constants from '../constants';
 import * as attributeParser from '../controllers/attributeParser';
 
+export const PreviewConfigProperty = {
+  BackgroundColor: 'BackgroundColor',
+  Scale: 'Scale'
+} as const;
+export type PreviewConfigProperty = typeof PreviewConfigProperty[keyof typeof PreviewConfigProperty];
+
 export interface PreviewConfigChange {
+  property: PreviewConfigProperty;
   backgroundColor: string;
+  scale: number;
 }
 
 export default class PreviewConfig {
@@ -14,13 +22,14 @@ export default class PreviewConfig {
 
   private _defaultBackgroundColor: string;
   private _backgroundColor: string;
-  // TODO: scales
+  private _scale: number;
 
-  constructor(code = '') {
+  constructor(code = '', scale = constants.ZOOM_DEFAULT_SCALE) {
     this._vscodeWrapper = new VSCodeWrapper();
     this._eventEmitter = new vscode.EventEmitter<PreviewConfigChange>();
     this._defaultBackgroundColor = this._getConfiguration().backgroundColor;
     this._backgroundColor = attributeParser.parseBackgroundColor(code);
+    this._scale = scale;
 
     this._vscodeWrapper.onDidChangeConfiguration(() => {
       this.onDidChangeConfiguration();
@@ -33,10 +42,19 @@ export default class PreviewConfig {
     );
   }
 
-  private _notifyUpdate(): void {
+  private _notifyUpdate(property: PreviewConfigProperty): void {
     this._eventEmitter.fire({
-      backgroundColor: this.backgroundColor
+      property,
+      backgroundColor: this.backgroundColor,
+      scale: this.scale
     });
+  }
+
+  private _scaleInRange(value: number): boolean {
+    if (value < constants.ZOOM_MIN_SCALE || constants.ZOOM_MAX_SCALE < value) {
+      return false;
+    }
+    return true;
   }
 
   public get onDidChangePreviewConfig(): vscode.Event<PreviewConfigChange> {
@@ -49,11 +67,25 @@ export default class PreviewConfig {
       : this._defaultBackgroundColor;
   }
 
-  public async updateConfig(code: string): Promise<void> {
+  public async updateBackgroundColor(code: string): Promise<void> {
     const prev = this._backgroundColor;
     this._backgroundColor = attributeParser.parseBackgroundColor(code);
     if (prev !== this.backgroundColor) {
-      this._notifyUpdate();
+      this._notifyUpdate(PreviewConfigProperty.BackgroundColor);
+    }
+  }
+
+  public get scale(): number {
+    return this._scale;
+  }
+
+  public set scale(value: number) {
+    if (this._scaleInRange(value)) {
+      const prev = this._scale;
+      this._scale = value;
+      if (prev !== this._scale) {
+        this._notifyUpdate(PreviewConfigProperty.Scale);
+      }
     }
   }
 
@@ -62,7 +94,7 @@ export default class PreviewConfig {
     const prev = this._defaultBackgroundColor;
     this._defaultBackgroundColor = this._getConfiguration().backgroundColor;
     if (prev !== this.backgroundColor) {
-      this._notifyUpdate();
+      this._notifyUpdate(PreviewConfigProperty.BackgroundColor);
     }
   }
 }

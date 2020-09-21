@@ -5,11 +5,11 @@ import VSCodeWrapper from '../VSCodeWrapper';
 import Logger from '../Logger';
 import CodeEditorView, { CodeChange } from '../views/CodeEditorView';
 import MermaidConfig from '../models/MermaidConfig';
-import PreviewConfig from '../models/PreviewConfig';
-
-const ZOOM_MIN_SCALE = 0.1;
-const ZOOM_MAX_SCALE = 2.5;
-const ZOOM_SCALE_INTERVAL = 0.2;
+import PreviewConfig, {
+  PreviewConfigChange,
+  PreviewConfigProperty
+} from '../models/PreviewConfig';
+import * as constants from '../constants';
 
 export interface WebViewState {
   scale: number;
@@ -28,7 +28,6 @@ export default class Previewer {
 
   private readonly _panel: vscode.WebviewPanel;
   private readonly _extensionPath: string;
-  private _scale: number;
   private _disposables: vscode.Disposable[] = [];
   private _onTakeImage: ((data: string, type: string) => void) | undefined;
   private _onFailTakeImage: ((error: Error) => void) | undefined;
@@ -94,18 +93,23 @@ export default class Previewer {
     this._vscodeWrapper = new VSCodeWrapper();
     this._codeEditorView = new CodeEditorView(state && state.diagram); // TODO: rename diagram property in state
     this._mermaidConfig = new MermaidConfig();
-    this._previewConfig = new PreviewConfig(this._codeEditorView.code);
+    this._previewConfig = new PreviewConfig(
+      this._codeEditorView.code,
+      state && state.scale
+    );
 
     // Set the webview's initial html content
     this._mermaidConfig
       .init(this._codeEditorView.document, this._codeEditorView.code)
-      .then(() => {
+      .catch(error => {
+        Previewer.outputError(error.message);
+      })
+      .finally(() => {
         this._loadContent();
       });
 
     this._panel = panel;
     this._extensionPath = extensionPath;
-    this._scale = (state && state.scale) || 1.0;
     this._timer = null;
 
     this._vscodeWrapper.setContext('mermaidPreviewEnabled', true);
@@ -164,9 +168,11 @@ export default class Previewer {
       this.onDidChangeMermaidConfig();
     });
 
-    this._previewConfig.onDidChangePreviewConfig(() => {
-      this.onDidChangePreviewConfig();
-    });
+    this._previewConfig.onDidChangePreviewConfig(
+      (event: PreviewConfigChange) => {
+        this.onDidChangePreviewConfig(event);
+      }
+    );
   }
 
   private debounceUpdate(): void {
@@ -220,15 +226,15 @@ export default class Previewer {
   }
 
   public zoomIn(): void {
-    this.zoomTo(this._scale + ZOOM_SCALE_INTERVAL);
+    this.zoomTo(this._previewConfig.scale + constants.ZOOM_SCALE_INTERVAL);
   }
 
   public zoomOut(): void {
-    this.zoomTo(this._scale - ZOOM_SCALE_INTERVAL);
+    this.zoomTo(this._previewConfig.scale - constants.ZOOM_SCALE_INTERVAL);
   }
 
   public zoomReset(): void {
-    this.zoomTo(1.0);
+    this.zoomTo(constants.ZOOM_DEFAULT_SCALE);
   }
 
   public zoomTo(value: number): void {
@@ -236,22 +242,12 @@ export default class Previewer {
       return;
     }
 
-    const prev = this._scale;
-    this._scale = value;
-    if (!this._scaleInRange()) {
-      this._scale = prev;
-      return;
-    }
-
-    this._panel.webview.postMessage({
-      command: 'zoomTo',
-      value: this._scale
-    });
+    this._previewConfig.scale = value;
   }
 
   public async onDidChangeCode(event: CodeChange): Promise<void> {
     this._mermaidConfig.updateConfig(event.document, event.code);
-    this._previewConfig.updateConfig(event.code);
+    this._previewConfig.updateBackgroundColor(event.code);
     this.debounceUpdate();
   }
 
@@ -259,15 +255,23 @@ export default class Previewer {
     this.debounceUpdate();
   }
 
-  public async onDidChangePreviewConfig(): Promise<void> {
-    this.debounceUpdate();
-  }
-
-  private _scaleInRange(): boolean {
-    if (this._scale < ZOOM_MIN_SCALE || ZOOM_MAX_SCALE < this._scale) {
-      return false;
+  public async onDidChangePreviewConfig(
+    event: PreviewConfigChange
+  ): Promise<void> {
+    switch (event.property) {
+      case PreviewConfigProperty.BackgroundColor:
+        this.debounceUpdate();
+        break;
+      case PreviewConfigProperty.Scale:
+        // TODO: consolidate postMesssage
+        this._panel.webview.postMessage({
+          command: 'zoomTo',
+          value: this._previewConfig.scale
+        });
+        break;
+      default:
+        break;
     }
-    return true;
   }
 
   private _loadContent(): void {
