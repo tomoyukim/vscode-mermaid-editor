@@ -5,6 +5,7 @@ import VSCodeWrapper from '../VSCodeWrapper';
 
 export interface CodeChange {
   code: string;
+  document: vscode.TextDocument;
 }
 
 export default class CodeEditorView {
@@ -13,7 +14,7 @@ export default class CodeEditorView {
 
   private _code: string;
 
-  constructor(code: string) {
+  constructor(code = '') {
     this._eventEmitter = new vscode.EventEmitter<CodeChange>();
     this._vscodeWrapper = new VSCodeWrapper();
 
@@ -49,6 +50,10 @@ export default class CodeEditorView {
     return this._code;
   }
 
+  public get document(): vscode.TextDocument | undefined {
+    return this._vscodeWrapper.activeTextEditor?.document;
+  }
+
   public get onDidChangeCode(): vscode.Event<CodeChange> {
     return this._eventEmitter.event;
   }
@@ -59,7 +64,8 @@ export default class CodeEditorView {
   ): Promise<void> {
     if (editor && this._isMermaid(editor.document)) {
       this._eventEmitter.fire({
-        code: this.code
+        code: this.code,
+        document: editor.document
       });
     }
   }
@@ -69,7 +75,8 @@ export default class CodeEditorView {
   ): Promise<void> {
     if (this._isMermaid(event.document)) {
       this._eventEmitter.fire({
-        code: this.code
+        code: this.code,
+        document: event.document
       });
     }
   }

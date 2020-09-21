@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 import isEmpty = require('lodash/isEmpty');
+import * as process from 'process';
 import { TextDecoder } from 'util';
 import VSCodeWrapper from '../VSCodeWrapper';
 import * as constants from '../constants';
@@ -11,7 +12,7 @@ export interface MermaidConfigChange {
   config: string;
 }
 
-export class MermaidConfig {
+export default class MermaidConfig {
   private _vscodeWrapper: VSCodeWrapper;
   private _eventEmitter: vscode.EventEmitter<MermaidConfigChange>;
 
@@ -19,20 +20,27 @@ export class MermaidConfig {
   private _mermaidConfig: string;
 
   constructor() {
+    this._vscodeWrapper = new VSCodeWrapper();
+    this._eventEmitter = new vscode.EventEmitter<MermaidConfigChange>();
     const { theme } = this._getConfiguration();
     this._defaultMermaidConfig = JSON.stringify({
       theme
     });
     this._mermaidConfig = '';
-    this._vscodeWrapper = new VSCodeWrapper();
-    this._eventEmitter = new vscode.EventEmitter<MermaidConfigChange>();
 
     this._vscodeWrapper.onDidChangeConfiguration(() => {
       this.onDidChangeConfiguration();
     });
+  }
 
-    // init
-    this._readDefaultConfig();
+  public async init(
+    document: vscode.TextDocument | undefined,
+    code: string
+  ): Promise<void> {
+    this._defaultMermaidConfig = await this._readDefaultConfig();
+    if (document) {
+      this._mermaidConfig = await this._readMermaidConfig(document, code);
+    }
   }
 
   private async _readFile(uri: vscode.Uri): Promise<string> {
@@ -47,38 +55,49 @@ export class MermaidConfig {
     );
   }
 
-  private async _readDefaultConfig(): Promise<void> {
+  private async _readDefaultConfig(): Promise<string> {
     const { defaultMermaidConfig, theme } = this._getConfiguration();
-    try {
-      const workspaceFolders = this._vscodeWrapper.workspaceFolders;
-      if (defaultMermaidConfig && workspaceFolders) {
-        const _resolvePath = (filePath: string): string => {
-          if (filePath[0] === '~') {
-            if (process && process.env['HOME']) {
-              return path.join(process.env['HOME'], filePath.slice(1));
-            } else {
-              throw new Error('"~" cannot be resolved in your environment.');
-            }
-          } else if (path.isAbsolute(filePath)) {
-            return filePath;
+    const workspaceFolders = this._vscodeWrapper.workspaceFolders;
+    let config = JSON.stringify({
+      theme
+    });
+    if (defaultMermaidConfig && workspaceFolders) {
+      const _resolvePath = (filePath: string): string => {
+        if (filePath[0] === '~') {
+          if (process && process.env['HOME']) {
+            return path.join(process.env['HOME'], filePath.slice(1));
+          } else {
+            throw new Error('"~" cannot be resolved in your environment.');
           }
-          return path.join(workspaceFolders[0].uri.fsPath, filePath);
-        };
+        } else if (path.isAbsolute(filePath)) {
+          return filePath;
+        }
+        return path.join(workspaceFolders[0].uri.fsPath, filePath);
+      };
+      try {
         const pathToDefaultConfig = _resolvePath(defaultMermaidConfig);
         const uri = vscode.Uri.file(pathToDefaultConfig);
-        this._defaultMermaidConfig = await this._readFile(uri);
-        if (!isEmpty(this._mermaidConfig)) {
-          this._eventEmitter.fire({
-            config: this.config
-          });
-        }
+        config = await this._readFile(uri);
+      } catch (error) {
+        this._outputError(error.message);
       }
-    } catch (error) {
-      this._outputError(error.message);
-      this._defaultMermaidConfig = JSON.stringify({
-        theme
-      });
     }
+    return config;
+  }
+
+  private async _readMermaidConfig(
+    document: vscode.TextDocument,
+    code: string
+  ): Promise<string> {
+    let config = '';
+    const pathToConfig = attributeParser.parseConfig(code);
+    if (!isEmpty(pathToConfig) && document) {
+      const uri = vscode.Uri.file(
+        path.join(path.dirname(document.fileName), pathToConfig)
+      );
+      config = await this._readFile(uri);
+    }
+    return config;
   }
 
   private _outputError(message: string): void {
@@ -102,12 +121,9 @@ export class MermaidConfig {
     document: vscode.TextDocument,
     code: string
   ): Promise<void> {
-    const pathToConfig = attributeParser.parseConfig(code);
-    if (!isEmpty(pathToConfig) && document) {
-      const uri = vscode.Uri.file(
-        path.join(path.dirname(document.fileName), pathToConfig)
-      );
-      this._mermaidConfig = await this._readFile(uri);
+    const prev = this.config;
+    this._mermaidConfig = await this._readMermaidConfig(document, code);
+    if (prev !== this.config) {
       this._eventEmitter.fire({
         config: this.config
       });
@@ -116,6 +132,12 @@ export class MermaidConfig {
 
   // callbacks
   public async onDidChangeConfiguration(): Promise<void> {
-    this._readDefaultConfig();
+    const prev = this.config;
+    this._defaultMermaidConfig = await this._readDefaultConfig();
+    if (prev !== this.config) {
+      this._eventEmitter.fire({
+        config: this.config
+      });
+    }
   }
 }

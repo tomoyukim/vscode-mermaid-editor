@@ -5,6 +5,12 @@ export default class VSCodeWrapper {
     return vscode.window.activeTextEditor;
   }
 
+  public get onDidChangeConfiguration(): vscode.Event<
+    vscode.ConfigurationChangeEvent
+  > {
+    return vscode.workspace.onDidChangeConfiguration;
+  }
+
   public get onDidChangeTextDocument(): vscode.Event<
     vscode.TextDocumentChangeEvent
   > {

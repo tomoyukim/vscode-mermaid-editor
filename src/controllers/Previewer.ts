@@ -1,18 +1,22 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
-import * as process from 'process';
-import isEmpty = require('lodash/isEmpty');
 import isNumber = require('lodash/isNumber');
 import VSCodeWrapper from '../VSCodeWrapper';
 import Logger from '../Logger';
-import * as attributeParser from './attributeParser';
-import { TextDecoder } from 'util';
 import CodeEditorView, { CodeChange } from '../views/CodeEditorView';
-import * as constants from '../constants';
+import MermaidConfig from '../models/MermaidConfig';
+import PreviewConfig from '../models/PreviewConfig';
 
 const ZOOM_MIN_SCALE = 0.1;
 const ZOOM_MAX_SCALE = 2.5;
 const ZOOM_SCALE_INTERVAL = 0.2;
+
+export interface WebViewState {
+  scale: number;
+  diagram: string;
+  scrollTop: number;
+  scrollLeft: number;
+}
 
 export default class Previewer {
   /**
@@ -32,6 +36,8 @@ export default class Previewer {
 
   private _vscodeWrapper: VSCodeWrapper;
   private _codeEditorView: CodeEditorView;
+  private _mermaidConfig: MermaidConfig;
+  private _previewConfig: PreviewConfig;
 
   public static createOrShow(extensionPath: string): void {
     const showOptions = {
@@ -62,21 +68,15 @@ export default class Previewer {
       }
     );
 
-    Previewer.currentPanel = new Previewer(panel, {}, extensionPath);
+    Previewer.currentPanel = new Previewer(panel, undefined, extensionPath);
   }
 
   public static revive(
     panel: vscode.WebviewPanel,
-    state: any,
+    state: WebViewState | undefined,
     extensionPath: string
   ): void {
     Previewer.currentPanel = new Previewer(panel, state, extensionPath);
-  }
-
-  private getConfiguration(): vscode.WorkspaceConfiguration {
-    return this._vscodeWrapper.getConfiguration(
-      constants.CONFIG_SECTION_ME_PREVIEW
-    );
   }
 
   private static outputError(message: string): void {
@@ -88,19 +88,25 @@ export default class Previewer {
 
   private constructor(
     panel: vscode.WebviewPanel,
-    state: any,
+    state: WebViewState | undefined,
     extensionPath: string
   ) {
     this._vscodeWrapper = new VSCodeWrapper();
-    this._codeEditorView = new CodeEditorView(state.diagram); // TODO: rename diagram property in state
+    this._codeEditorView = new CodeEditorView(state && state.diagram); // TODO: rename diagram property in state
+    this._mermaidConfig = new MermaidConfig();
+    this._previewConfig = new PreviewConfig(this._codeEditorView.code);
+
+    // Set the webview's initial html content
+    this._mermaidConfig
+      .init(this._codeEditorView.document, this._codeEditorView.code)
+      .then(() => {
+        this._loadContent();
+      });
 
     this._panel = panel;
     this._extensionPath = extensionPath;
-    this._scale = state.scale || 1.0;
+    this._scale = (state && state.scale) || 1.0;
     this._timer = null;
-
-    // Set the webview's initial html content
-    this._loadContent(state.configuration);
 
     this._vscodeWrapper.setContext('mermaidPreviewEnabled', true);
     this._vscodeWrapper.setContext('mermaidPreviewActive', this._panel.active);
@@ -125,7 +131,7 @@ export default class Previewer {
           this._panel.visible
         );
         if (this._panel.visible) {
-          this._loadContent(undefined);
+          this._loadContent();
         }
       },
       null,
@@ -151,19 +157,39 @@ export default class Previewer {
     );
 
     this._codeEditorView.onDidChangeCode((event: CodeChange) => {
-      this.onDidChangeCode(event.code);
+      this.onDidChangeCode(event);
     });
 
-    vscode.workspace.onDidChangeConfiguration(
-      () => {
-        this._loadContent(undefined);
-      },
-      null,
-      this._disposables
-    );
+    this._mermaidConfig.onDidChangeMermaidConfig(() => {
+      this.onDidChangeMermaidConfig();
+    });
+
+    this._previewConfig.onDidChangePreviewConfig(() => {
+      this.onDidChangePreviewConfig();
+    });
+  }
+
+  private debounceUpdate(): void {
+    if (this._timer) {
+      clearTimeout(this._timer);
+    }
+    this._timer = setTimeout(() => {
+      // TODO: should not access webview after it's disposed
+      this._panel.webview.postMessage({
+        command: 'update',
+        diagram: this._codeEditorView.code,
+        configuration: this._mermaidConfig.config,
+        backgroundColor: this._previewConfig.backgroundColor
+      });
+      this._timer = null;
+    }, 200);
   }
 
   public dispose(): void {
+    if (this._timer) {
+      clearTimeout(this._timer);
+      this._timer = null;
+    }
     this._vscodeWrapper.setContext('mermaidPreviewEnabled', false);
     Previewer.currentPanel = undefined;
 
@@ -223,78 +249,18 @@ export default class Previewer {
     });
   }
 
-  public async onDidChangeCode(code: string): Promise<void> {
-    if (this._timer) {
-      clearTimeout(this._timer);
-    }
-    this._timer = setTimeout(() => {
-      this._getMermaidConfig(code).then((configuration: string) => {
-        this._panel.webview.postMessage({
-          command: 'update',
-          diagram: code,
-          configuration
-        });
-      });
-      this._timer = null;
-    }, 200);
+  public async onDidChangeCode(event: CodeChange): Promise<void> {
+    this._mermaidConfig.updateConfig(event.document, event.code);
+    this._previewConfig.updateConfig(event.code);
+    this.debounceUpdate();
   }
 
-  private _getBackgroundColor(text: string): string {
-    const ret = attributeParser.parseBackgroundColor(text);
-    return ret ? ret : this.getConfiguration().backgroundColor;
+  public async onDidChangeMermaidConfig(): Promise<void> {
+    this.debounceUpdate();
   }
 
-  private async _getMermaidConfig(text: string): Promise<string> {
-    const _readFile = async (uri: vscode.Uri): Promise<string> => {
-      const config = await vscode.workspace.fs.readFile(uri);
-      const decoder = new TextDecoder('utf-8');
-      return decoder.decode(config);
-    };
-
-    try {
-      const pathToConfig = attributeParser.parseConfig(text);
-      if (!isEmpty(pathToConfig)) {
-        // TODO: fix config isn't applied when preview is focused
-        const editor = this._vscodeWrapper.activeTextEditor;
-        const uri = vscode.Uri.file(
-          path.join(
-            editor
-              ? path.dirname(editor.document.fileName)
-              : this._extensionPath,
-            pathToConfig
-          )
-        );
-        return await _readFile(uri);
-      }
-
-      const { defaultMermaidConfig } = this.getConfiguration();
-      const workspaceFolders = this._vscodeWrapper.workspaceFolders;
-      if (defaultMermaidConfig && workspaceFolders) {
-        const _resolvePath = (filePath: string): string => {
-          if (filePath[0] === '~') {
-            if (process && process.env['HOME']) {
-              return path.join(process.env['HOME'], filePath.slice(1));
-            } else {
-              throw new Error('"~" cannot be resolved in your environment.');
-            }
-          } else if (path.isAbsolute(filePath)) {
-            return filePath;
-          }
-          return path.join(workspaceFolders[0].uri.fsPath, filePath);
-        };
-        const pathToDefaultConfig = _resolvePath(defaultMermaidConfig);
-        const uri = vscode.Uri.file(pathToDefaultConfig);
-        return await _readFile(uri);
-      } else {
-        const { theme } = this.getConfiguration();
-        return JSON.stringify({
-          theme
-        });
-      }
-    } catch (error) {
-      Previewer.outputError(error.message);
-      return '{}';
-    }
+  public async onDidChangePreviewConfig(): Promise<void> {
+    this.debounceUpdate();
   }
 
   private _scaleInRange(): boolean {
@@ -304,20 +270,22 @@ export default class Previewer {
     return true;
   }
 
-  private _loadContent(configText: string | undefined): void {
+  private _loadContent(): void {
     const code = this._codeEditorView.code;
-
-    const setHtml = (configuration: string): void => {
-      this._panel.webview.html = this._getHtmlForWebview(code, configuration);
-    };
-    if (configText) {
-      setHtml(configText);
-    } else {
-      this._getMermaidConfig(code).then(setHtml);
-    }
+    const config = this._mermaidConfig.config;
+    const backgroundColor = this._previewConfig.backgroundColor;
+    this._panel.webview.html = this._getHtmlForWebview(
+      code,
+      config,
+      backgroundColor
+    );
   }
 
-  private _getHtmlForWebview(code: string, configuration: string): string {
+  private _getHtmlForWebview(
+    code: string,
+    mermaidConfig: string,
+    backgroundColor: string
+  ): string {
     const scriptUri = this._panel.webview.asWebviewUri(
       vscode.Uri.file(path.join(this._extensionPath, 'media', 'main.js'))
     );
@@ -334,12 +302,11 @@ export default class Previewer {
 
     let configObject = {};
     try {
-      configObject = JSON.parse(configuration);
+      configObject = JSON.parse(mermaidConfig);
     } catch (error) {
       Previewer.outputError(error.message);
     }
 
-    const backgroundColor = this._getBackgroundColor(code);
     const config = {
       ...configObject,
       startOnLoad: true

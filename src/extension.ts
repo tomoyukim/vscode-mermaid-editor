@@ -3,7 +3,7 @@
 import * as vscode from 'vscode'; // TODO: replace with wrapper
 import * as constants from './constants';
 import VSCodeWrapper from './VSCodeWrapper';
-import Previewer from './controllers/Previewer';
+import Previewer, { WebViewState } from './controllers/Previewer';
 import * as generator from './controllers/fileGenerator';
 import Logger from './Logger';
 import { isMermaid } from './util';
@@ -103,7 +103,7 @@ export function activate(context: vscode.ExtensionContext): void {
     vscode.window.registerWebviewPanelSerializer(Previewer.viewType, {
       async deserializeWebviewPanel(
         webviewPanel: vscode.WebviewPanel,
-        state: any
+        state: WebViewState | undefined
       ) {
         Previewer.revive(webviewPanel, state, context.extensionPath);
       }

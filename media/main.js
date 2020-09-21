@@ -14,6 +14,7 @@ function debouncedRunloop(fn) {
 (function() {
   const vscode = acquireVsCodeApi();
   const preview = document.getElementById('preview');
+  const body = document.querySelector('body');
 
   const DEFAULT_STATE = {
     scale: 1.0,
@@ -122,7 +123,7 @@ function debouncedRunloop(fn) {
     const message = event.data; // The json data that the extension sent
     switch (message.command) {
       case 'update':
-        const { diagram, configuration } = message;
+        const { diagram, configuration, backgroundColor } = message;
         try {
           mermaid.parse(diagram);
           mermaid.initialize(JSON.parse(configuration));
@@ -130,6 +131,8 @@ function debouncedRunloop(fn) {
           postParseError(error);
           return;
         }
+
+        body.style.backgroundColor = backgroundColor;
 
         const { scrollTop, scrollLeft } = getState();
         preview.textContent = diagram;
@@ -143,15 +146,12 @@ function debouncedRunloop(fn) {
       case 'takeImage':
         const { type, width, height } = message;
 
-        const body = document.querySelector('body');
-        const style = getComputedStyle(body);
-        const backgroundColor = style.backgroundColor;
-
+        const bgColor = getComputedStyle(body).backgroundColor;
         const svg = preview.querySelector('svg');
         const xml = new XMLSerializer().serializeToString(svg);
         const data = btoa(xml); // svg base64
 
-        convertToImg(data, type, width, height, backgroundColor, (imgBase64, error) => {
+        convertToImg(data, type, width, height, bgColor, (imgBase64, error) => {
           const message = error ? {
             command: 'onFailTakeImage',
             error
