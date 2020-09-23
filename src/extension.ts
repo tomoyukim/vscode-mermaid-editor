@@ -3,15 +3,21 @@
 import * as vscode from 'vscode'; // TODO: replace with wrapper
 import * as constants from './constants';
 import VSCodeWrapper from './VSCodeWrapper';
-import Previewer, { WebViewState } from './controllers/Previewer';
+import Previewer from './controllers/Previewer';
 import * as generator from './controllers/fileGenerator';
 import Logger from './Logger';
 import { isMermaid } from './util';
 import get from 'lodash/get';
+import PreviewController from './controllers/PreviewController';
+
+let previewController: PreviewController;
 
 export function activate(context: vscode.ExtensionContext): void {
   const vscodeWrapper = new VSCodeWrapper();
   const logger = new Logger();
+
+  previewController = new PreviewController(context);
+
   const statusBarItem = vscode.window.createStatusBarItem(
     vscode.StatusBarAlignment.Left,
     100
@@ -53,64 +59,9 @@ export function activate(context: vscode.ExtensionContext): void {
       }
     })
   );
-
-  context.subscriptions.push(
-    vscode.commands.registerCommand(
-      'mermaid-editor.preview',
-      () =>
-        isMermaid(get(vscode.window.activeTextEditor, 'document')) &&
-        Previewer.createOrShow(context.extensionPath)
-    )
-  );
-
-  context.subscriptions.push(
-    vscode.commands.registerCommand(
-      'mermaid-editor.preview.zoomin',
-      () => Previewer.currentPanel && Previewer.currentPanel.zoomIn()
-    )
-  );
-
-  context.subscriptions.push(
-    vscode.commands.registerCommand(
-      'mermaid-editor.preview.zoomout',
-      () => Previewer.currentPanel && Previewer.currentPanel.zoomOut()
-    )
-  );
-
-  context.subscriptions.push(
-    vscode.commands.registerCommand(
-      'mermaid-editor.preview.zoomreset',
-      () => Previewer.currentPanel && Previewer.currentPanel.zoomReset()
-    )
-  );
-
-  context.subscriptions.push(
-    vscode.commands.registerCommand(
-      'mermaid-editor.preview.zoomto',
-      async () => {
-        const value = await vscode.window.showInputBox({
-          placeHolder: 'scale'
-        });
-        if (value) {
-          Previewer.currentPanel &&
-            Previewer.currentPanel.zoomTo(parseFloat(value));
-        }
-      }
-    )
-  );
-
-  if (vscode.window.registerWebviewPanelSerializer) {
-    vscode.window.registerWebviewPanelSerializer(Previewer.viewType, {
-      async deserializeWebviewPanel(
-        webviewPanel: vscode.WebviewPanel,
-        state: WebViewState | undefined
-      ) {
-        Previewer.revive(webviewPanel, state, context.extensionPath);
-      }
-    });
-  }
 }
 
 export function deactivate(): void {
+  previewController.dispose();
   Logger.dispose();
 }

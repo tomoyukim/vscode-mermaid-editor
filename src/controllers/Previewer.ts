@@ -91,12 +91,9 @@ export default class Previewer {
     extensionPath: string
   ) {
     this._vscodeWrapper = new VSCodeWrapper();
-    this._codeEditorView = new CodeEditorView(state && state.diagram); // TODO: rename diagram property in state
+    this._codeEditorView = new CodeEditorView(); // TODO: rename diagram property in state
     this._mermaidConfig = new MermaidConfig();
-    this._previewConfig = new PreviewConfig(
-      this._codeEditorView.code,
-      state && state.scale
-    );
+    this._previewConfig = new PreviewConfig(this._codeEditorView.code);
 
     // Set the webview's initial html content
     this._mermaidConfig

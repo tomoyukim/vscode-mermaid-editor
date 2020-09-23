@@ -1,5 +1,4 @@
 import * as vscode from 'vscode';
-import isEmpty = require('lodash/isEmpty');
 import * as constants from '../constants';
 import VSCodeWrapper from '../VSCodeWrapper';
 
@@ -14,7 +13,7 @@ export default class CodeEditorView {
 
   private _code: string;
 
-  constructor(code = '') {
+  constructor() {
     this._eventEmitter = new vscode.EventEmitter<CodeChange>();
     this._vscodeWrapper = new VSCodeWrapper();
 
@@ -25,10 +24,8 @@ export default class CodeEditorView {
       this.onDidChangeActiveTextEditor(editor);
     });
 
-    this._code = code;
-    if (isEmpty(code)) {
-      this._readCode();
-    }
+    this._code = '';
+    this._readCode();
   }
 
   private _isMermaid(document: vscode.TextDocument | undefined): boolean {

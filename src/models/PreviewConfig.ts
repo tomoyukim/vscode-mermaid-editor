@@ -24,12 +24,12 @@ export default class PreviewConfig {
   private _backgroundColor: string;
   private _scale: number;
 
-  constructor(code = '', scale = constants.ZOOM_DEFAULT_SCALE) {
+  constructor(code = '') {
     this._vscodeWrapper = new VSCodeWrapper();
     this._eventEmitter = new vscode.EventEmitter<PreviewConfigChange>();
     this._defaultBackgroundColor = this._getConfiguration().backgroundColor;
     this._backgroundColor = attributeParser.parseBackgroundColor(code);
-    this._scale = scale;
+    this._scale = constants.ZOOM_DEFAULT_SCALE;
 
     this._vscodeWrapper.onDidChangeConfiguration(() => {
       this.onDidChangeConfiguration();

@@ -79,7 +79,8 @@ export default class MermaidConfig {
         const uri = vscode.Uri.file(pathToDefaultConfig);
         config = await this._readFile(uri);
       } catch (error) {
-        this._outputError(error.message);
+        const logger = new Logger();
+        logger.outputError(error.message);
       }
     }
     return config;
@@ -98,13 +99,6 @@ export default class MermaidConfig {
       config = await this._readFile(uri);
     }
     return config;
-  }
-
-  private _outputError(message: string): void {
-    const logger = new Logger();
-    logger.appendLine(message);
-    logger.appendDivider();
-    logger.show();
   }
 
   public get onDidChangeMermaidConfig(): vscode.Event<MermaidConfigChange> {

@@ -34,4 +34,10 @@ export default class Logger {
   public show(): void {
     Logger._outputChannel.show(true);
   }
+
+  public outputError(message: string): void {
+    this.appendLine(message);
+    this.appendDivider();
+    this.show();
+  }
 }

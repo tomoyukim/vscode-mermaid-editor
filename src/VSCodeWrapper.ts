@@ -37,8 +37,44 @@ export default class VSCodeWrapper {
     return vscode.window.createOutputChannel(channelName);
   }
 
+  public createWebviewPanel(
+    viewType: string,
+    title: string,
+    showOptions:
+      | vscode.ViewColumn
+      | { viewColumn: vscode.ViewColumn; preserveFocus?: boolean },
+    options?: vscode.WebviewPanelOptions & vscode.WebviewOptions
+  ): vscode.WebviewPanel {
+    return vscode.window.createWebviewPanel(
+      viewType,
+      title,
+      showOptions,
+      options
+    );
+  }
+
   public getConfiguration(section: string): vscode.WorkspaceConfiguration {
     return vscode.workspace.getConfiguration(section);
+  }
+
+  public async showInputBox(
+    option?: vscode.InputBoxOptions
+  ): Promise<string | undefined> {
+    return vscode.window.showInputBox(option);
+  }
+
+  public registerWebviewPanelSerializer(
+    viewType: string,
+    serializer: vscode.WebviewPanelSerializer
+  ): vscode.Disposable {
+    return vscode.window.registerWebviewPanelSerializer(viewType, serializer);
+  }
+
+  public registerCommand(
+    command: string,
+    callback: () => void
+  ): vscode.Disposable {
+    return vscode.commands.registerCommand(command, callback);
   }
 
   public executeCommand<T>(
@@ -50,5 +86,9 @@ export default class VSCodeWrapper {
 
   public async setContext(contextSection: string, value: any): Promise<void> {
     await this.executeCommand('setContext', contextSection, value);
+  }
+
+  public file(path: string): vscode.Uri {
+    return vscode.Uri.file(path);
   }
 }
