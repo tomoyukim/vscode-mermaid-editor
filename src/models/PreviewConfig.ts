@@ -57,7 +57,9 @@ export default class PreviewConfig {
     return true;
   }
 
-  public get onDidChangePreviewConfig(): vscode.Event<PreviewConfigChangeEvent> {
+  public get onDidChangePreviewConfig(): vscode.Event<
+    PreviewConfigChangeEvent
+  > {
     return this._eventEmitter.event;
   }
 

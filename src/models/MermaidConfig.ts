@@ -101,7 +101,9 @@ export default class MermaidConfig {
     return config;
   }
 
-  public get onDidChangeMermaidConfig(): vscode.Event<MermaidConfigChangeEvent> {
+  public get onDidChangeMermaidConfig(): vscode.Event<
+    MermaidConfigChangeEvent
+  > {
     return this._eventEmitter.event;
   }
 

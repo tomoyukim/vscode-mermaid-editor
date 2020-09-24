@@ -3,6 +3,7 @@ import VSCodeWrapper from '../VSCodeWrapper';
 import get from 'lodash/get';
 import * as constants from '../constants';
 import PreviewWebView, {
+  CaptureImageEndEvent,
   PreviewWebViewRenderParams
 } from '../views/PreviewWebView';
 import CodeEditorView, { CodeChangeEvent } from '../views/CodeEditorView';
@@ -12,6 +13,7 @@ import PreviewConfig, {
   PreviewConfigProperty
 } from '../models/PreviewConfig';
 import Logger from '../Logger';
+import * as generator from './fileGenerator';
 
 interface WebViewState {
   scale: number;
@@ -32,6 +34,7 @@ export default class PreviewController
   private _previewConfig: PreviewConfig;
   private _timer: NodeJS.Timeout | null;
   private _logger: Logger;
+  private _statusBarItem: vscode.StatusBarItem;
 
   constructor(context: vscode.ExtensionContext) {
     this._context = context;
@@ -42,6 +45,14 @@ export default class PreviewController
     this._previewConfig = new PreviewConfig(this._codeEditorView.code);
     this._timer = null;
     this._logger = new Logger();
+
+    // generating message on statusbar
+    this._statusBarItem = vscode.window.createStatusBarItem(
+      vscode.StatusBarAlignment.Left,
+      100
+    );
+    this._statusBarItem.text = constants.STATUSBAR_MESSAGE_GENERATE_IMAGE;
+    context.subscriptions.push(this._statusBarItem);
 
     // once
     this._mermaidConfig
@@ -85,6 +96,9 @@ export default class PreviewController
     this._registerCommand(context, constants.COMMAND_PREVIEW_ZOOM_TO, () =>
       this.zoomTo()
     );
+    this._registerCommand(context, constants.COMMAND_GENERATE_IMAGE, () =>
+      this.captureImage()
+    );
 
     this._vscodeWrapper.registerWebviewPanelSerializer(
       constants.PREVIEW_WEBVIEW_VIEWTYPE,
@@ -105,6 +119,7 @@ export default class PreviewController
     view.onDidChangeViewState &&
       view.onDidChangeViewState(() => this.onDidChangeViewState());
     view.onDidDispose && view.onDidDispose(() => this.onDidDispose());
+    view.onDidCaptureImage(event => this.onDidCaptureImage(event));
 
     return view;
   }
@@ -149,6 +164,7 @@ export default class PreviewController
       clearTimeout(this._timer);
       this._timer = null;
     }
+    this._statusBarItem.dispose();
     this._vscodeWrapper.setContext('mermaidPreviewEnabled', false);
 
     this._previewWebView?.dispose();
@@ -178,6 +194,19 @@ export default class PreviewController
     }
   }
 
+  public async captureImage(): Promise<void> {
+    const config = this._vscodeWrapper.getConfiguration(
+      constants.CONFIG_SECTION_ME_GENERATE
+    );
+
+    this._previewWebView?.captureImage({
+      type: config.type,
+      width: config.width,
+      height: config.height
+    });
+    this._statusBarItem.show();
+  }
+
   // model change events
   public async onDidChangeCode(event: CodeChangeEvent): Promise<void> {
     this._mermaidConfig.updateConfig(event.document, event.code);
@@ -204,6 +233,7 @@ export default class PreviewController
     }
   }
 
+  // WebviewPanel event
   public async onDidChangeViewState(): Promise<void> {
     this._vscodeWrapper.setContext(
       'mermaidPreviewActive',
@@ -224,6 +254,24 @@ export default class PreviewController
 
   public async onDidDispose(): Promise<void> {
     this._previewWebView = undefined;
+    this.dispose();
+  }
+
+  public async onDidCaptureImage(event: CaptureImageEndEvent): Promise<void> {
+    if (event.error || !event.data || !event.type) {
+      vscode.window.showErrorMessage('Failed to generate image.');
+    } else {
+      try {
+        await generator.outputFile(this._context, event.data, event.type);
+        vscode.window.showInformationMessage(`mermaid-editor: generated!`);
+      } catch (error) {
+        this._logger.appendLine(error.message);
+        vscode.window.showErrorMessage(error.message);
+      }
+      this._logger.show();
+    }
+
+    this._statusBarItem.hide();
   }
 
   // WebviewPanelSelializer

@@ -19,5 +19,6 @@ export const COMMAND_PREVIEW_ZOOM_RESET = 'mermaid-editor.preview.zoomreset';
 export const COMMAND_PREVIEW_ZOOM_OUT = 'mermaid-editor.preview.zoomout';
 export const COMMAND_PREVIEW_ZOOM_IN = 'mermaid-editor.preview.zoomin';
 export const COMMAND_PREVIEW_SHOW = 'mermaid-editor.preview';
+export const COMMAND_GENERATE_IMAGE = 'mermaid-editor.generate';
 
 export const PREVIEW_WEBVIEW_VIEWTYPE = 'mermaid-editor-preview';

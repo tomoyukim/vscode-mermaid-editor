@@ -11,6 +11,22 @@ export interface PreviewWebViewRenderParams {
   backgroundColor: string;
 }
 
+export interface CaptureImageParams {
+  type: string;
+  width: string;
+  height: string;
+}
+
+export interface CaptureImageEndEvent {
+  data?: string;
+  type?: string;
+  error?: any;
+}
+
+interface CaptureImageWebViewEvent extends CaptureImageEndEvent {
+  command: string;
+}
+
 export default class PreviewWebView {
   private readonly _showOptions = {
     preserveFocus: false,
@@ -21,12 +37,14 @@ export default class PreviewWebView {
   private _extensionPath: string;
   private _panel: vscode.WebviewPanel | undefined;
   private _logger: Logger;
+  private _eventEmitter: vscode.EventEmitter<CaptureImageEndEvent>;
 
   constructor(context: vscode.ExtensionContext, panel?: vscode.WebviewPanel) {
     this._vscodeWrapper = new VSCodeWrapper();
     this._extensionPath = context.extensionPath;
     this._panel = panel ? panel : this._createWebViewPanel();
     this._logger = new Logger();
+    this._eventEmitter = new vscode.EventEmitter<CaptureImageEndEvent>();
 
     this._panel.webview.onDidReceiveMessage(message =>
       this.onDidReceiveMessage(message)
@@ -162,6 +180,13 @@ export default class PreviewWebView {
     );
   }
 
+  public captureImage(params: CaptureImageParams): void {
+    this._panel?.webview.postMessage({
+      ...params,
+      command: 'takeImage'
+    });
+  }
+
   public get onDidChangeViewState():
     | vscode.Event<vscode.WebviewPanelOnDidChangeViewStateEvent>
     | undefined {
@@ -172,23 +197,30 @@ export default class PreviewWebView {
     return this._panel?.onDidDispose;
   }
 
-  // TODO: public captureImage() { }
-
-  // TODO: public onDidCaptureImage() { }
+  public get onDidCaptureImage(): vscode.Event<CaptureImageEndEvent> {
+    return this._eventEmitter.event;
+  }
 
   // TODO: public onDidParseError() {}
 
   // callbacks
-  public async onDidReceiveMessage(message: any): Promise<void> {
+  public async onDidReceiveMessage(
+    message: CaptureImageWebViewEvent
+  ): Promise<void> {
     switch (message.command) {
       case 'onTakeImage':
-        //this._onTakeImage && this._onTakeImage(message.data, message.type);
+        this._eventEmitter.fire({
+          data: message.data,
+          type: message.type
+        });
         return;
       case 'onFailTakeImage':
-        //this._onFailTakeImage && this._onFailTakeImage(message.error);
+        this._eventEmitter.fire({
+          error: message.error
+        });
         return;
       case 'onParseError':
-        this._logger.outputError(message.error.str);
+        this._logger.outputError(message.error?.str);
         return;
     }
   }
