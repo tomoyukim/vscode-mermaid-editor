@@ -10,7 +10,7 @@ export const PreviewConfigProperty = {
 } as const;
 export type PreviewConfigProperty = typeof PreviewConfigProperty[keyof typeof PreviewConfigProperty];
 
-export interface PreviewConfigChange {
+export interface PreviewConfigChangeEvent {
   property: PreviewConfigProperty;
   backgroundColor: string;
   scale: number;
@@ -18,7 +18,7 @@ export interface PreviewConfigChange {
 
 export default class PreviewConfig {
   private _vscodeWrapper: VSCodeWrapper;
-  private _eventEmitter: vscode.EventEmitter<PreviewConfigChange>;
+  private _eventEmitter: vscode.EventEmitter<PreviewConfigChangeEvent>;
 
   private _defaultBackgroundColor: string;
   private _backgroundColor: string;
@@ -26,7 +26,7 @@ export default class PreviewConfig {
 
   constructor(code = '') {
     this._vscodeWrapper = new VSCodeWrapper();
-    this._eventEmitter = new vscode.EventEmitter<PreviewConfigChange>();
+    this._eventEmitter = new vscode.EventEmitter<PreviewConfigChangeEvent>();
     this._defaultBackgroundColor = this._getConfiguration().backgroundColor;
     this._backgroundColor = attributeParser.parseBackgroundColor(code);
     this._scale = constants.ZOOM_DEFAULT_SCALE;
@@ -57,7 +57,7 @@ export default class PreviewConfig {
     return true;
   }
 
-  public get onDidChangePreviewConfig(): vscode.Event<PreviewConfigChange> {
+  public get onDidChangePreviewConfig(): vscode.Event<PreviewConfigChangeEvent> {
     return this._eventEmitter.event;
   }
 

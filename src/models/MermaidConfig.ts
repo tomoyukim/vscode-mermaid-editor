@@ -8,20 +8,20 @@ import * as constants from '../constants';
 import * as attributeParser from '../controllers/attributeParser';
 import Logger from '../Logger';
 
-export interface MermaidConfigChange {
+export interface MermaidConfigChangeEvent {
   config: string;
 }
 
 export default class MermaidConfig {
   private _vscodeWrapper: VSCodeWrapper;
-  private _eventEmitter: vscode.EventEmitter<MermaidConfigChange>;
+  private _eventEmitter: vscode.EventEmitter<MermaidConfigChangeEvent>;
 
   private _defaultMermaidConfig: string;
   private _mermaidConfig: string;
 
   constructor() {
     this._vscodeWrapper = new VSCodeWrapper();
-    this._eventEmitter = new vscode.EventEmitter<MermaidConfigChange>();
+    this._eventEmitter = new vscode.EventEmitter<MermaidConfigChangeEvent>();
     const { theme } = this._getConfiguration();
     this._defaultMermaidConfig = JSON.stringify({
       theme
@@ -101,7 +101,7 @@ export default class MermaidConfig {
     return config;
   }
 
-  public get onDidChangeMermaidConfig(): vscode.Event<MermaidConfigChange> {
+  public get onDidChangeMermaidConfig(): vscode.Event<MermaidConfigChangeEvent> {
     return this._eventEmitter.event;
   }
 

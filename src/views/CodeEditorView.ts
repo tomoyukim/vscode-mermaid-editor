@@ -2,19 +2,19 @@ import * as vscode from 'vscode';
 import * as constants from '../constants';
 import VSCodeWrapper from '../VSCodeWrapper';
 
-export interface CodeChange {
+export interface CodeChangeEvent {
   code: string;
   document: vscode.TextDocument;
 }
 
 export default class CodeEditorView {
   private _vscodeWrapper: VSCodeWrapper;
-  private _eventEmitter: vscode.EventEmitter<CodeChange>;
+  private _eventEmitter: vscode.EventEmitter<CodeChangeEvent>;
 
   private _code: string;
 
   constructor() {
-    this._eventEmitter = new vscode.EventEmitter<CodeChange>();
+    this._eventEmitter = new vscode.EventEmitter<CodeChangeEvent>();
     this._vscodeWrapper = new VSCodeWrapper();
 
     this._vscodeWrapper.onDidChangeTextDocument(editor => {
@@ -51,7 +51,7 @@ export default class CodeEditorView {
     return this._vscodeWrapper.activeTextEditor?.document;
   }
 
-  public get onDidChangeCode(): vscode.Event<CodeChange> {
+  public get onDidChangeCode(): vscode.Event<CodeChangeEvent> {
     return this._eventEmitter.event;
   }
 

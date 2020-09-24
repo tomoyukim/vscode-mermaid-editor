@@ -5,10 +5,10 @@ import * as constants from '../constants';
 import PreviewWebView, {
   PreviewWebViewRenderParams
 } from '../views/PreviewWebView';
-import CodeEditorView, { CodeChange } from '../views/CodeEditorView';
+import CodeEditorView, { CodeChangeEvent } from '../views/CodeEditorView';
 import MermaidConfig from '../models/MermaidConfig';
 import PreviewConfig, {
-  PreviewConfigChange,
+  PreviewConfigChangeEvent,
   PreviewConfigProperty
 } from '../models/PreviewConfig';
 import Logger from '../Logger';
@@ -51,7 +51,7 @@ export default class PreviewController
       });
 
     // register callbacks
-    this._codeEditorView.onDidChangeCode((event: CodeChange) => {
+    this._codeEditorView.onDidChangeCode((event: CodeChangeEvent) => {
       this.onDidChangeCode(event);
     });
 
@@ -60,7 +60,7 @@ export default class PreviewController
     });
 
     this._previewConfig.onDidChangePreviewConfig(
-      (event: PreviewConfigChange) => {
+      (event: PreviewConfigChangeEvent) => {
         this.onDidChangePreviewConfig(event);
       }
     );
@@ -179,7 +179,7 @@ export default class PreviewController
   }
 
   // model change events
-  public async onDidChangeCode(event: CodeChange): Promise<void> {
+  public async onDidChangeCode(event: CodeChangeEvent): Promise<void> {
     this._mermaidConfig.updateConfig(event.document, event.code);
     this._previewConfig.updateBackgroundColor(event.code);
     this._debounceUpdateView();
@@ -190,7 +190,7 @@ export default class PreviewController
   }
 
   public async onDidChangePreviewConfig(
-    event: PreviewConfigChange
+    event: PreviewConfigChangeEvent
   ): Promise<void> {
     switch (event.property) {
       case PreviewConfigProperty.BackgroundColor:

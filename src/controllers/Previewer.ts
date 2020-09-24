@@ -3,10 +3,10 @@ import * as path from 'path';
 import isNumber = require('lodash/isNumber');
 import VSCodeWrapper from '../VSCodeWrapper';
 import Logger from '../Logger';
-import CodeEditorView, { CodeChange } from '../views/CodeEditorView';
+import CodeEditorView, { CodeChangeEvent } from '../views/CodeEditorView';
 import MermaidConfig from '../models/MermaidConfig';
 import PreviewConfig, {
-  PreviewConfigChange,
+  PreviewConfigChangeEvent,
   PreviewConfigProperty
 } from '../models/PreviewConfig';
 import * as constants from '../constants';
@@ -157,7 +157,7 @@ export default class Previewer {
       this._disposables
     );
 
-    this._codeEditorView.onDidChangeCode((event: CodeChange) => {
+    this._codeEditorView.onDidChangeCode((event: CodeChangeEvent) => {
       this.onDidChangeCode(event);
     });
 
@@ -166,7 +166,7 @@ export default class Previewer {
     });
 
     this._previewConfig.onDidChangePreviewConfig(
-      (event: PreviewConfigChange) => {
+      (event: PreviewConfigChangeEvent) => {
         this.onDidChangePreviewConfig(event);
       }
     );
@@ -242,7 +242,7 @@ export default class Previewer {
     this._previewConfig.scale = value;
   }
 
-  public async onDidChangeCode(event: CodeChange): Promise<void> {
+  public async onDidChangeCode(event: CodeChangeEvent): Promise<void> {
     this._mermaidConfig.updateConfig(event.document, event.code);
     this._previewConfig.updateBackgroundColor(event.code);
     this.debounceUpdate();
@@ -253,7 +253,7 @@ export default class Previewer {
   }
 
   public async onDidChangePreviewConfig(
-    event: PreviewConfigChange
+    event: PreviewConfigChangeEvent
   ): Promise<void> {
     switch (event.property) {
       case PreviewConfigProperty.BackgroundColor:
