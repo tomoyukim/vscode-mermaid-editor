@@ -112,9 +112,18 @@ export default class PreviewController
   ): PreviewWebView {
     const view = new PreviewWebView(context, panel);
 
-    this._vscodeWrapper.setContext('mermaidPreviewEnabled', true);
-    this._vscodeWrapper.setContext('mermaidPreviewActive', view.active);
-    this._vscodeWrapper.setContext('mermaidPreviewVisible', view.visible);
+    this._vscodeWrapper.setContext(
+      constants.CONTEXT_SECTION_PREVIEW_ENABLED,
+      true
+    );
+    this._vscodeWrapper.setContext(
+      constants.CONTEXT_SECTION_PREVIEW_ACTIVE,
+      view.active
+    );
+    this._vscodeWrapper.setContext(
+      constants.CONTEXT_SECTION_PREVIEW_VISIBLE,
+      view.visible
+    );
 
     view.onDidChangeViewState &&
       view.onDidChangeViewState(() => this.onDidChangeViewState());
@@ -165,7 +174,10 @@ export default class PreviewController
       this._timer = null;
     }
     this._statusBarItem.dispose();
-    this._vscodeWrapper.setContext('mermaidPreviewEnabled', false);
+    this._vscodeWrapper.setContext(
+      constants.CONTEXT_SECTION_PREVIEW_ENABLED,
+      false
+    );
 
     this._previewWebView?.dispose();
   }
@@ -236,11 +248,11 @@ export default class PreviewController
   // WebviewPanel event
   public async onDidChangeViewState(): Promise<void> {
     this._vscodeWrapper.setContext(
-      'mermaidPreviewActive',
+      constants.CONTEXT_SECTION_PREVIEW_ACTIVE,
       get(this._previewWebView, 'active', false)
     );
     this._vscodeWrapper.setContext(
-      'mermaidPreviewVisible',
+      constants.CONTEXT_SECTION_PREVIEW_VISIBLE,
       get(this._previewWebView, 'visible', false)
     );
     if (this._previewWebView?.visible) {
@@ -259,11 +271,13 @@ export default class PreviewController
 
   public async onDidCaptureImage(event: CaptureImageEndEvent): Promise<void> {
     if (event.error || !event.data || !event.type) {
-      vscode.window.showErrorMessage('Failed to generate image.');
+      vscode.window.showErrorMessage(constants.MESSAGE_GENERATE_IMAGE_FAILURE);
     } else {
       try {
         await generator.outputFile(this._context, event.data, event.type);
-        vscode.window.showInformationMessage(`mermaid-editor: generated!`);
+        vscode.window.showInformationMessage(
+          constants.MESSAGE_GENERATE_IMAGE_SUCCESS
+        );
       } catch (error) {
         this._logger.appendLine(error.message);
         vscode.window.showErrorMessage(error.message);
