@@ -7,14 +7,22 @@ import * as constants from '../constants';
 import Logger from '../Logger';
 import VSCodeWrapper from '../VSCodeWrapper';
 
-function getSupportedExtension(type: string): string {
+export const ImageFileType = {
+  SVG: 'svg',
+  PNG: 'png',
+  JPG: 'jpg',
+  WEBP: 'webp'
+} as const;
+export type ImageFileType = typeof ImageFileType[keyof typeof ImageFileType];
+
+function getSupportedExtension(type: ImageFileType): string {
   switch (type) {
-    case 'png':
-    case 'jpg':
-    case 'webp':
+    case ImageFileType.PNG:
+    case ImageFileType.JPG:
+    case ImageFileType.WEBP:
       return type;
     default:
-      return 'svg';
+      return ImageFileType.SVG;
   }
 }
 
@@ -45,7 +53,7 @@ function getOutputDirPath(
 function getOutputFilePath(
   outputDirPath: string,
   fileName: string,
-  type: string
+  type: ImageFileType
 ): string {
   const _fileName = `${path.basename(fileName, '.mmd')}.${getSupportedExtension(
     type
@@ -56,7 +64,7 @@ function getOutputFilePath(
 export async function outputFile(
   context: vscode.ExtensionContext,
   data: string,
-  type: string
+  type: ImageFileType
 ): Promise<void> {
   const vscodeWrapper = new VSCodeWrapper();
   const logger = new Logger();

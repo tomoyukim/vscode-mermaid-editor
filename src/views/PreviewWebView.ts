@@ -4,6 +4,7 @@ import * as constants from '../constants';
 import get from 'lodash/get';
 import Logger from '../Logger';
 import VSCodeWrapper from '../VSCodeWrapper';
+import { ImageFileType } from '../controllers/fileGenerator';
 
 export interface PreviewWebViewRenderParams {
   code: string;
@@ -19,7 +20,7 @@ export interface CaptureImageParams {
 
 export interface CaptureImageEndEvent {
   data?: string;
-  type?: string;
+  type?: ImageFileType;
   error?: any;
 }
 
