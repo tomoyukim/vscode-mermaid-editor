@@ -42,6 +42,16 @@ export default class CodeEditorView {
     }
   }
 
+  private _notifyUpdate(document: vscode.TextDocument): void {
+    const prev = this._code;
+    if (prev !== this.code) {
+      this._eventEmitter.fire({
+        code: this._code,
+        document
+      });
+    }
+  }
+
   public get code(): string {
     this._readCode();
     return this._code;
@@ -60,10 +70,7 @@ export default class CodeEditorView {
     editor: vscode.TextEditor | undefined
   ): Promise<void> {
     if (editor && this._isMermaid(editor.document)) {
-      this._eventEmitter.fire({
-        code: this.code,
-        document: editor.document
-      });
+      this._notifyUpdate(editor.document);
     }
   }
 
@@ -71,10 +78,7 @@ export default class CodeEditorView {
     event: vscode.TextDocumentChangeEvent
   ): Promise<void> {
     if (this._isMermaid(event.document)) {
-      this._eventEmitter.fire({
-        code: this.code,
-        document: event.document
-      });
+      this._notifyUpdate(event.document);
     }
   }
 }
