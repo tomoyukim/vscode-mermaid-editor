@@ -168,7 +168,7 @@ export default class PreviewWebView {
   public updateView(param: PreviewWebViewRenderParams): void {
     this._panel?.webview.postMessage({
       command: 'update',
-      diagram: param.code,
+      code: param.code,
       configuration: param.mermaidConfig,
       backgroundColor: param.backgroundColor
     });

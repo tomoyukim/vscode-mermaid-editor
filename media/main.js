@@ -11,14 +11,14 @@ function debouncedRunloop(fn) {
   }
 }
 
-(function() {
+(function () {
   const vscode = acquireVsCodeApi();
   const preview = document.getElementById('preview');
   const body = document.querySelector('body');
 
   const DEFAULT_STATE = {
     scale: 1.0,
-    diagram: preview.textContent,
+    code: preview.textContent,
     scrollTop: 0,
     scrollLeft: 0
   };
@@ -105,7 +105,7 @@ function debouncedRunloop(fn) {
   // init
   zoom(getState().scale);
   if (preview.textContent.trim() === '') {
-    preview.textContent = getState().diagram;
+    preview.textContent = getState().code;
   }
 
   window.addEventListener('error', () => {
@@ -123,9 +123,9 @@ function debouncedRunloop(fn) {
     const message = event.data; // The json data that the extension sent
     switch (message.command) {
       case 'update':
-        const { diagram, configuration, backgroundColor } = message;
+        const { code, configuration, backgroundColor } = message;
         try {
-          mermaid.parse(diagram);
+          mermaid.parse(code);
           mermaid.initialize(JSON.parse(configuration));
         } catch (error) {
           postParseError(error);
@@ -135,10 +135,10 @@ function debouncedRunloop(fn) {
         body.style.backgroundColor = backgroundColor;
 
         const { scrollTop, scrollLeft } = getState();
-        preview.textContent = diagram;
+        preview.textContent = code;
         preview.removeAttribute('data-processed');
         mermaid.init(); // render
-        setState({ diagram });
+        setState({ code });
         debouncedRunloop(() => {
           window.scrollBy(scrollLeft, scrollTop);
         });

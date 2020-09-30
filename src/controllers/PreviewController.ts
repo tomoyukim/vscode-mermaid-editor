@@ -17,7 +17,7 @@ import * as generator from './fileGenerator';
 
 interface WebViewState {
   scale: number;
-  diagram: string;
+  code: string;
   scrollTop: number;
   scrollLeft: number;
 }
@@ -255,6 +255,7 @@ export default class PreviewController
       constants.CONTEXT_SECTION_PREVIEW_VISIBLE,
       get(this._previewWebView, 'visible', false)
     );
+    return;
     if (this._previewWebView?.visible) {
       this._previewWebView?.render({
         code: this._codeEditorView.code,
@@ -294,8 +295,7 @@ export default class PreviewController
     state: WebViewState | undefined
   ): Promise<void> {
     // TODO: handling state more (e.g. backgroundColor, position, config)
-    // TODO: rename diagram property in state
-    const code = state ? state.diagram : '';
+    const code = state ? state.code : '';
     if (state) {
       this._previewConfig.scale = state.scale;
     }
