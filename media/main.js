@@ -11,7 +11,7 @@ function debouncedRunloop(fn) {
   }
 }
 
-(function () {
+(function() {
   const vscode = acquireVsCodeApi();
   const preview = document.getElementById('preview');
   const body = document.querySelector('body');
@@ -19,6 +19,8 @@ function debouncedRunloop(fn) {
   const DEFAULT_STATE = {
     scale: 1.0,
     code: preview.textContent,
+    configuration: JSON.stringify(mermaid.mermaidAPI.getSiteConfig()),
+    backgroundColor: undefined,
     scrollTop: 0,
     scrollLeft: 0
   };
@@ -102,12 +104,40 @@ function debouncedRunloop(fn) {
     });
   }
 
-  // init
-  zoom(getState().scale);
-  if (preview.textContent.trim() === '') {
-    preview.textContent = getState().code;
+  function render(code, configuration, backgroundColor) {
+    try {
+      mermaid.parse(code);
+      mermaid.initialize(JSON.parse(configuration));
+    } catch (error) {
+      postParseError(error);
+      return;
+    }
+
+    body.style.backgroundColor = backgroundColor;
+
+    preview.textContent = code;
+    preview.removeAttribute('data-processed');
+    mermaid.init(); // render
   }
 
+  // init
+  function init() {
+    const state = getState();
+    zoom(state.scale);
+    if (preview.textContent.trim() === '') {
+      preview.textContent = state.code;
+    }
+
+    if (state.backgroundColor) {
+      body.style.backgroundColor = state.backgroundColor;
+    }
+    debouncedRunloop(() => {
+      window.scrollBy(state.scrollLeft, state.scrollTop);
+    });
+  }
+  init();
+
+  // callbacks
   window.addEventListener('error', () => {
     // Try to catch parse error in initialized time
     try {
@@ -121,26 +151,19 @@ function debouncedRunloop(fn) {
   // Handle messages sent from the extension to the webview
   window.addEventListener('message', event => {
     const message = event.data; // The json data that the extension sent
+    const state = getState();
     switch (message.command) {
       case 'update':
         const { code, configuration, backgroundColor } = message;
-        try {
-          mermaid.parse(code);
-          mermaid.initialize(JSON.parse(configuration));
-        } catch (error) {
-          postParseError(error);
-          return;
-        }
+        render(code, configuration, backgroundColor);
 
-        body.style.backgroundColor = backgroundColor;
-
-        const { scrollTop, scrollLeft } = getState();
-        preview.textContent = code;
-        preview.removeAttribute('data-processed');
-        mermaid.init(); // render
-        setState({ code });
         debouncedRunloop(() => {
-          window.scrollBy(scrollLeft, scrollTop);
+          window.scrollBy(state.scrollLeft, state.scrollTop);
+        });
+        setState({
+          code,
+          configuration: JSON.stringify(mermaid.mermaidAPI.getSiteConfig()),
+          backgroundColor
         });
         return;
       case 'takeImage':
@@ -166,6 +189,8 @@ function debouncedRunloop(fn) {
       case 'zoomTo':
         const { value } = message;
         zoom(value);
+        render(state.code, state.configuration, state.backgroundColor);
+
         setState({ scale: value });
         return;
     }

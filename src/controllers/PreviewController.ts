@@ -18,6 +18,7 @@ import * as generator from './fileGenerator';
 interface WebViewState {
   scale: number;
   code: string;
+  configuration: string;
   scrollTop: number;
   scrollLeft: number;
 }
@@ -255,8 +256,8 @@ export default class PreviewController
       constants.CONTEXT_SECTION_PREVIEW_VISIBLE,
       get(this._previewWebView, 'visible', false)
     );
-    return;
-    if (this._previewWebView?.visible) {
+
+    if (this._previewWebView?.active) {
       this._previewWebView?.render({
         code: this._codeEditorView.code,
         mermaidConfig: this._mermaidConfig.config,
@@ -267,6 +268,8 @@ export default class PreviewController
 
   public async onDidDispose(): Promise<void> {
     this._previewWebView = undefined;
+    // reset volatile config
+    this._previewConfig.scale = constants.ZOOM_DEFAULT_SCALE;
     this.dispose();
   }
 
@@ -294,16 +297,16 @@ export default class PreviewController
     webviewPanel: vscode.WebviewPanel,
     state: WebViewState | undefined
   ): Promise<void> {
-    // TODO: handling state more (e.g. backgroundColor, position, config)
     const code = state ? state.code : '';
     if (state) {
       this._previewConfig.scale = state.scale;
+      this._previewConfig.updateBackgroundColor(state.code);
     }
 
     this.showPreviewWebView(
       {
         code,
-        mermaidConfig: this._mermaidConfig.config,
+        mermaidConfig: get(state, 'configuration', this._mermaidConfig.config),
         backgroundColor: this._previewConfig.backgroundColor
       },
       webviewPanel
