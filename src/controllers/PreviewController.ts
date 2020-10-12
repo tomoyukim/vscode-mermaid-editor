@@ -179,6 +179,14 @@ export default class PreviewController
       constants.CONTEXT_SECTION_PREVIEW_ENABLED,
       false
     );
+    this._vscodeWrapper.setContext(
+      constants.CONTEXT_SECTION_PREVIEW_ACTIVE,
+      false
+    );
+    this._vscodeWrapper.setContext(
+      constants.CONTEXT_SECTION_PREVIEW_VISIBLE,
+      false
+    );
 
     this._previewWebView?.dispose();
   }
@@ -270,6 +278,7 @@ export default class PreviewController
     this._previewWebView = undefined;
     // reset volatile config
     this._previewConfig.scale = constants.ZOOM_DEFAULT_SCALE;
+
     this.dispose();
   }
 
