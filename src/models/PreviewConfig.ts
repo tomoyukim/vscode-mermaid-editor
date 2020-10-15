@@ -24,8 +24,8 @@ export default class PreviewConfig {
   private _backgroundColor: string;
   private _scale: number;
 
-  constructor(code = '') {
-    this._vscodeWrapper = new VSCodeWrapper();
+  constructor(code = '', vscodeWrapper?: VSCodeWrapper /* for test */) {
+    this._vscodeWrapper = vscodeWrapper ? vscodeWrapper : new VSCodeWrapper();
     this._eventEmitter = new vscode.EventEmitter<PreviewConfigChangeEvent>();
     this._defaultBackgroundColor = this._getConfiguration().backgroundColor;
     this._backgroundColor = attributeParser.parseBackgroundColor(code);
