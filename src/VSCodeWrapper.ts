@@ -1,8 +1,13 @@
 import * as vscode from 'vscode';
+import { TextDocumentProvider } from './models/MermaidDocumentProvider';
 
-export default class VSCodeWrapper {
+export default class VSCodeWrapper implements TextDocumentProvider {
   public get activeTextEditor(): vscode.TextEditor | undefined {
     return vscode.window.activeTextEditor;
+  }
+
+  public get activeTextDocument(): vscode.TextDocument | undefined {
+    return vscode.window.activeTextEditor?.document;
   }
 
   public get onDidChangeConfiguration(): vscode.Event<
