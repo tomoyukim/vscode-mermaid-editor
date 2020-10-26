@@ -1,6 +1,6 @@
 import * as assert from 'assert';
-import Attribute from '../../../models/Attribute';
-import Code from '../../../models/Code';
+import Attribute from '../../../../models/editor/Attribute';
+import Code from '../../../../models/editor/Code';
 
 suite('Code Tests', function() {
   const dummyCode = `

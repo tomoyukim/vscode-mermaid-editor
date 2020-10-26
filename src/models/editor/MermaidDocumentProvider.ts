@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import * as constants from '../constants';
+import * as constants from '../../constants';
 import Attribute from './Attribute';
 import Code from './Code';
 import AttributeParseService from './AttributeParseService';

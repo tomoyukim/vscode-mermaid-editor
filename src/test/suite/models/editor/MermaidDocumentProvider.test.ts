@@ -2,9 +2,9 @@ import * as assert from 'assert';
 import * as vscode from 'vscode';
 import { mock, when, instance, anyFunction, verify, reset } from 'ts-mockito';
 
-import MermaidDocumentProvider from '../../../models/MermaidDocumentProvider';
-import { TextDocumentProvider } from '../../../models/MermaidDocumentProvider';
-import AttributeParseService from '../../../models/AttributeParseService';
+import MermaidDocumentProvider from '../../../../models/editor/MermaidDocumentProvider';
+import { TextDocumentProvider } from '../../../../models/editor/MermaidDocumentProvider';
+import AttributeParseService from '../../../../models/editor/AttributeParseService';
 import { domainToUnicode } from 'url';
 
 suite('MermaidDocumentProvider Tests', function() {

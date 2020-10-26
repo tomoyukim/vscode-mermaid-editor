@@ -1,7 +1,7 @@
 import * as assert from 'assert';
-import Attribute from '../../../models/Attribute';
-import Code from '../../../models/Code';
-import MermaidDocument from '../../../models/MermaidDocument';
+import Attribute from '../../../../models/editor/Attribute';
+import Code from '../../../../models/editor/Code';
+import MermaidDocument from '../../../../models/editor/MermaidDocument';
 
 suite('MermaidDocument Tests', function() {
   const dummyCode = `

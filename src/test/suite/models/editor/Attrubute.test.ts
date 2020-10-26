@@ -1,5 +1,5 @@
 import * as assert from 'assert';
-import Attribute from '../../../models/Attribute';
+import Attribute from '../../../../models/editor/Attribute';
 
 suite('Attribute Tests', function() {
   test('should empty string in each property in case of not init properties', () => {
