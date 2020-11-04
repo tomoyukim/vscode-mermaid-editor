@@ -1,35 +1,13 @@
 import * as vscode from 'vscode';
 import { TextDocumentProvider } from './models/editor/MermaidDocumentProvider';
+import { ConfigurationProvider } from './models/configration/PreviewConfigProvider';
+import FileSystemService from './models/FileSystemService';
+import { TextDecoder } from 'util';
 
-export default class VSCodeWrapper implements TextDocumentProvider {
+export default class VSCodeWrapper
+  implements TextDocumentProvider, ConfigurationProvider, FileSystemService {
   public get activeTextEditor(): vscode.TextEditor | undefined {
     return vscode.window.activeTextEditor;
-  }
-
-  public get activeTextDocument(): vscode.TextDocument | undefined {
-    return vscode.window.activeTextEditor?.document;
-  }
-
-  public get onDidChangeConfiguration(): vscode.Event<
-    vscode.ConfigurationChangeEvent
-  > {
-    return vscode.workspace.onDidChangeConfiguration;
-  }
-
-  public get onDidChangeTextDocument(): vscode.Event<
-    vscode.TextDocumentChangeEvent
-  > {
-    return vscode.workspace.onDidChangeTextDocument;
-  }
-
-  public get onDidChangeActiveTextEditor(): vscode.Event<
-    vscode.TextEditor | undefined
-  > {
-    return vscode.window.onDidChangeActiveTextEditor;
-  }
-
-  public get workspaceFolders(): readonly vscode.WorkspaceFolder[] | undefined {
-    return vscode.workspace.workspaceFolders;
   }
 
   public getWorkspaceFolder(
@@ -56,10 +34,6 @@ export default class VSCodeWrapper implements TextDocumentProvider {
       showOptions,
       options
     );
-  }
-
-  public getConfiguration(section: string): vscode.WorkspaceConfiguration {
-    return vscode.workspace.getConfiguration(section);
   }
 
   public async showInputBox(
@@ -93,7 +67,46 @@ export default class VSCodeWrapper implements TextDocumentProvider {
     await this.executeCommand('setContext', contextSection, value);
   }
 
+  // ConfigurationProvider
+  public getConfiguration(section: string): vscode.WorkspaceConfiguration {
+    return vscode.workspace.getConfiguration(section);
+  }
+
+  public get onDidChangeConfiguration(): vscode.Event<
+    vscode.ConfigurationChangeEvent
+  > {
+    return vscode.workspace.onDidChangeConfiguration;
+  }
+
+  // TextDocumentProvider
+  public get activeTextDocument(): vscode.TextDocument | undefined {
+    return vscode.window.activeTextEditor?.document;
+  }
+
+  public get onDidChangeTextDocument(): vscode.Event<
+    vscode.TextDocumentChangeEvent
+  > {
+    return vscode.workspace.onDidChangeTextDocument;
+  }
+
+  public get onDidChangeActiveTextEditor(): vscode.Event<
+    vscode.TextEditor | undefined
+  > {
+    return vscode.window.onDidChangeActiveTextEditor;
+  }
+
+  // FileSystemService
+  public get workspaceFolders(): readonly vscode.WorkspaceFolder[] | undefined {
+    return vscode.workspace.workspaceFolders;
+  }
+
   public file(path: string): vscode.Uri {
     return vscode.Uri.file(path);
+  }
+
+  public async readFile(uri: vscode.Uri): Promise<string> {
+    const config = await vscode.workspace.fs.readFile(uri);
+    const decoder = new TextDecoder('utf-8');
+    return decoder.decode(config);
   }
 }

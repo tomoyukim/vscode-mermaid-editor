@@ -5,7 +5,6 @@ import { mock, when, instance, anyFunction, verify, reset } from 'ts-mockito';
 import MermaidDocumentProvider from '../../../../models/editor/MermaidDocumentProvider';
 import { TextDocumentProvider } from '../../../../models/editor/MermaidDocumentProvider';
 import AttributeParseService from '../../../../models/editor/AttributeParseService';
-import { domainToUnicode } from 'url';
 
 suite('MermaidDocumentProvider Tests', function() {
   const dummyCode = `
