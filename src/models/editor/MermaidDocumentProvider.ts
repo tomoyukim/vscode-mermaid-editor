@@ -1,24 +1,14 @@
 import * as vscode from 'vscode';
+import * as path from 'path';
 import * as constants from '../../constants';
 import Attribute from './Attribute';
 import Code from './Code';
 import AttributeParseService from './AttributeParseService';
 import MermaidDocument from './MermaidDocument';
+import TextDocumentProvider from '../editor/TextDocumentProvider';
 
 export interface MermaidDocumentChangeEvent {
   mermaidDocument: MermaidDocument;
-}
-
-export interface TextDocumentChangeEvent {
-  document: vscode.TextDocument;
-}
-
-export interface TextDocumentProvider {
-  readonly activeTextDocument: vscode.TextDocument | undefined;
-  readonly onDidChangeTextDocument: vscode.Event<TextDocumentChangeEvent>;
-  readonly onDidChangeActiveTextEditor: vscode.Event<
-    vscode.TextEditor | undefined
-  >;
 }
 
 class MermaidDocumentProvider {
@@ -57,13 +47,14 @@ class MermaidDocumentProvider {
     document: vscode.TextDocument
   ): MermaidDocument {
     const fileName = document.fileName;
+    const currentDir = path.dirname(fileName);
     const code = document.getText().trim();
 
     const attribute = new Attribute(
       this._attributeParseService.parseBackgroundColor(code),
       this._attributeParseService.parseConfig(code)
     );
-    return new MermaidDocument(new Code(code, attribute), fileName);
+    return new MermaidDocument(new Code(code, attribute), fileName, currentDir);
   }
 
   private _notifyUpdate(document: vscode.TextDocument): void {

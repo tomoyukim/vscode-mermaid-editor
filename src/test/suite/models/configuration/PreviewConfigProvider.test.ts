@@ -4,9 +4,9 @@ import { mock, when, instance, reset } from 'ts-mockito';
 import * as constants from '../../../../constants';
 
 import PreviewConfigProvider, {
-  PreviewConfigProperty,
-  ConfigurationProvider
+  PreviewConfigProperty
 } from '../../../../models/configration/PreviewConfigProvider';
+import ConfigurationProvider from '../../../../models/configration/ConfigurationProvider';
 
 suite('PreviewConfigProvider Tests', function() {
   let mocks: {

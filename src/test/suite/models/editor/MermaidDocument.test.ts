@@ -15,6 +15,7 @@ suite('MermaidDocument Tests', function() {
   test('should empty string or object in each property in case of not init properties', () => {
     const document = new MermaidDocument();
     assert.strictEqual(document.fileName, '');
+    assert.strictEqual(document.currentDir, '');
     assert.strictEqual(document.code.value, '');
     assert.strictEqual(document.code.attribute.backgroundColor, '');
     assert.strictEqual(document.code.attribute.pathToConfig, '');
@@ -23,8 +24,13 @@ suite('MermaidDocument Tests', function() {
   test('should return init properties', () => {
     const attribute = new Attribute('#fff', './path/to/config');
     const code = new Code(dummyCode, attribute);
-    const document = new MermaidDocument(code, '/path/to/file');
-    assert.strictEqual(document.fileName, '/path/to/file');
+    const document = new MermaidDocument(
+      code,
+      'diagram.mmd',
+      '/path/to/currentDir'
+    );
+    assert.strictEqual(document.fileName, 'diagram.mmd');
+    assert.strictEqual(document.currentDir, '/path/to/currentDir');
     assert.strictEqual(document.code.value, dummyCode);
     assert.strictEqual(document.code.attribute.backgroundColor, '#fff');
     assert.strictEqual(

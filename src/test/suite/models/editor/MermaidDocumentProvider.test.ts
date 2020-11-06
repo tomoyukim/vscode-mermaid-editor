@@ -3,7 +3,7 @@ import * as vscode from 'vscode';
 import { mock, when, instance, anyFunction, verify, reset } from 'ts-mockito';
 
 import MermaidDocumentProvider from '../../../../models/editor/MermaidDocumentProvider';
-import { TextDocumentProvider } from '../../../../models/editor/MermaidDocumentProvider';
+import TextDocumentProvider from '../../../../models/editor/TextDocumentProvider';
 import AttributeParseService from '../../../../models/editor/AttributeParseService';
 
 suite('MermaidDocumentProvider Tests', function() {
@@ -54,6 +54,7 @@ suite('MermaidDocumentProvider Tests', function() {
 
     const document = provider.document;
     assert.strictEqual(document.fileName, '');
+    assert.strictEqual(document.currentDir, '');
     assert.strictEqual(document.code.value, '');
     assert.strictEqual(document.code.attribute.backgroundColor, '');
     assert.strictEqual(document.code.attribute.pathToConfig, '');
@@ -63,7 +64,7 @@ suite('MermaidDocumentProvider Tests', function() {
 
   test('should return current active MermaidDocument', () => {
     when(mocks.textDocument.getText()).thenReturn(dummyCode);
-    when(mocks.textDocument.fileName).thenReturn('/path/to/file');
+    when(mocks.textDocument.fileName).thenReturn('/path/to/diagram.mmd');
     when(mocks.textDocument.languageId).thenReturn('mermaid');
 
     when(mocks.textDocumentProvider.activeTextDocument).thenReturn(
@@ -83,7 +84,8 @@ suite('MermaidDocumentProvider Tests', function() {
     );
 
     const document = provider.document;
-    assert.strictEqual(document.fileName, '/path/to/file');
+    assert.strictEqual(document.fileName, '/path/to/diagram.mmd');
+    assert.strictEqual(document.currentDir, '/path/to');
     assert.strictEqual(document.code.value, dummyCode.trim());
     assert.strictEqual(document.code.attribute.backgroundColor, '#fff');
     assert.strictEqual(
@@ -96,7 +98,7 @@ suite('MermaidDocumentProvider Tests', function() {
 
   test('should not call onDidChangeMermaidDocument when the content in TextDocument is not changed', done => {
     when(mocks.textDocument.getText()).thenReturn(dummyCode);
-    when(mocks.textDocument.fileName).thenReturn('/path/to/file');
+    when(mocks.textDocument.fileName).thenReturn('/path/to/diagram.mmd');
     when(mocks.textDocument.languageId).thenReturn('mermaid');
 
     when(mocks.textDocumentProvider.activeTextDocument).thenReturn(
@@ -155,7 +157,8 @@ suite('MermaidDocumentProvider Tests', function() {
     provider.onDidChangeMermaidDocument(e => {
       let error;
       try {
-        assert.strictEqual(e.mermaidDocument.fileName, '/path/to/file');
+        assert.strictEqual(e.mermaidDocument.fileName, '/path/to/diagram.mmd');
+        assert.strictEqual(e.mermaidDocument.currentDir, '/path/to');
         assert.strictEqual(
           e.mermaidDocument.code.value,
           updatedDummyCode.trim()
@@ -176,7 +179,7 @@ suite('MermaidDocumentProvider Tests', function() {
 
     const mockedTextDocument2 = mock<vscode.TextDocument>();
     when(mockedTextDocument2.getText()).thenReturn(updatedDummyCode);
-    when(mockedTextDocument2.fileName).thenReturn('/path/to/file');
+    when(mockedTextDocument2.fileName).thenReturn('/path/to/diagram.mmd');
     when(mockedTextDocument2.languageId).thenReturn('mermaid');
 
     provider.onDidChangeTextDocument(instance(mockedTextDocument2));
@@ -200,7 +203,11 @@ suite('MermaidDocumentProvider Tests', function() {
     provider.onDidChangeMermaidDocument(e => {
       let error;
       try {
-        assert.strictEqual(e.mermaidDocument.fileName, '/path/to/file3');
+        assert.strictEqual(
+          e.mermaidDocument.fileName,
+          '/path/to/another/diagram2.mmd'
+        );
+        assert.strictEqual(e.mermaidDocument.currentDir, '/path/to/another');
         assert.strictEqual(
           e.mermaidDocument.code.value,
           anotherDummyCode.trim()
@@ -221,7 +228,9 @@ suite('MermaidDocumentProvider Tests', function() {
 
     const mockedTextDocument3 = mock<vscode.TextDocument>();
     when(mockedTextDocument3.getText()).thenReturn(anotherDummyCode);
-    when(mockedTextDocument3.fileName).thenReturn('/path/to/file3');
+    when(mockedTextDocument3.fileName).thenReturn(
+      '/path/to/another/diagram2.mmd'
+    );
     when(mockedTextDocument3.languageId).thenReturn('mermaid');
 
     provider.onDidChangeTextDocument(instance(mockedTextDocument3));

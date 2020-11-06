@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
-import { TextDocumentProvider } from './models/editor/MermaidDocumentProvider';
-import { ConfigurationProvider } from './models/configration/PreviewConfigProvider';
+import TextDocumentProvider from './models/editor/TextDocumentProvider';
+import ConfigurationProvider from './models/configration/ConfigurationProvider';
 import FileSystemService from './models/FileSystemService';
 import { TextDecoder } from 'util';
 

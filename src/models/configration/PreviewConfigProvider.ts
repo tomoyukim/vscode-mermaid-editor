@@ -1,12 +1,6 @@
 import * as vscode from 'vscode';
 import * as constants from '../../constants';
-
-export interface ConfigurationProvider {
-  getConfiguration(section: string): vscode.WorkspaceConfiguration;
-  readonly onDidChangeConfiguration: vscode.Event<
-    vscode.ConfigurationChangeEvent
-  >;
-}
+import ConfigurationProvider from './ConfigurationProvider';
 
 export interface PreviewConfigChangeEvent {
   property: PreviewConfigProperty;
