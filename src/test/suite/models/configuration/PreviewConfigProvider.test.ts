@@ -57,13 +57,12 @@ suite('PreviewConfigProvider Tests', function() {
   });
 
   test('should call onChangePreviewConfig when backgroundColor is changed', done => {
-    // Note: initial provider without calling 'getConfig" has empty properties
-    // So, the onChangePreviewConfig is called when extension config is edited before calling 'getConfig'
-
-    when(mocks.configuration.backgroundColor).thenReturn('#123');
-    when(mocks.configuration.defaultMermaidConfig).thenReturn(
-      '/path/to/config'
-    );
+    when(mocks.configuration.backgroundColor)
+      .thenReturn('#000')
+      .thenReturn('#123');
+    when(mocks.configuration.defaultMermaidConfig)
+      .thenReturn('somewhere')
+      .thenReturn('/path/to/config');
 
     when(
       mocks.configurationProvider.getConfiguration(

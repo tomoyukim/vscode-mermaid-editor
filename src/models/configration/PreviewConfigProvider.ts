@@ -23,8 +23,12 @@ class PreviewConfigProvider {
   constructor(configurationProvider: ConfigurationProvider) {
     this._configurationProvider = configurationProvider;
 
-    this._pathToDefaultMermaidConfig = '';
-    this._backgroundColor = '';
+    const {
+      defaultMermaidConfig,
+      backgroundColor
+    } = this._getExtensionConfiguration();
+    this._pathToDefaultMermaidConfig = defaultMermaidConfig;
+    this._backgroundColor = backgroundColor;
 
     this._eventEmitter = new vscode.EventEmitter<PreviewConfigChangeEvent>();
     this._configurationProvider.onDidChangeConfiguration(
@@ -69,10 +73,12 @@ class PreviewConfigProvider {
     switch (key) {
       case PreviewConfigProperty.DefaultMermaidConfig:
         const { defaultMermaidConfig } = this._getExtensionConfiguration();
-        return defaultMermaidConfig;
+        this._pathToDefaultMermaidConfig = defaultMermaidConfig;
+        return this._pathToDefaultMermaidConfig;
       case PreviewConfigProperty.BackgroundColor:
         const { backgroundColor } = this._getExtensionConfiguration();
-        return backgroundColor;
+        this._backgroundColor = backgroundColor;
+        return this._backgroundColor;
       default:
         break;
     }

@@ -109,4 +109,8 @@ export default class VSCodeWrapper
     const decoder = new TextDecoder('utf-8');
     return decoder.decode(config);
   }
+
+  public async writeFile(uri: vscode.Uri, data: Uint8Array): Promise<void> {
+    await vscode.workspace.fs.writeFile(uri, data);
+  }
 }
