@@ -3,9 +3,16 @@ import TextDocumentProvider from './models/editor/TextDocumentProvider';
 import ConfigurationProvider from './models/configration/ConfigurationProvider';
 import FileSystemService from './models/FileSystemService';
 import { TextDecoder } from 'util';
+import WebViewPanelProvider from './models/view/WebViewPanelProvider';
+import SystemCommandService from './controllers/SystemCommandService';
 
 export default class VSCodeWrapper
-  implements TextDocumentProvider, ConfigurationProvider, FileSystemService {
+  implements
+    TextDocumentProvider,
+    ConfigurationProvider,
+    FileSystemService,
+    SystemCommandService,
+    WebViewPanelProvider {
   public get activeTextEditor(): vscode.TextEditor | undefined {
     return vscode.window.activeTextEditor;
   }
@@ -20,6 +27,21 @@ export default class VSCodeWrapper
     return vscode.window.createOutputChannel(channelName);
   }
 
+  public async showInputBox(
+    option?: vscode.InputBoxOptions
+  ): Promise<string | undefined> {
+    return vscode.window.showInputBox(option);
+  }
+
+  // SystemCommandService
+  public executeCommand<T>(
+    command: string,
+    ...rest: any[]
+  ): Thenable<T | undefined> | undefined {
+    return vscode.commands.executeCommand<T>(command, ...rest);
+  }
+
+  // WebViewPanelProvider
   public createWebviewPanel(
     viewType: string,
     title: string,
@@ -36,35 +58,11 @@ export default class VSCodeWrapper
     );
   }
 
-  public async showInputBox(
-    option?: vscode.InputBoxOptions
-  ): Promise<string | undefined> {
-    return vscode.window.showInputBox(option);
-  }
-
   public registerWebviewPanelSerializer(
     viewType: string,
     serializer: vscode.WebviewPanelSerializer
   ): vscode.Disposable {
     return vscode.window.registerWebviewPanelSerializer(viewType, serializer);
-  }
-
-  public registerCommand(
-    command: string,
-    callback: () => void
-  ): vscode.Disposable {
-    return vscode.commands.registerCommand(command, callback);
-  }
-
-  public executeCommand<T>(
-    command: string,
-    ...rest: any[]
-  ): Thenable<T | undefined> | undefined {
-    return vscode.commands.executeCommand<T>(command, ...rest);
-  }
-
-  public async setContext(contextSection: string, value: any): Promise<void> {
-    await this.executeCommand('setContext', contextSection, value);
   }
 
   // ConfigurationProvider
