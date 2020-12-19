@@ -25,9 +25,12 @@ import {
 import { GeneratorConfigProperty } from '../models/configration/GeneratorConfigProvider';
 import GeneratorConfigProvider from '../models/configration/GeneratorConfigProvider';
 import FileGeneratorService from '../models/FileGeneratorService';
-import { CaptureImageEndEvent } from '../views/PreviewWebView';
+import { CaptureImageEndEvent } from '../models/view/DiagramWebViewTypes';
 import SystemCommandService from './SystemCommandService';
 import MermaidConfigService from '../models/configration/MermaidConfigService';
+import Logger from '../Logger';
+import { PopupViewProvider } from './PopupViewProvider';
+import GeneratorProgressStatusBar from '../GeneratorProgressStatusBar';
 
 // for test
 export const backgroundSelector = (viewState: ViewState): string => {
@@ -50,22 +53,6 @@ export const mermaidConfigSelector = (viewState: ViewState): string => {
     ? individualMermaidConfig
     : defaultMermaidConfig;
 };
-/*
-export const viewStateSelector = (
-  viewState: ViewState
-): DiagramWebViewRenderParams => {
-  const code = viewState.mermaidDocument.code.value;
-  const backgroundColor = backgroundSelector(viewState);
-  const mermaidConfig = await this._mermaidConfigService.getMermaidConfig(
-    mermaidConfigSelector(viewState)
-  );
-  return {
-    code,
-    backgroundColor,
-    mermaidConfig: mermaidConfig.value
-  };
-};
-*/
 
 class MainController {
   private _timer: NodeJS.Timeout | null;
@@ -78,6 +65,7 @@ class MainController {
   private _mermaidConfigService: MermaidConfigService;
   private _fileGeneratorService: FileGeneratorService;
   private _systemCommandService: SystemCommandService;
+  private _popupViewProvider: PopupViewProvider;
 
   constructor(
     viewStateStore: Store<ViewState, ViewStateAction>,
@@ -87,7 +75,8 @@ class MainController {
     generatorConfigProvider: GeneratorConfigProvider,
     mermaidConfigService: MermaidConfigService,
     fileGeneratorService: FileGeneratorService,
-    systemCommandService: SystemCommandService
+    systemCommandService: SystemCommandService,
+    popupViewProvider: PopupViewProvider
   ) {
     this._timer = null;
     this._viewStateStore = viewStateStore;
@@ -99,6 +88,7 @@ class MainController {
     this._mermaidConfigService = mermaidConfigService;
     this._fileGeneratorService = fileGeneratorService;
     this._systemCommandService = systemCommandService;
+    this._popupViewProvider = popupViewProvider;
 
     this._webViewManager.onDidChangeWebView(e =>
       this.onDidChangeWebView(e.webView)
@@ -121,23 +111,7 @@ class MainController {
     );
   }
 
-  private async _initWebView(
-    webView: DiagramWebView | undefined
-  ): Promise<void> {
-    this._diagramWebView = webView;
-
-    if (!webView) {
-      // disposed
-      return;
-    }
-
-    this._setContext(constants.CONTEXT_SECTION_PREVIEW_ENABLED, true);
-    this._setContext(constants.CONTEXT_SECTION_PREVIEW_ACTIVE, webView.active);
-    this._setContext(
-      constants.CONTEXT_SECTION_PREVIEW_VISIBLE,
-      webView.visible
-    );
-
+  private async _setupWebView(): Promise<void> {
     this._diagramWebView?.onDidChangeViewStateActivity(isActive => {
       this._setContext(constants.CONTEXT_SECTION_PREVIEW_ACTIVE, isActive);
       // TODO: initWebView?
@@ -147,13 +121,24 @@ class MainController {
     });
     this._diagramWebView?.onDidCaptureImage(e => this.onDidCaptureImage(e));
     this._diagramWebView?.onDidError((error: ErrorEvent) => {
-      // TODO: error output
       switch (error.kind) {
         case 'error/diagram-parse':
+          Logger.appendLine('[DigagramParseError]');
+          Logger.appendLine(error.message);
+          break;
         case 'error/mermaid-config-json-parse':
+          Logger.appendLine('[MermaidConfigJSONParseError]');
+          Logger.appendLine(error.message);
+          break;
         case 'error/renderer':
+          Logger.appendLine('[RendererError]');
+          Logger.appendLine(error.message);
+          break;
         default:
+          Logger.appendLine('unknown error: ' + JSON.stringify(error));
+          break;
       }
+      Logger.show();
     });
 
     this._diagramWebView?.bind(
@@ -196,7 +181,7 @@ class MainController {
       clearTimeout(this._timer);
       this._timer = null;
     }
-    //TODO: this._statusBarItem.dispose();
+
     this._setContext(constants.CONTEXT_SECTION_PREVIEW_ENABLED, false);
     this._setContext(constants.CONTEXT_SECTION_PREVIEW_ACTIVE, false);
     this._setContext(constants.CONTEXT_SECTION_PREVIEW_VISIBLE, false);
@@ -207,7 +192,17 @@ class MainController {
   // commands
   public async showPreview(): Promise<void> {
     if (!this._diagramWebView) {
-      await this._initWebView(this._webViewManager.webView);
+      this._diagramWebView = this._webViewManager.webView;
+      this._setContext(constants.CONTEXT_SECTION_PREVIEW_ENABLED, true);
+      this._setContext(
+        constants.CONTEXT_SECTION_PREVIEW_ACTIVE,
+        this._diagramWebView.active
+      );
+      this._setContext(
+        constants.CONTEXT_SECTION_PREVIEW_VISIBLE,
+        this._diagramWebView.visible
+      );
+      await this._setupWebView();
     }
   }
 
@@ -224,14 +219,12 @@ class MainController {
   }
 
   public async zoomTo(): Promise<void> {
-    /* TODO:
-    const value = await this._vscodeWrapper.showInputBox({
+    const value = await this._popupViewProvider.showInputBox({
       placeHolder: 'scale'
     });
     if (value) {
       this._diagramWebView?.zoomTo(parseFloat(value));
     }
-    */
   }
 
   public async captureImage(): Promise<void> {
@@ -245,35 +238,72 @@ class MainController {
         width: config.value.width,
         height: config.value.height
       });
-      // TODO: this._statusBarItem.show();
+      GeneratorProgressStatusBar.show();
     }
   }
 
   // callbacks
   public async onDidCaptureImage(e: CaptureImageEndEvent): Promise<void> {
-    if (e.error || !e.data || !e.type) {
-      // TODO: error
-      vscode.window.showErrorMessage(constants.MESSAGE_GENERATE_IMAGE_FAILURE);
+    if (e.kind === 'capture_image/failure') {
+      Logger.appendLine('[CaptureImageFailure]');
+      Logger.appendLine(e.error.message);
+      Logger.show();
+      this._popupViewProvider.showErrorMessage(
+        constants.MESSAGE_GENERATE_IMAGE_FAILURE
+      );
       return;
     } else {
+      const config = this._generatorConfigProvider.getConfig(
+        GeneratorConfigProperty.OutputPath
+      );
+      let outputPath = this._mermaidDocumentProvider.document.currentDir;
+      if (config !== undefined && config.kind === 'outputPath') {
+        outputPath = config.value;
+      }
+      const fileName = this._mermaidDocumentProvider.document.fileName;
       try {
-        await this._fileGeneratorService.outputFile(e.data, '', '', e.type);
-        vscode.window.showInformationMessage(
+        await this._fileGeneratorService.outputFile(
+          e.data,
+          outputPath,
+          fileName,
+          e.type
+        );
+        this._popupViewProvider.showInformationMessage(
           constants.MESSAGE_GENERATE_IMAGE_SUCCESS
         );
       } catch (error) {
-        // TODO: this._logger.appendLine(error.message);
-        vscode.window.showErrorMessage(error.message);
+        Logger.appendLine('[OutputFileFailure]');
+        Logger.appendLine(error.message);
+        Logger.show();
+        this._popupViewProvider.showErrorMessage(
+          constants.MESSAGE_GENERATE_IMAGE_FAILURE
+        );
       }
-      // TODO: this._logger.show();
     }
-    // TODO: this._statusBarItem.hide();
+    GeneratorProgressStatusBar.hide();
   }
 
   public async onDidChangeWebView(
     webView: DiagramWebView | undefined
   ): Promise<void> {
-    await this._initWebView(webView);
+    this._diagramWebView = webView;
+
+    if (!this._diagramWebView) {
+      // disposed
+      this.dispose();
+    } else {
+      // new webView instnce alive
+      this._setContext(constants.CONTEXT_SECTION_PREVIEW_ENABLED, true);
+      this._setContext(
+        constants.CONTEXT_SECTION_PREVIEW_ACTIVE,
+        this._diagramWebView.active
+      );
+      this._setContext(
+        constants.CONTEXT_SECTION_PREVIEW_VISIBLE,
+        this._diagramWebView.visible
+      );
+      await this._setupWebView();
+    }
   }
 
   public async onDidChangeMermaidDocument(

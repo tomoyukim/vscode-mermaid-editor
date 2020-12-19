@@ -13,10 +13,9 @@ import FileSystemService from '../../../../models/FileSystemService';
 import DiagramWebView from '../../../../models/view/DiagramWebView';
 import {
   CaptureImageEndEvent,
-  ErrorEvent,
-  WebViewEvent
+  ErrorEvent
 } from '../../../../models/view/DiagramWebViewTypes';
-import { ImageFileType } from '../../../../controllers/fileGenerator';
+import { ImageFileType } from '../../../../models/FileGeneratorService';
 
 suite('DiagramWebView Tests', function() {
   test('should construct DiagramWebView', done => {

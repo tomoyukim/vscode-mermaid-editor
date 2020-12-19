@@ -5,6 +5,7 @@ import FileSystemService from './models/FileSystemService';
 import { TextDecoder } from 'util';
 import WebViewPanelProvider from './models/view/WebViewPanelProvider';
 import SystemCommandService from './controllers/SystemCommandService';
+import { PopupViewProvider } from './controllers/PopupViewProvider';
 
 export default class VSCodeWrapper
   implements
@@ -12,6 +13,7 @@ export default class VSCodeWrapper
     ConfigurationProvider,
     FileSystemService,
     SystemCommandService,
+    PopupViewProvider,
     WebViewPanelProvider {
   public get activeTextEditor(): vscode.TextEditor | undefined {
     return vscode.window.activeTextEditor;
@@ -27,10 +29,21 @@ export default class VSCodeWrapper
     return vscode.window.createOutputChannel(channelName);
   }
 
+  // PopupViewProvider
   public async showInputBox(
     option?: vscode.InputBoxOptions
   ): Promise<string | undefined> {
     return vscode.window.showInputBox(option);
+  }
+
+  public async showInformationMessage(
+    message: string
+  ): Promise<string | undefined> {
+    return vscode.window.showInformationMessage(message);
+  }
+
+  public async showErrorMessage(message: string): Promise<string | undefined> {
+    return vscode.window.showErrorMessage(message);
   }
 
   // SystemCommandService

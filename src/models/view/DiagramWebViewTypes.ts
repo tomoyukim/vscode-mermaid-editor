@@ -1,4 +1,4 @@
-import { ImageFileType } from '../../controllers/fileGenerator';
+import { ImageFileType } from '../../models/FileGeneratorService';
 import { RendererError } from './Renderer';
 
 // type for params
@@ -45,7 +45,7 @@ export interface CaptureImageSuccess {
 
 export interface CaptureImageFailure {
   kind: 'capture_image/failure';
-  error: any;
+  error: Error;
 }
 
 export type CaptureImageEndEvent = CaptureImageSuccess | CaptureImageFailure;

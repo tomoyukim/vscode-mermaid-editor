@@ -14,6 +14,7 @@ import PreviewConfigProvider from './models/configration/PreviewConfigProvider';
 import GeneratorConfigProvider from './models/configration/GeneratorConfigProvider';
 import MermaidConfigService from './models/configration/MermaidConfigService';
 import FileGeneratorService from './models/FileGeneratorService';
+import GeneratorProgressStatusBar from './GeneratorProgressStatusBar';
 
 function registerCommand(
   context: vscode.ExtensionContext,
@@ -29,6 +30,15 @@ let mainController: MainController;
 
 export function activate(context: vscode.ExtensionContext): void {
   const vscodeWrapper = new VSCodeWrapper();
+
+  Logger.setOutputChannel(
+    vscodeWrapper.createOutputChannel(constants.LOG_OUTPUT_CHANNEL)
+  );
+
+  GeneratorProgressStatusBar.setStatusBarItem(
+    vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100)
+  );
+
   const webViewManager = new WebViewManager(
     context.extensionPath,
     vscodeWrapper,
@@ -61,6 +71,7 @@ export function activate(context: vscode.ExtensionContext): void {
     generateConfigProvider,
     mermaidConfigService,
     fileGeneratorService,
+    vscodeWrapper,
     vscodeWrapper
   );
   // register commands
@@ -87,4 +98,5 @@ export function activate(context: vscode.ExtensionContext): void {
 export function deactivate(): void {
   mainController.dispose();
   Logger.dispose();
+  GeneratorProgressStatusBar.dispose();
 }

@@ -4,7 +4,7 @@ import { mock, when, instance, reset, anyString, anything } from 'ts-mockito';
 
 import FileGeneratorService from '../../../../models/FileGeneratorService';
 import FileSystemService from '../../../../models/FileSystemService';
-import { ImageFileType } from '../../../../controllers/fileGenerator';
+import { ImageFileType } from '../../../../models/FileGeneratorService';
 
 suite('FileGeneratorService Tests', function() {
   let mocks: {

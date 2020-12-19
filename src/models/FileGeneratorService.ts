@@ -51,7 +51,6 @@ class FileGeneratorService {
     try {
       await this._fileSystemService.writeFile(uri, buffer);
     } catch (e) {
-      // TODO: caller should handle error properly
       throw e;
     }
   }

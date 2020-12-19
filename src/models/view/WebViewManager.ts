@@ -82,7 +82,6 @@ class WebViewManager implements vscode.WebviewPanelSerializer {
       this._diagramWebView = this._createDiagramWebView(webViewPanel);
     }
 
-    // TODO: caller shoul call render and reviel
     return this._diagramWebView;
   }
 
@@ -102,6 +101,7 @@ class WebViewManager implements vscode.WebviewPanelSerializer {
     state: WebViewState | undefined
   ): Promise<void> {
     // TODO: restore state and notify another models?
+    // scale is slipped in DiagramWebView state and actual restored WebView!!
     this._diagramWebView = this._createDiagramWebView(webviewPanel);
     this._eventEmitter.fire({ webView: this._diagramWebView });
   }
