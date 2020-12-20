@@ -2,7 +2,7 @@ import * as assert from 'assert';
 import { mock, when, instance, anyFunction } from 'ts-mockito';
 
 import { Store } from 'redux';
-import Renderer, { RendererError } from '../../../../models/view/Renderer';
+import Renderer, { RendererError } from '../../../view/Renderer';
 
 interface TestParams {
   property: string;

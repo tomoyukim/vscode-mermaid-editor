@@ -1,8 +1,8 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
-import * as constants from '../../constants';
+import * as constants from '../constants';
 import get from 'lodash/get';
-import FileSystemService from '../FileSystemService';
+import FileSystemService from '../models/FileSystemService';
 import {
   CaptureImageEndEvent,
   CaptureImageParams,
@@ -11,7 +11,7 @@ import {
   WebViewEvent
 } from './DiagramWebViewTypes';
 import Renderer, { RendererError } from './Renderer';
-import { ViewState, ViewStateAction } from '../../controllers/viewStateStore';
+import { ViewState, ViewStateAction } from '../controllers/viewStateStore';
 
 type ShowOptions = {
   preserveFocus: boolean;

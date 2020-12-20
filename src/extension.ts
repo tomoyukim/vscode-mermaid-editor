@@ -6,7 +6,7 @@ import Logger from './Logger';
 import MainController from './controllers/mainController';
 
 import viewStateStore from './controllers/viewStateStore';
-import WebViewManager from './models/view/WebViewManager';
+import WebViewManager from './view/WebViewManager';
 import VSCodeWrapper from './VSCodeWrapper';
 import MermaidDocumentProvider from './models/editor/MermaidDocumentProvider';
 import AttributeParseService from './models/editor/AttributeParseService';

@@ -1,4 +1,4 @@
-import { ImageFileType } from '../../models/FileGeneratorService';
+import { ImageFileType } from '../models/FileGeneratorService';
 import { RendererError } from './Renderer';
 
 // type for params

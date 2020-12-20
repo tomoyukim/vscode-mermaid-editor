@@ -16,16 +16,16 @@ import {
   PreviewConfigChangeEvent,
   PreviewConfigProperty
 } from '../models/configration/PreviewConfigProvider';
-import WebViewManager from '../models/view/WebViewManager';
-import DiagramWebView from '../models/view/DiagramWebView';
+import WebViewManager from '../view/WebViewManager';
+import DiagramWebView from '../view/DiagramWebView';
 import {
   DiagramWebViewRenderParams,
   ErrorEvent
-} from '../models/view/DiagramWebViewTypes';
+} from '../view/DiagramWebViewTypes';
 import { GeneratorConfigProperty } from '../models/configration/GeneratorConfigProvider';
 import GeneratorConfigProvider from '../models/configration/GeneratorConfigProvider';
 import FileGeneratorService from '../models/FileGeneratorService';
-import { CaptureImageEndEvent } from '../models/view/DiagramWebViewTypes';
+import { CaptureImageEndEvent } from '../view/DiagramWebViewTypes';
 import SystemCommandService from './SystemCommandService';
 import MermaidConfigService from '../models/configration/MermaidConfigService';
 import Logger from '../Logger';

@@ -3,7 +3,7 @@ import TextDocumentProvider from './models/editor/TextDocumentProvider';
 import ConfigurationProvider from './models/configration/ConfigurationProvider';
 import FileSystemService from './models/FileSystemService';
 import { TextDecoder } from 'util';
-import WebViewPanelProvider from './models/view/WebViewPanelProvider';
+import WebViewPanelProvider from './view/WebViewPanelProvider';
 import SystemCommandService from './controllers/SystemCommandService';
 import { PopupViewProvider } from './controllers/PopupViewProvider';
 

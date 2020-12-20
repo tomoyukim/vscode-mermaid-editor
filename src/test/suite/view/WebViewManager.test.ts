@@ -2,10 +2,10 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 import * as assert from 'assert';
 import { mock, when, instance, anything, anyString } from 'ts-mockito';
-import * as constants from '../../../../constants';
-import WebViewManager from '../../../../models/view/WebViewManager';
-import WebViewPanelProvider from '../../../../models/view/WebViewPanelProvider';
-import FileSystemService from '../../../../models/FileSystemService';
+import * as constants from '../../../constants';
+import WebViewManager from '../../../view/WebViewManager';
+import WebViewPanelProvider from '../../../view/WebViewPanelProvider';
+import FileSystemService from '../../../models/FileSystemService';
 
 suite('WebViewManager Tests', function() {
   let registerWebViewPanelSerializerCalled = false;

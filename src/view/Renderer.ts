@@ -1,5 +1,5 @@
 import { Store, Action } from 'redux';
-import Timer from '../../Timer';
+import Timer from '../Timer';
 
 export interface RendererError {
   kind: 'error/renderer';

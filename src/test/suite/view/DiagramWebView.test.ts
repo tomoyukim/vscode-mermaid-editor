@@ -8,14 +8,14 @@ import {
   anything,
   anyString
 } from 'ts-mockito';
-import * as constants from '../../../../constants';
-import FileSystemService from '../../../../models/FileSystemService';
-import DiagramWebView from '../../../../models/view/DiagramWebView';
+import * as constants from '../../../constants';
+import FileSystemService from '../../../models/FileSystemService';
+import DiagramWebView from '../../../view/DiagramWebView';
 import {
   CaptureImageEndEvent,
   ErrorEvent
-} from '../../../../models/view/DiagramWebViewTypes';
-import { ImageFileType } from '../../../../models/FileGeneratorService';
+} from '../../../view/DiagramWebViewTypes';
+import { ImageFileType } from '../../../models/FileGeneratorService';
 
 suite('DiagramWebView Tests', function() {
   test('should construct DiagramWebView', done => {

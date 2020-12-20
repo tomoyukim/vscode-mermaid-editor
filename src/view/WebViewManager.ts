@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
-import * as constants from '../../constants';
-import FileSystemService from '../FileSystemService';
+import * as constants from '../constants';
+import FileSystemService from '../models/FileSystemService';
 import DiagramWebView from './DiagramWebView';
 import WebViewPanelProvider from './WebViewPanelProvider';
 
