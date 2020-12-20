@@ -1,5 +1,5 @@
 import { Store } from 'redux';
-import * as vscode from 'vscode';
+import * as path from 'path';
 import * as constants from '../constants';
 import isEmpty = require('lodash/isEmpty');
 import PreviewConfigProvider from '../models/configration/PreviewConfigProvider';
@@ -47,11 +47,14 @@ export const backgroundSelector = (viewState: ViewState): string => {
 // for test
 export const mermaidConfigSelector = (viewState: ViewState): string => {
   const defaultMermaidConfig = viewState.defaultMermaidConfig;
-  const individualMermaidConfig =
-    viewState.mermaidDocument.code.attribute.pathToConfig;
-  return !isEmpty(individualMermaidConfig)
-    ? individualMermaidConfig
-    : defaultMermaidConfig;
+  const mermaidDocument = viewState.mermaidDocument;
+  if (!isEmpty(mermaidDocument.code.attribute.pathToConfig)) {
+    return path.join(
+      mermaidDocument.currentDir,
+      mermaidDocument.code.attribute.pathToConfig
+    );
+  }
+  return defaultMermaidConfig;
 };
 
 class MainController {
