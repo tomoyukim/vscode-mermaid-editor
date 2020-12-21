@@ -70,7 +70,14 @@ class GeneratorConfigProvider {
     const uri = document.uri;
     const workingDir = this._fileSystemProvider.getWorkspaceFolder(uri)?.uri
       .fsPath;
-    return workingDir ? path.join(workingDir, outputPath) : undefined;
+    if (workingDir) {
+      if (outputPath) {
+        return path.join(workingDir, outputPath);
+      } else {
+        return workingDir;
+      }
+    }
+    return undefined;
   }
 
   public getConfig(key: GeneratorConfigProperty): GeneratorConfigType {

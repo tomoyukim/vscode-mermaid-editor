@@ -1,6 +1,6 @@
 import * as assert from 'assert';
 import * as vscode from 'vscode';
-import { mock, when, instance, reset } from 'ts-mockito';
+import { mock, when, instance, reset, anything } from 'ts-mockito';
 import * as constants from '../../../../constants';
 
 import GeneratorConfigProvider, {
@@ -9,7 +9,6 @@ import GeneratorConfigProvider, {
 import ConfigurationProvider from '../../../../models/configration/ConfigurationProvider';
 import TextDocumentProvider from '../../../../models/editor/TextDocumentProvider';
 import FileSystemProvider from '../../../../models/FileSystemService';
-import { config } from 'process';
 
 suite('GeneratorConfigProvider Tests', function() {
   let mocks: {
@@ -33,6 +32,42 @@ suite('GeneratorConfigProvider Tests', function() {
         reset(mocks.fileSystemProvider);
       }
     };
+  });
+
+  test('should return workspaceFolder path when mermaid-editor.generator.outputPath is null', () => {
+    when(mocks.configuration.outputPath).thenReturn(null);
+    when(mocks.configuration.useCurrentPath).thenReturn(false);
+
+    when(
+      mocks.configurationProvider.getConfiguration(
+        constants.CONFIG_SECTION_ME_GENERATE
+      )
+    ).thenReturn(instance(mocks.configuration));
+
+    const mockedWorkspaceFolder = mock<vscode.WorkspaceFolder>();
+    const mockedUri = mock(vscode.Uri);
+    when(mockedUri.fsPath).thenReturn('dummy workspace folder');
+    when(mockedWorkspaceFolder.uri).thenReturn(instance(mockedUri));
+    when(mocks.fileSystemProvider.getWorkspaceFolder(anything())).thenReturn(
+      instance(mockedWorkspaceFolder)
+    );
+
+    const generatorConfigProvider = new GeneratorConfigProvider(
+      instance(mocks.configurationProvider),
+      instance(mocks.textDocumentProvider),
+      instance(mocks.fileSystemProvider)
+    );
+
+    const config = generatorConfigProvider.getConfig(
+      GeneratorConfigProperty.OutputPath
+    );
+    if (!config) {
+      assert.fail('config should not be undefined');
+    }
+    assert.strictEqual(config.kind, 'outputPath');
+    assert.strictEqual(config.value, 'dummy workspace folder');
+
+    mocks.reset();
   });
 
   test('should return mermaid-editor.generator in extension config', () => {
