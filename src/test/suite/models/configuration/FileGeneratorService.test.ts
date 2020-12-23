@@ -29,7 +29,10 @@ suite('FileGeneratorService Tests', function() {
     when(mocks.fileSystemService.file(anyString())).thenCall(
       (output: string) => {
         try {
-          assert.strictEqual(output, path.join(expectedPathObj.dir, expectedPathObj.base));
+          assert.strictEqual(
+            output,
+            path.join(expectedPathObj.dir, expectedPathObj.base)
+          );
         } catch (e) {
           failed = true;
           done(e);

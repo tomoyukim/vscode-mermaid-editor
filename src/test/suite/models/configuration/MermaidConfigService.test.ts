@@ -22,7 +22,10 @@ suite('MermaidConfigService', () => {
       instance(mockedWorkspaceFolder)
     ]);
     const dummyFileUri = mock<vscode.Uri>();
-    const expectedPathToDefaultConfig = path.join(expectedAbsolutePath,'/path/to/config');
+    const expectedPathToDefaultConfig = path.join(
+      expectedAbsolutePath,
+      '/path/to/config'
+    );
     const expectedConfigString = '{"theme":"default"}';
     when(mockedFileSystemService.file(anyString())).thenReturn(
       instance(dummyFileUri)

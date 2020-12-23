@@ -190,7 +190,10 @@ suite('GeneratorConfigProvider Tests', function() {
     config = generatorConfigProvider.getConfig(
       GeneratorConfigProperty.OutputPath
     );
-    assert.strictEqual(config?.value, path.join(expectedWorkingDir, expectedOutputPath));
+    assert.strictEqual(
+      config?.value,
+      path.join(expectedWorkingDir, expectedOutputPath)
+    );
 
     mocks.reset();
   });
