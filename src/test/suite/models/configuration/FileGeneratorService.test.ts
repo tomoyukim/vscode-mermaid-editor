@@ -1,5 +1,6 @@
 import * as assert from 'assert';
 import * as vscode from 'vscode';
+import * as path from 'path';
 import { mock, when, instance, reset, anyString, anything } from 'ts-mockito';
 
 import FileGeneratorService from '../../../../models/FileGeneratorService';
@@ -22,12 +23,13 @@ suite('FileGeneratorService Tests', function() {
   });
 
   test('should call FileSystemService#writeFile() with passed data with target path & file name correctly', done => {
+    const expectedPathObj = path.parse('/path/to/diagram/dummy-diagram.jpg');
     let testUri: vscode.Uri;
     let failed = false;
     when(mocks.fileSystemService.file(anyString())).thenCall(
       (output: string) => {
         try {
-          assert.strictEqual(output, '/path/to/diagram/dummy-diagram.jpg');
+          assert.strictEqual(output, path.join(expectedPathObj.dir, expectedPathObj.base));
         } catch (e) {
           failed = true;
           done(e);
@@ -60,8 +62,8 @@ suite('FileGeneratorService Tests', function() {
 
     fileGeneratorService.outputFile(
       testData,
-      '/path/to/diagram',
-      'dummy-diagram',
+      expectedPathObj.dir,
+      expectedPathObj.name,
       ImageFileType.JPG
     );
     mocks.reset();

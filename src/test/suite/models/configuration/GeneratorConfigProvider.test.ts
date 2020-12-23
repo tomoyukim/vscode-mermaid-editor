@@ -1,5 +1,6 @@
 import * as assert from 'assert';
 import * as vscode from 'vscode';
+import * as path from 'path';
 import { mock, when, instance, reset, anything } from 'ts-mockito';
 import * as constants from '../../../../constants';
 
@@ -157,15 +158,17 @@ suite('GeneratorConfigProvider Tests', function() {
       instance(mockedDocument)
     );
 
+    const expectedWorkingDir = '/path/to/workingDir';
     const mockedWorkspaceFolder = mock<vscode.WorkspaceFolder>();
     when(mockedWorkspaceFolder.uri).thenReturn(
-      vscode.Uri.file('/path/to/workingDir')
+      vscode.Uri.file(expectedWorkingDir)
     );
     when(mocks.fileSystemProvider.getWorkspaceFolder(dummyUri)).thenReturn(
       instance(mockedWorkspaceFolder)
     );
 
-    when(mocks.configuration.outputPath).thenReturn('/path/to/img/output');
+    const expectedOutputPath = '/path/to/img/output';
+    when(mocks.configuration.outputPath).thenReturn(expectedOutputPath);
     when(mocks.configuration.useCurrentPath).thenReturn(false);
 
     when(
@@ -187,7 +190,7 @@ suite('GeneratorConfigProvider Tests', function() {
     config = generatorConfigProvider.getConfig(
       GeneratorConfigProperty.OutputPath
     );
-    assert.strictEqual(config?.value, '/path/to/workingDir/path/to/img/output');
+    assert.strictEqual(config?.value, path.join(expectedWorkingDir, expectedOutputPath));
 
     mocks.reset();
   });
