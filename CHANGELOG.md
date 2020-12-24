@@ -13,6 +13,27 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ### Fixed
 ### Security
 
+## [0.9.0] - 2020-12-24
+
+### Changed
+
+- Introduce webpack to reduce extension size
+- Update mermaid.js version to 8.8.0
+- Refactoring whole extension code to separate it into each functional and independent module for unit testing
+- Introduce unit test for most part of the extension for future maintenance
+- Change zoom interval, max and min values
+
+### Fixed
+
+- [Issue#20](https://github.com/tomoyukim/vscode-mermaid-editor/issues/20), [Issue#27](https://github.com/tomoyukim/vscode-mermaid-editor/issues/27): Fix generation error([5f92e970](https://github.com/tomoyukim/vscode-mermaid-editor/commit/5f92e9704b721d164e971a8f50aa2f84e8c4e496))
+- [Issue#29](https://github.com/tomoyukim/vscode-mermaid-editor/issues/29)
+- [Issue#30](https://github.com/tomoyukim/vscode-mermaid-editor/issues/30)
+
+### Security
+
+- Update `init` package version by updating `webpack-cli` version ([33a14517](https://github.com/tomoyukim/vscode-mermaid-editor/commit/33a145177a626bd186e975c9f95d4091ccd2ff3b))
+  - Pointed out by [PR#28](https://github.com/tomoyukim/vscode-mermaid-editor/pull/28)
+
 ## [0.8.1] - 2020-9-07
 
 ### Fixed
