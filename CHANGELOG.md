@@ -13,6 +13,13 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ### Fixed
 ### Security
 
+## [0.9.1] - 2020-12-30
+
+### Fixed
+
+- [Issue#31](https://github.com/tomoyukim/vscode-mermaid-editor/issues/31)
+  - Fix previewer bug caused by publishing with webpack. `mermaid.js` package have to be published even when `node_modules` is excluded.
+
 ## [0.9.0] - 2020-12-24
 
 ### Changed
