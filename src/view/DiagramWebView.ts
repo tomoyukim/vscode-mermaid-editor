@@ -191,7 +191,7 @@ export default class DiagramWebView extends Renderer<
       this._fileSystemService.file(
         path.join(
           this._extensionPath,
-          'node_modules',
+          'dist/vendor',
           'mermaid/dist/mermaid.min.js'
         )
       )

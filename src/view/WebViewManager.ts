@@ -55,7 +55,7 @@ class WebViewManager implements vscode.WebviewPanelSerializer {
         enableScripts: true,
         localResourceRoots: [
           this._fileSystemService.file(
-            path.join(this._extensionPath, 'node_modules')
+            path.join(this._extensionPath, 'dist/vendor')
           ),
           this._fileSystemService.file(path.join(this._extensionPath, 'media'))
         ]
