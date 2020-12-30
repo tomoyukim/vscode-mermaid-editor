@@ -48,7 +48,7 @@ suite('WebViewManager Tests', function() {
   test('should create and return webview when previous view is not held', done => {
     const expectedExtensionPath = '/path/to/extension';
     const expectedNodeModules = vscode.Uri.file(
-      path.join(expectedExtensionPath, 'node_modules')
+      path.join(expectedExtensionPath, 'dist/vendor')
     );
     const expectedMedia = vscode.Uri.file(
       path.join(expectedExtensionPath, 'media')
@@ -105,7 +105,7 @@ suite('WebViewManager Tests', function() {
     const mockedFileSystemService = mock<FileSystemService>();
     when(
       mockedFileSystemService.file(
-        path.join(expectedExtensionPath, 'node_modules')
+        path.join(expectedExtensionPath, 'dist/vendor')
       )
     ).thenReturn(expectedNodeModules);
     when(
