@@ -13,6 +13,12 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ### Fixed
 ### Security
 
+## [0.9.2] - 2020-12-30
+
+### Fixed
+
+- Fix unit test break by v0.9.1
+
 ## [0.9.1] - 2020-12-30
 
 ### Fixed
