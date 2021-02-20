@@ -7,11 +7,29 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ## [Unreleased]
 
 ### Added
+
 ### Changed
+
 ### Deprecated
+
 ### Removed
+
 ### Fixed
+
 ### Security
+
+## [0.10.0] - 2021-2-20
+
+### Added
+
+- [Issue#22](https://github.com/tomoyukim/vscode-mermaid-editor/issues/22)
+  - `mermaid-editor.preview.errorOutputOnSave` config is added.
+
+### Changed
+
+- [Issue#22](https://github.com/tomoyukim/vscode-mermaid-editor/issues/22)
+  - Only error message as the result of parsing latest document is shown. Old messages is cleared when the document is edited.
+  - Showing error output console during editing is suppressed. This can be automatically shown only when the document is saved if `mermaid-editor.preview.errorOutputOnSave` is true.
 
 ## [0.9.2] - 2020-12-30
 
@@ -52,8 +70,8 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ### Fixed
 
 - Fix generator error around canvas operation for svg tag by correcting xml serialization process. [5fd6a76](https://github.com/tomoyukim/vscode-mermaid-editor/commit/5fd6a7604084eac65770a11b7b1e4bd6994e8929)
-    - To [Issue#12](https://github.com/tomoyukim/vscode-mermaid-editor/issues/12): remove previous patch to escapse `<br/>` tag in svg
-    - To [Issue#18](https://github.com/tomoyukim/vscode-mermaid-editor/issues/18): fix the behavior by above patch
+  - To [Issue#12](https://github.com/tomoyukim/vscode-mermaid-editor/issues/12): remove previous patch to escapse `<br/>` tag in svg
+  - To [Issue#18](https://github.com/tomoyukim/vscode-mermaid-editor/issues/18): fix the behavior by above patch
 
 ### Note
 
@@ -90,14 +108,14 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ### Fixed
 
 - `<br>` tag in `graph` diagram is changed to be ignored in order to avoid image generation error reported by [Issue#12](https://github.com/tomoyukim/vscode-mermaid-editor/issues/12). It's not expected behavior maybe but I hope it can be fixed by original library; mermaid.js
-  - This symptom is caused by unescaped `<br>` tag in generated `svg` tag. Current image generation depends on `canvas` which loads `svg` image. It fails to load the image if `<br>` tag is contained as raw tag. It should be treated as `<text>` in SVG or line feed correctly. I put a bug report for mermaid.js about it. [mermaid.js Issue$1504](https://github.com/mermaid-js/mermaid/issues/1504)
+  - This symptom is caused by unescaped `<br>` tag in generated `svg` tag. Current image generation depends on `canvas` which loads `svg` image. It fails to load the image if `<br>` tag is contained as raw tag. It should be treated as `<text>` in SVG or line feed correctly. I put a bug report for mermaid.js about it. [mermaid.js Issue\$1504](https://github.com/mermaid-js/mermaid/issues/1504)
   - **Note**: The patch implemented in this version is not perfect. mermaid.js seems to ignore the escape letters for `<br>` tag and render it as line feed when starting this extension or VS code with the preview. In the case, you can escape it correctly by changing active editor or editting your diagram.
 
 ## [0.6.0] - 2020-5-27
 
 ### Added
 
-- Newly support __attribute__ description to specify mermaidjs config or preview background color in each `.mmd` file. For the detail, please refer to README
+- Newly support **attribute** description to specify mermaidjs config or preview background color in each `.mmd` file. For the detail, please refer to README
 - Add new VSCode config; `mermaid-editor.preview.defaultMermaidConfig` to setup default mermaidjs config file
 
 ### Changed
@@ -120,11 +138,9 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 - Adopt `webview.asWebviewUri` API for local resource. - Thank to [Issue#11](https://github.com/tomoyukim/vscode-mermaid-editor/issues/11) by Matt Bierner ([@mjbvz](https://github.com/mjbvz))
 
-
 ### Security
 
 - Update dependencies by security alert from Github
-
 
 ## [0.5.0] - 2020-4-1
 
@@ -145,6 +161,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ## [0.4.4] - 2020-1-15
 
 ### Added
+
 - Support for `fontawesome` icons - thanks to [PR#8](https://github.com/tomoyukim/vscode-mermaid-editor/pull/8) by Peter Garland ([@pngarland](https://github.com/pngarland))
 
 ### Changed
@@ -155,6 +172,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ## [0.4.3] - 2019-10-06
 
 ### Added
+
 - Add new setting item: `useCurrentPath` to use current path of editing mmd file as outputPath
 
 ### Changed
@@ -163,7 +181,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ### Security
 
- - Update depencency 'lodash' version by github security alert
+- Update depencency 'lodash' version by github security alert
 
 ## [0.4.2] - 2019-06-18
 
@@ -173,8 +191,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ### Fixed
 
- - Fixed generating image on windows was not worked
-
+- Fixed generating image on windows was not worked
 
 ## [0.4.1] - 2019-05-11
 
