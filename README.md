@@ -90,9 +90,9 @@ Settings for look & feel in preview or image generator.
 
 |Setting|Default|Description|
 |---|---|---|
-|mermaid-editor.preview.theme|default|color theme for live preview and generated image [default, forest, dark, natural]. This value is overwritten by `mermaid-editor.preview.defaultMermaidConfig`.|
 |mermaid-editor.preview.defaultMermaidConfig||relative path to the default configuration json file for mermaidjs.|
 |mermaid-editor.preview.backgroundColor|white|default background color for live preview and generated image|
+|mermaid-editor.preview.errorOutputOnSave|true|show error output console whe saving file if there's error message.<br/> **Note**: Error output in the console itself is always available regardless of this configuration.|
 |mermaid-editor.generate.type|svg|output image file type [svg, png, jpg, webp]|
 |mermaid-editor.generate.outputPath||relative path to the output target directory from project root|
 |mermaid-editor.generate.useCurrentPath|true|use relative output path as same as target mmd file instead of 'outputPath'|

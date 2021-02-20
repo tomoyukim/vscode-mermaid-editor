@@ -339,7 +339,10 @@ class MainController {
       const message = this._errorMessageQueue.dequeue();
       message && Logger.appendLine(message);
     }
-    Logger.show();
+
+    if (this._previewConfigProvider.errorOutputOnSave) {
+      Logger.show();
+    }
   }
 
   public async onDidChangePreviewConfig(

@@ -102,4 +102,25 @@ suite('PreviewConfigProvider Tests', function() {
 
     mocks.reset();
   });
+
+  test('should return mermaid-editor.preview.errorOutputOnError in extension config', () => {
+    when(mocks.configuration.errorOutputOnSave)
+      .thenReturn(false)
+      .thenReturn(true);
+
+    when(
+      mocks.configurationProvider.getConfiguration(
+        constants.CONFIG_SECTION_ME_PREVIEW
+      )
+    ).thenReturn(instance(mocks.configuration));
+
+    const previewConfigProvider = new PreviewConfigProvider(
+      instance(mocks.configurationProvider)
+    );
+
+    assert.strictEqual(previewConfigProvider.errorOutputOnSave, false);
+    assert.strictEqual(previewConfigProvider.errorOutputOnSave, true);
+
+    mocks.reset();
+  });
 });

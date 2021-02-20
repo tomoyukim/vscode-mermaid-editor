@@ -86,6 +86,11 @@ class PreviewConfigProvider {
     throw new Error('The key is not existed.');
   }
 
+  public get errorOutputOnSave(): boolean {
+    const { errorOutputOnSave } = this._getExtensionConfiguration();
+    return errorOutputOnSave;
+  }
+
   public get onDidChangePreviewConfig(): vscode.Event<
     PreviewConfigChangeEvent
   > {
