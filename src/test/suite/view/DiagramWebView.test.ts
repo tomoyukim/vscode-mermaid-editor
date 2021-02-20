@@ -588,4 +588,38 @@ suite('DiagramWebView Tests', function() {
       error: { str: 'test parse error' }
     });
   });
+
+  test('should call onDidViewRenderRequest when the mermaid document is saved', () => {
+    const mockedFileSystemService = mock<FileSystemService>();
+    const mockedWebView = mock<vscode.Webview>();
+    const mockedWebViewPanel = mock<vscode.WebviewPanel>();
+    when(mockedWebViewPanel.webview).thenReturn(instance(mockedWebView));
+
+    const diagramWebView = new DiagramWebView(
+      '/path/extension',
+      {
+        preserveFocus: false,
+        viewColumn: vscode.ViewColumn.Beside
+      },
+      instance(mockedFileSystemService),
+      instance(mockedWebViewPanel)
+    );
+
+    let calledCount = 0;
+    diagramWebView.onDidViewRenderRequested(() => {
+      calledCount++;
+    });
+
+    diagramWebView.reviel();
+    const dummyParams = {
+      code: 'Lorem Ipsum',
+      mermaidConfig: '{ "test": "config"',
+      backgroundColor: 'deep-blue'
+    };
+    assert.strictEqual(calledCount, 1);
+    diagramWebView.render(dummyParams);
+    assert.strictEqual(calledCount, 2);
+    diagramWebView.updateView(dummyParams);
+    assert.strictEqual(calledCount, 3);
+  });
 });

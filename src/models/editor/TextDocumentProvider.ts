@@ -10,4 +10,5 @@ export default interface TextDocumentProvider {
   readonly onDidChangeActiveTextEditor: vscode.Event<
     vscode.TextEditor | undefined
   >;
+  readonly onDidSaveTextDocument: vscode.Event<vscode.TextDocument | undefined>;
 }

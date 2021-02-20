@@ -32,6 +32,7 @@ export default class DiagramWebView extends Renderer<
   private _errorEventEmitter: vscode.EventEmitter<ErrorEvent>;
   private _viewStateActivityEventEmitter: vscode.EventEmitter<boolean>;
   private _viewStateVisibilityEventEmitter: vscode.EventEmitter<boolean>;
+  private _viewRenderRequestEventEmitter: vscode.EventEmitter<void>;
 
   private _state: {
     active: boolean;
@@ -56,6 +57,7 @@ export default class DiagramWebView extends Renderer<
     this._errorEventEmitter = new vscode.EventEmitter<ErrorEvent>();
     this._viewStateActivityEventEmitter = new vscode.EventEmitter<boolean>();
     this._viewStateVisibilityEventEmitter = new vscode.EventEmitter<boolean>();
+    this._viewRenderRequestEventEmitter = new vscode.EventEmitter<void>();
 
     this._panel.webview.onDidReceiveMessage(e => this.onDidReceiveMessage(e));
     this._panel.onDidChangeViewState(e => this.onDidChangeViewState(e));
@@ -197,6 +199,7 @@ export default class DiagramWebView extends Renderer<
       )
     );
     const mergedConfig = this._putStartOnLoadConfig(param.mermaidConfig);
+    this._viewRenderRequestEventEmitter.fire();
 
     this._panel.webview.html = this._getHtml(
       param.code,
@@ -209,6 +212,7 @@ export default class DiagramWebView extends Renderer<
 
   // override
   public updateView(param: DiagramWebViewRenderParams): void {
+    this._viewRenderRequestEventEmitter.fire();
     this._panel?.webview.postMessage({
       command: 'update',
       code: param.code,
@@ -218,6 +222,7 @@ export default class DiagramWebView extends Renderer<
   }
 
   public reviel(): void {
+    this._viewRenderRequestEventEmitter.fire();
     this._panel?.reveal(
       this._showOptions.viewColumn,
       this._showOptions.preserveFocus
@@ -249,6 +254,10 @@ export default class DiagramWebView extends Renderer<
 
   public get onDidError(): vscode.Event<ErrorEvent> {
     return this._errorEventEmitter.event;
+  }
+
+  public get onDidViewRenderRequested(): vscode.Event<void> {
+    return this._viewRenderRequestEventEmitter.event;
   }
 
   // callbacks

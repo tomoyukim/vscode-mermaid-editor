@@ -237,4 +237,26 @@ suite('MermaidDocumentProvider Tests', function() {
 
     mocks.reset();
   });
+
+  test('should call onDidSaveMermaidDocument when onDidSaveTextEditor is occurred ', () => {
+    const provider = new MermaidDocumentProvider(
+      instance(mocks.textDocumentProvider),
+      instance(mocks.attributeParseService)
+    );
+
+    let calledCount = 0;
+    provider.onDidSaveMermaidDocument(() => {
+      calledCount++;
+    });
+
+    const mockedTextDocument3 = mock<vscode.TextDocument>();
+    when(mockedTextDocument3.getText()).thenReturn(anotherDummyCode);
+    when(mockedTextDocument3.fileName).thenReturn('/path/to/another/dummy.mmd');
+    when(mockedTextDocument3.languageId).thenReturn('mermaid');
+
+    provider.onDidSaveTextDocument(instance(mockedTextDocument3));
+    assert.strictEqual(calledCount, 1);
+
+    mocks.reset();
+  });
 });

@@ -1,5 +1,6 @@
 import { Store } from 'redux';
 import * as path from 'path';
+import * as Collections from 'typescript-collections';
 import * as constants from '../constants';
 import isEmpty = require('lodash/isEmpty');
 import PreviewConfigProvider from '../models/configration/PreviewConfigProvider';
@@ -60,6 +61,7 @@ export const mermaidConfigSelector = (viewState: ViewState): string => {
 class MainController {
   private _timer: NodeJS.Timeout | null;
   private _viewStateStore: Store<ViewState, ViewStateAction>;
+  private _errorMessageQueue: Collections.Queue<string>;
   private _diagramWebView: DiagramWebView | undefined;
   private _webViewManager: WebViewManager;
   private _mermaidDocumentProvider: MermaidDocumentProvider;
@@ -83,6 +85,7 @@ class MainController {
   ) {
     this._timer = null;
     this._viewStateStore = viewStateStore;
+    this._errorMessageQueue = new Collections.Queue<string>();
 
     this._webViewManager = webViewManager;
     this._mermaidDocumentProvider = mermaidDocumentProvider;
@@ -99,6 +102,10 @@ class MainController {
 
     this._mermaidDocumentProvider.onDidChangeMermaidDocument(e =>
       this.onDidChangeMermaidDocument(e.mermaidDocument)
+    );
+
+    this._mermaidDocumentProvider.onDidSaveMermaidDocument(() =>
+      this.onDidSaveMermaidDocument()
     );
 
     this._previewConfigProvider.onDidChangePreviewConfig(e =>
@@ -126,22 +133,28 @@ class MainController {
     this._diagramWebView?.onDidError((error: ErrorEvent) => {
       switch (error.kind) {
         case 'error/diagram-parse':
-          Logger.appendLine('[DigagramParseError]');
-          Logger.appendLine(error.message);
+          this._errorMessageQueue.enqueue(
+            `[DigagramParseError]\n${error.message}`
+          );
           break;
         case 'error/mermaid-config-json-parse':
-          Logger.appendLine('[MermaidConfigJSONParseError]');
-          Logger.appendLine(error.message);
+          this._errorMessageQueue.enqueue(
+            `[MermaidConfigJSONParseError]\n${error.message}`
+          );
           break;
         case 'error/renderer':
-          Logger.appendLine('[RendererError]');
-          Logger.appendLine(error.message);
+          this._errorMessageQueue.enqueue(`[RendererError]\n${error.message}`);
           break;
         default:
-          Logger.appendLine('unknown error: ' + JSON.stringify(error));
+          this._errorMessageQueue.enqueue(
+            `unknown error: ${JSON.stringify(error)}`
+          );
           break;
       }
-      Logger.show();
+    });
+    this._diagramWebView?.onDidViewRenderRequested(() => {
+      this._errorMessageQueue.clear();
+      Logger.clear();
     });
 
     this._diagramWebView?.bind(
@@ -315,6 +328,18 @@ class MainController {
     this._viewStateStore.dispatch(
       createChangeMermaidDocumentEvent(mermaidDocument)
     );
+  }
+
+  public async onDidSaveMermaidDocument(): Promise<void> {
+    if (this._errorMessageQueue.size() == 0) {
+      return;
+    }
+
+    while (this._errorMessageQueue.peek() !== undefined) {
+      const message = this._errorMessageQueue.dequeue();
+      message && Logger.appendLine(message);
+    }
+    Logger.show();
   }
 
   public async onDidChangePreviewConfig(

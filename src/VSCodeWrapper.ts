@@ -106,6 +106,12 @@ export default class VSCodeWrapper
     return vscode.window.onDidChangeActiveTextEditor;
   }
 
+  public get onDidSaveTextDocument(): vscode.Event<
+    vscode.TextDocument | undefined
+  > {
+    return vscode.workspace.onDidSaveTextDocument;
+  }
+
   // FileSystemService
   public get workspaceFolders(): readonly vscode.WorkspaceFolder[] | undefined {
     return vscode.workspace.workspaceFolders;

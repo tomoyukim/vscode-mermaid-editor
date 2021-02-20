@@ -14,6 +14,7 @@ export interface MermaidDocumentChangeEvent {
 class MermaidDocumentProvider {
   private _textDocumentProvider: TextDocumentProvider;
   private _eventEmitter: vscode.EventEmitter<MermaidDocumentChangeEvent>;
+  private _saveEventEmitter: vscode.EventEmitter<void>;
   private _attributeParseService: AttributeParseService;
 
   private _mermaidDocument: MermaidDocument;
@@ -23,6 +24,7 @@ class MermaidDocumentProvider {
     attributeParseService: AttributeParseService
   ) {
     this._eventEmitter = new vscode.EventEmitter<MermaidDocumentChangeEvent>();
+    this._saveEventEmitter = new vscode.EventEmitter<void>();
     this._textDocumentProvider = textDocumentProvider;
     this._attributeParseService = attributeParseService;
 
@@ -33,6 +35,10 @@ class MermaidDocumentProvider {
     });
     this._textDocumentProvider.onDidChangeActiveTextEditor(editor => {
       this.onDidChangeActiveTextEditor(editor?.document);
+    });
+
+    this._textDocumentProvider.onDidSaveTextDocument(document => {
+      this.onDidSaveTextDocument(document);
     });
   }
 
@@ -83,6 +89,10 @@ class MermaidDocumentProvider {
     return this._eventEmitter.event;
   }
 
+  public get onDidSaveMermaidDocument(): vscode.Event<void> {
+    return this._saveEventEmitter.event;
+  }
+
   // callbacks
   public async onDidChangeTextDocument(
     document: vscode.TextDocument
@@ -94,6 +104,12 @@ class MermaidDocumentProvider {
     document: vscode.TextDocument | undefined
   ): Promise<void> {
     document && this._isMermaid(document) && this._notifyUpdate(document);
+  }
+
+  public async onDidSaveTextDocument(
+    document: vscode.TextDocument | undefined
+  ): Promise<void> {
+    document && this._isMermaid(document) && this._saveEventEmitter.fire();
   }
 }
 
