@@ -18,6 +18,21 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ### Security
 
+## [0.10.1] - 2021-3-28
+
+### Changed
+
+- Add husky hook to check lint before push.
+
+### Fixed
+
+- Fix `Collections.Queue is not a constructor` error.
+  - Remove typescript-collections and add simple Queue class instead.
+### Security
+
+- Fix [vulnerability report](https://github.com/tomoyukim/vscode-mermaid-editor/pull/33) from Github by updating webpack version from 4.44.1 to 5.28.0.
+- Fix vulnerability report from Github by merging [PR#37](https://github.com/tomoyukim/vscode-mermaid-editor/pull/37)
+
 ## [0.10.0] - 2021-2-20
 
 ### Added
