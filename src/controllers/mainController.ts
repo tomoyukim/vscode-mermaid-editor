@@ -1,6 +1,5 @@
 import { Store } from 'redux';
 import * as path from 'path';
-import * as Collections from 'typescript-collections';
 import * as constants from '../constants';
 import isEmpty = require('lodash/isEmpty');
 import PreviewConfigProvider from '../models/configration/PreviewConfigProvider';
@@ -32,6 +31,7 @@ import MermaidConfigService from '../models/configration/MermaidConfigService';
 import Logger from '../Logger';
 import { PopupViewProvider } from './PopupViewProvider';
 import GeneratorProgressStatusBar from '../GeneratorProgressStatusBar';
+import Queue from '../Queue';
 
 // for test
 export const backgroundSelector = (viewState: ViewState): string => {
@@ -61,7 +61,7 @@ export const mermaidConfigSelector = (viewState: ViewState): string => {
 class MainController {
   private _timer: NodeJS.Timeout | null;
   private _viewStateStore: Store<ViewState, ViewStateAction>;
-  private _errorMessageQueue: Collections.Queue<string>;
+  private _errorMessageQueue: Queue<string>;
   private _diagramWebView: DiagramWebView | undefined;
   private _webViewManager: WebViewManager;
   private _mermaidDocumentProvider: MermaidDocumentProvider;
@@ -85,7 +85,7 @@ class MainController {
   ) {
     this._timer = null;
     this._viewStateStore = viewStateStore;
-    this._errorMessageQueue = new Collections.Queue<string>();
+    this._errorMessageQueue = new Queue<string>();
 
     this._webViewManager = webViewManager;
     this._mermaidDocumentProvider = mermaidDocumentProvider;
@@ -331,7 +331,7 @@ class MainController {
   }
 
   public async onDidSaveMermaidDocument(): Promise<void> {
-    if (this._errorMessageQueue.size() == 0) {
+    if (this._errorMessageQueue.size() === 0) {
       return;
     }
 
