@@ -1,6 +1,6 @@
 import * as assert from 'assert';
 
-import Timer from '../../Timer';
+import Timer from '../../utils/Timer';
 
 suite('Timer Tests', function() {
   test('should execute task after specified milliseconds', done => {

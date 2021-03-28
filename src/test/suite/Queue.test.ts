@@ -1,6 +1,6 @@
 import * as assert from 'assert';
 
-import Queue from '../../Queue';
+import Queue from '../../utils/Queue';
 
 suite('Queue Tests', function() {
   test('should enqueue and dequeue in expected order', () => {

@@ -31,7 +31,7 @@ import MermaidConfigService from '../models/configration/MermaidConfigService';
 import Logger from '../Logger';
 import { PopupViewProvider } from './PopupViewProvider';
 import GeneratorProgressStatusBar from '../GeneratorProgressStatusBar';
-import Queue from '../Queue';
+import Queue from '../utils/Queue';
 
 // for test
 export const backgroundSelector = (viewState: ViewState): string => {
