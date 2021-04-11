@@ -251,8 +251,7 @@ class MainController {
     if (config?.kind === 'imageConfig') {
       this._diagramWebView?.captureImage({
         type: config.value.type,
-        width: config.value.width,
-        height: config.value.height
+        scale: config.value.scale
       });
       GeneratorProgressStatusBar.show();
     }

@@ -172,8 +172,7 @@ suite('DiagramWebView Tests', function() {
       try {
         assert.strictEqual(message.command, 'takeImage');
         assert.strictEqual(message.type, 'png');
-        assert.strictEqual(message.width, '1920');
-        assert.strictEqual(message.height, '1080');
+        assert.strictEqual(message.scale, 1);
         done();
       } catch (e) {
         done(e);
@@ -194,8 +193,7 @@ suite('DiagramWebView Tests', function() {
     );
     diagramWebView.captureImage({
       type: ImageFileType.PNG,
-      width: '1920',
-      height: '1080'
+      scale: 1
     });
   });
 

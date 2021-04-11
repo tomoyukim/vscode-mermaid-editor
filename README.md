@@ -1,11 +1,9 @@
 # Mermaid Editor
+
 [![Build Status](https://dev.azure.com/tomoyukim-vscode-extension/vscode-mermaid-editor-pipeline/_apis/build/status/tomoyukim.vscode-mermaid-editor?branchName=master)](https://dev.azure.com/tomoyukim-vscode-extension/vscode-mermaid-editor-pipeline/_build/latest?definitionId=1&branchName=master)
-[![Version](https://vsmarketplacebadge.apphb.com/version/tomoyukim.vscode-mermaid-editor.svg
-)](https://marketplace.visualstudio.com/items?itemName=tomoyukim.vscode-mermaid-editor)
-[![Installs](https://vsmarketplacebadge.apphb.com/installs/tomoyukim.vscode-mermaid-editor.svg
-)](https://marketplace.visualstudio.com/items?itemName=tomoyukim.vscode-mermaid-editor)
-[![Ratings](https://vsmarketplacebadge.apphb.com/rating-short/tomoyukim.vscode-mermaid-editor.svg
-)](https://marketplace.visualstudio.com/items?itemName=tomoyukim.vscode-mermaid-editor)
+[![Version](https://vsmarketplacebadge.apphb.com/version/tomoyukim.vscode-mermaid-editor.svg)](https://marketplace.visualstudio.com/items?itemName=tomoyukim.vscode-mermaid-editor)
+[![Installs](https://vsmarketplacebadge.apphb.com/installs/tomoyukim.vscode-mermaid-editor.svg)](https://marketplace.visualstudio.com/items?itemName=tomoyukim.vscode-mermaid-editor)
+[![Ratings](https://vsmarketplacebadge.apphb.com/rating-short/tomoyukim.vscode-mermaid-editor.svg)](https://marketplace.visualstudio.com/items?itemName=tomoyukim.vscode-mermaid-editor)
 
 Mermaid Editor is vscode extension inspired by [official mermaid live editor](https://mermaidjs.github.io/mermaid-live-editor/) to provide the following features:
 - Live edit `.mmd` file with [mermaid.js](https://mermaidjs.github.io/) diagram
@@ -78,6 +76,7 @@ sequenceDiagram
 %% @backgroundColor{#ff0000}
     Alice->>John: Hello John, how are you?
 ```
+
 ```
 sequenceDiagram
 %% @backgroundColor{rgb(255, 0, 0)}
@@ -88,17 +87,16 @@ sequenceDiagram
 
 Settings for look & feel in preview or image generator.
 
-|Setting|Default|Description|
-|---|---|---|
-|mermaid-editor.preview.defaultMermaidConfig||relative path to the default configuration json file for mermaidjs.|
-|mermaid-editor.preview.backgroundColor|white|default background color for live preview and generated image|
-|mermaid-editor.preview.errorOutputOnSave|true|show error output console whe saving file if there's error message.<br/> **Note**: Error output in the console itself is always available regardless of this configuration.|
-|mermaid-editor.generate.type|svg|output image file type [svg, png, jpg, webp]|
-|mermaid-editor.generate.outputPath||relative path to the output target directory from project root|
-|mermaid-editor.generate.useCurrentPath|true|use relative output path as same as target mmd file instead of 'outputPath'|
-|mermaid-editor.generate.width|800|width of the output image|
-|mermaid-editor.generate.height|600|height of the output image|
-
+| Setting                                     | Default | Description                                                                                                                                                                 |
+| ------------------------------------------- | ------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| mermaid-editor.preview.defaultMermaidConfig |         | Relative path to the default configuration json file for mermaidjs.                                                                                                         |
+| mermaid-editor.preview.backgroundColor      | white   | Default background color for live preview and generated image.                                                                                                              |
+| mermaid-editor.preview.errorOutputOnSave    | true    | Show error output console whe saving file if there's error message.<br/> **Note**: Error output in the console itself is always available regardless of this configuration. |
+| mermaid-editor.generate.type                | svg     | Output image file type [svg, png, jpg, webp].                                                                                                                               |
+| mermaid-editor.generate.outputPath          |         | Relative path to the output target directory from project root.                                                                                                             |
+| mermaid-editor.generate.useCurrentPath      | true    | Use relative output path as same as target mmd file instead of 'outputPath'.                                                                                                |
+| mermaid-editor.generate.scale               | 1.0     | Scale of the output image. Only positive number (>0) is permitted. Otherwise, `1.0` is used.                                                                                |
 
 ## Credits
+
 This extension uses [Feather icon set](https://www.iconfinder.com/iconsets/feather) under [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/)

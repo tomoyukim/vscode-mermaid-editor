@@ -99,15 +99,10 @@
             "default": true,
             "description": "use relative output path as same as target mmd file instead of 'outputPath'"
           },
-          "mermaid-editor.generate.width": {
-            "type": "integer",
-            "default": "800",
-            "description": "width of the output image."
-          },
-          "mermaid-editor.generate.height": {
-            "type": "integer",
-            "default": "600",
-            "description": "height of the output image."
+          "mermaid-editor.generate.scale": {
+            "type": "number",
+            "default": "1.0",
+            "description": "scale of the output image."
           }
         }
       }

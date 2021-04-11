@@ -51,8 +51,7 @@ function debouncedRunloop(fn) {
   function convertToImg(
     svgBase64,
     type,
-    width,
-    height,
+    scale,
     backgroundColor,
     callback
   ) {
@@ -62,8 +61,6 @@ function debouncedRunloop(fn) {
     }
 
     const elem = document.createElement('canvas');
-    elem.setAttribute('width', width);
-    elem.setAttribute('height', height);
     elem.setAttribute('style', 'display: none;');
     elem.setAttribute('id', 'cnvs');
     preview.parentNode.appendChild(elem);
@@ -76,13 +73,17 @@ function debouncedRunloop(fn) {
     img.onerror = function () {
       callback(undefined, new Error('Failed to load imgSrc in Image object.'));
     };
-    img.onload = function() {
-      ctx.drawImage(img, 0, 0);
+    img.onload = function () {
+      const calcedWidth = img.width * scale;
+      const calcedHeight = img.height * scale;
+      elem.setAttribute('width', calcedWidth);
+      elem.setAttribute('height', calcedHeight);
+      ctx.drawImage(img, 0, 0, calcedWidth, calcedHeight);
 
       if (backgroundColor && backgroundColor !== 'transparent') {
         ctx.globalCompositeOperation = 'destination-over';
         ctx.fillStyle = backgroundColor;
-        ctx.fillRect(0, 0, width, height);
+        ctx.fillRect(0, 0, calcedWidth, calcedHeight);
       }
 
       const mimeType = type === 'jpg' ? 'image/jpeg' : `image/${type}`;
@@ -167,14 +168,14 @@ function debouncedRunloop(fn) {
         });
         return;
       case 'takeImage':
-        const { type, width, height } = message;
+        const { type, scale } = message;
 
         const bgColor = getComputedStyle(body).backgroundColor;
         const svg = preview.querySelector('svg');
         const xml = new XMLSerializer().serializeToString(svg);
         const data = btoa(unescape(encodeURIComponent(xml)));
 
-        convertToImg(data, type, width, height, bgColor, (imgBase64, error) => {
+        convertToImg(data, type, scale, bgColor, (imgBase64, error) => {
           const message = error ? {
             command: 'onFailTakeImage',
             error

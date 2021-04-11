@@ -74,8 +74,7 @@ suite('GeneratorConfigProvider Tests', function() {
   test('should return mermaid-editor.generator in extension config', () => {
     when(mocks.configuration.useCurrentPath).thenReturn(true);
     when(mocks.configuration.type).thenReturn('jpg');
-    when(mocks.configuration.width).thenReturn('800');
-    when(mocks.configuration.height).thenReturn('600');
+    when(mocks.configuration.scale).thenReturn('1.0');
 
     when(
       mocks.configurationProvider.getConfiguration(
@@ -100,8 +99,7 @@ suite('GeneratorConfigProvider Tests', function() {
     }
 
     assert.strictEqual(imageConfig.value.type, 'jpg');
-    assert.strictEqual(imageConfig.value.width, '800');
-    assert.strictEqual(imageConfig.value.height, '600');
+    assert.strictEqual(imageConfig.value.scale, '1.0');
 
     let config = generatorConfigProvider.getConfig(
       GeneratorConfigProperty.UseCurrentPath
