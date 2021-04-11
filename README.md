@@ -83,6 +83,15 @@ sequenceDiagram
     Alice->>John: Hello John, how are you?
 ```
 
+### @outputScale{scale_factor}
+Each `.mmd` file can be associated with preferred output scale. With this attribute, the diagram can be generated with preferred scale factor.If this attribute is not provided, default scale setting up in `mermaid-editor.generate.scale` is applied. Positive number is only permitted for this attribute. If invalid value is set, default value is used as above. The followings are example.
+
+```
+sequenceDiagram
+%% @outputScale{2.5}
+    Alice->>John: Hello John, how are you?
+```
+
 ## Configuration
 
 Settings for look & feel in preview or image generator.

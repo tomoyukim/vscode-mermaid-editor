@@ -23,6 +23,14 @@ class AttributeParseService {
       /^\s*%%\s*@backgroundColor\{(.*)\}.*$/
     );
   }
+
+  public parseOutputScale(text: string): string {
+    return this.parseAttribute(
+      text,
+      '@outputScale',
+      /^\s*%%\s*@outputScale\{(.*)\}.*$/
+    );
+  }
 }
 
 export default AttributeParseService;

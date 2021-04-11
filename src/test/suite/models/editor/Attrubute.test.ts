@@ -6,11 +6,13 @@ suite('Attribute Tests', function() {
     const attribute = new Attribute();
     assert.strictEqual(attribute.backgroundColor, '');
     assert.strictEqual(attribute.pathToConfig, '');
+    assert.strictEqual(attribute.outputScale, '');
   });
 
   test('should return init properties', () => {
-    const attribute = new Attribute('#fff', './path/to/config');
+    const attribute = new Attribute('#fff', './path/to/config', '2.0');
     assert.strictEqual(attribute.backgroundColor, '#fff');
     assert.strictEqual(attribute.pathToConfig, './path/to/config');
+    assert.strictEqual(attribute.outputScale, '2.0');
   });
 });

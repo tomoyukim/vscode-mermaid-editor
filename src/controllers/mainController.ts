@@ -2,6 +2,9 @@ import { Store } from 'redux';
 import * as path from 'path';
 import * as constants from '../constants';
 import isEmpty = require('lodash/isEmpty');
+import isNumber = require('lodash/isNumber');
+import isNaN = require('lodash/isNaN');
+import toNumber = require('lodash/toNumber');
 import PreviewConfigProvider from '../models/configration/PreviewConfigProvider';
 import MermaidDocumentProvider from '../models/editor/MermaidDocumentProvider';
 import {
@@ -56,6 +59,21 @@ export const mermaidConfigSelector = (viewState: ViewState): string => {
     );
   }
   return defaultMermaidConfig;
+};
+
+// for test
+export const isPositiveNumberStr = (str: string): boolean => {
+  if (isEmpty(str)) {
+    return false;
+  }
+  const num = toNumber(str);
+  if (isNaN(num)) {
+    return false;
+  }
+  if (!isNumber(num)) {
+    return false;
+  }
+  return num > 0;
 };
 
 class MainController {
@@ -249,9 +267,20 @@ class MainController {
     );
 
     if (config?.kind === 'imageConfig') {
+      const outputScale = this._mermaidDocumentProvider.document.code.attribute
+        .outputScale;
+
+      let scale =
+        config.value.scale > 0
+          ? config.value.scale
+          : constants.GEMERATE_IMAGE_SCALE_DEFAULT;
+      if (isPositiveNumberStr(outputScale)) {
+        scale = toNumber(outputScale);
+      }
+
       this._diagramWebView?.captureImage({
         type: config.value.type,
-        scale: config.value.scale
+        scale
       });
       GeneratorProgressStatusBar.show();
     }

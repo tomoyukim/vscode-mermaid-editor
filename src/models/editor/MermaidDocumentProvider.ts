@@ -58,7 +58,8 @@ class MermaidDocumentProvider {
 
     const attribute = new Attribute(
       this._attributeParseService.parseBackgroundColor(code),
-      this._attributeParseService.parseConfig(code)
+      this._attributeParseService.parseConfig(code),
+      this._attributeParseService.parseOutputScale(code)
     );
     return new MermaidDocument(new Code(code, attribute), fileName, currentDir);
   }
