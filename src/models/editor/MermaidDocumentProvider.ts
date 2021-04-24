@@ -55,11 +55,12 @@ class MermaidDocumentProvider {
     const fileName = document.fileName;
     const currentDir = path.dirname(fileName);
     const code = document.getText().trim();
+    const eol = document.eol;
 
     const attribute = new Attribute(
-      this._attributeParseService.parseBackgroundColor(code),
-      this._attributeParseService.parseConfig(code),
-      this._attributeParseService.parseOutputScale(code)
+      this._attributeParseService.parseBackgroundColor(code, eol),
+      this._attributeParseService.parseConfig(code, eol),
+      this._attributeParseService.parseOutputScale(code, eol)
     );
     return new MermaidDocument(new Code(code, attribute), fileName, currentDir);
   }

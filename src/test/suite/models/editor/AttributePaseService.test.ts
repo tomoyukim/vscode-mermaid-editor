@@ -1,4 +1,5 @@
 import * as assert from 'assert';
+import { EndOfLine } from 'vscode';
 
 import AtrributeParseService from '../../../../models/editor/AttributeParseService';
 
@@ -129,6 +130,7 @@ suite('AttributeParser Tests', function() {
     `
   ];
 
+  // backgroundColor
   test('parseBackgrondColor should return correct color code', () => {
     const attributeParser = new AtrributeParseService();
     for (const diagram of backgroundColorAcceptableDiagrams) {
@@ -149,6 +151,22 @@ suite('AttributeParser Tests', function() {
     assert.strictEqual(bgColor, '');
   });
 
+  test('parseBackgrondColor should return correct color (CRLF)', () => {
+    const diagram = `
+    sequenceDiagram\r
+    %% @backgroundColor{#ff0000}\r
+    Alice->>John: Hello\r
+    Alice->>John: Bye\r
+    `;
+    const attributeParser = new AtrributeParseService();
+    const bgColor = attributeParser.parseBackgroundColor(
+      diagram,
+      EndOfLine.CRLF
+    );
+    assert.strictEqual(bgColor, '#ff0000');
+  });
+
+  // config
   test('parseConfig should return correct color code', () => {
     const attributeParser = new AtrributeParseService();
     for (const diagram of configAcceptableDiagrams) {
@@ -169,6 +187,19 @@ suite('AttributeParser Tests', function() {
     assert.strictEqual(config, '');
   });
 
+  test('parseConfig should return correct config path (CRLF)', () => {
+    const diagram = `
+    sequenceDiagram\r
+    %% @config  {./test_config.json}\r
+    Alice->>John: Hello\r
+    Alice->>John: Bye\r
+    `;
+    const attributeParser = new AtrributeParseService();
+    const config = attributeParser.parseConfig(diagram, EndOfLine.CRLF);
+    assert.strictEqual(config, '');
+  });
+
+  // outputScale
   test('parseOutputScale should return correct value', () => {
     const attributeParser = new AtrributeParseService();
     for (const diagram of outputScaleAcceptableDiagrams) {
@@ -185,7 +216,19 @@ suite('AttributeParser Tests', function() {
     Alice->>John: Bye
     `;
     const attributeParser = new AtrributeParseService();
-    const scale = attributeParser.parseBackgroundColor(diagram);
+    const scale = attributeParser.parseOutputScale(diagram);
+    assert.strictEqual(scale, '');
+  });
+
+  test('parseOutputScale should return correct scale (CRLF)', () => {
+    const diagram = `
+    sequenceDiagram\r
+    %% @outputScale  {1.0}\r
+    Alice->>John: Hello\r
+    Alice->>John: Bye\r
+    `;
+    const attributeParser = new AtrributeParseService();
+    const scale = attributeParser.parseOutputScale(diagram, EndOfLine.CRLF);
     assert.strictEqual(scale, '');
   });
 });
