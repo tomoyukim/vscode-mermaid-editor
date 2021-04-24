@@ -18,6 +18,29 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ### Security
 
+## [0.11.0] - 2021-4-24
+
+### Added
+
+- `mermaid-editor.generate.scale` config is added.
+  - Related to a requirement in [Issue#17](https://github.com/tomoyukim/vscode-mermaid-editor/issues/17).
+
+### Removed
+- `mermaid-editor.generate.width` and `mermaid-editor.generate.height` are removed instead of the scale config.
+
+### Fixed
+
+- [Issue#39](https://github.com/tomoyukim/vscode-mermaid-editor/issues/39)
+  - Fix an error paring atrribute in a file with CRLF.
+
+- [Issue#40](https://github.com/tomoyukim/vscode-mermaid-editor/issues/40)
+  - Fix generated image cropped unexpectedly. This is also related to `mermaid-editor.generate.scale` config.
+
+### Security
+
+- Fix [vulnerability report](https://github.com/tomoyukim/vscode-mermaid-editor/pull/38) bumping mocha from 7.0.2 to 8.2.2.
+
+
 ## [0.10.1] - 2021-3-28
 
 ### Changed
@@ -31,7 +54,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ### Security
 
 - Fix [vulnerability report](https://github.com/tomoyukim/vscode-mermaid-editor/pull/33) from Github by updating webpack version from 4.44.1 to 5.28.0.
-- Fix vulnerability report from Github by merging [PR#37](https://github.com/tomoyukim/vscode-mermaid-editor/pull/37)
+- Fix vulnerability report from Github by merging [PR#37](https://github.com/tomoyukim/vscode-mermaid-editor/pull/37).
 
 ## [0.10.0] - 2021-2-20
 
