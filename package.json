@@ -285,7 +285,7 @@
     "@types/lodash": "4.14.x",
     "@types/mkdirp": "1.0.x",
     "d3": "5.7.x",
-    "lodash": ">=4.17.19",
+    "lodash": ">=4.17.21",
     "mermaid": "8.9.2",
     "redux": "^4.0.5"
   }
