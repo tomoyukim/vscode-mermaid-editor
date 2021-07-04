@@ -18,6 +18,12 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ### Security
 
+## [0.11.1] - 2021-7-3
+### Changed
+- Bump awesome font version from 4.7.0 to 5.15.3 - Thanks to [PR#45](https://github.com/tomoyukim/vscode-mermaid-editor/pull/45) by [@jkamenik](https://github.com/jkamenik)
+### Security
+- Bump some packages following a security report by Github
+
 ## [0.11.0] - 2021-4-24
 
 ### Added
