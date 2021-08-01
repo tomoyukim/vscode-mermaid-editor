@@ -18,6 +18,11 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ### Security
 
+## [0.11.2] - 2021-8-1
+### Changed
+- Bump mermaid-js version from 8.9.2 to 8.11.2
+  - Thanks for the headsup to [Issue#47](https://github.com/tomoyukim/vscode-mermaid-editor/issues/47)
+
 ## [0.11.1] - 2021-7-3
 ### Changed
 - Bump awesome font version from 4.7.0 to 5.15.3 - Thanks to [PR#45](https://github.com/tomoyukim/vscode-mermaid-editor/pull/45) by [@jkamenik](https://github.com/jkamenik)
