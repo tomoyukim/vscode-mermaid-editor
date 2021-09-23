@@ -265,7 +265,7 @@
     "@types/vscode": "1.44.x",
     "@typescript-eslint/eslint-plugin": "2.33.x",
     "@typescript-eslint/parser": "2.33.x",
-    "copy-webpack-plugin": "6.2.1",
+    "copy-webpack-plugin": "^9.0.1",
     "eslint": "6.x.x",
     "eslint-config-prettier": "^6.10.1",
     "eslint-plugin-prettier": "^3.1.2",
@@ -276,7 +276,6 @@
     "ts-loader": "^8.0.18",
     "ts-mockito": "^2.6.1",
     "typescript": "3.7.x",
-    "vsce": "1.95.x",
     "vscode-test": "1.3.x",
     "webpack": "^5.28.0",
     "webpack-cli": "^4.0.0"
