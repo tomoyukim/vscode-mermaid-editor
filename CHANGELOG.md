@@ -18,6 +18,12 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ### Security
 
+## [0.11.4] - 2021-9-23
+
+### Fixed
+
+- Revert vsce command dependency which was removed unexpectedly.
+
 ## [0.11.3] - 2021-9-23
 
 ### Changed
