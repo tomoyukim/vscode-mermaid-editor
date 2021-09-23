@@ -18,6 +18,18 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ### Security
 
+## [0.11.3] - 2021-9-23
+
+### Changed
+
+- Bump mermaid-js version from 8.11.2 to 8.12.1
+
+- Replace Fontawesome CDN with KitCode to support the latest version without updating the extension
+
+### Security
+
+- Bump some packages following a security report by Github
+
 ## [0.11.2] - 2021-8-1
 ### Changed
 - Bump mermaid-js version from 8.9.2 to 8.11.2
