@@ -102,7 +102,6 @@ export default class DiagramWebView extends Renderer<
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <title>Mermaid Editor Preview</title>
-      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/fontawesome.min.css">
       <style>
       body {
         background-color: ${backgroundColor};
@@ -113,6 +112,7 @@ export default class DiagramWebView extends Renderer<
       <div id="preview" class="mermaid">
       ${code}
       </div>
+      <script src="https://kit.fontawesome.com/d03d50bb07.js" crossorigin="anonymous"></script>
       <script src="${mermaidUri}"></script>
       <script>mermaid.initialize(${mermaidConfig});</script>
       <script src="${scriptUri}"></script>
