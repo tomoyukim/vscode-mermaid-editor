@@ -18,6 +18,12 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ### Security
 
+## [0.11.5] - 2021-12-21
+
+### Fixed
+
+- Fix a bug [Issue#56](https://github.com/tomoyukim/vscode-mermaid-editor/issues/56)
+
 ## [0.11.4] - 2021-9-23
 
 ### Fixed
@@ -37,14 +43,20 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - Bump some packages following a security report by Github
 
 ## [0.11.2] - 2021-8-1
+
 ### Changed
+
 - Bump mermaid-js version from 8.9.2 to 8.11.2
   - Thanks for the headsup to [Issue#47](https://github.com/tomoyukim/vscode-mermaid-editor/issues/47)
 
 ## [0.11.1] - 2021-7-3
+
 ### Changed
+
 - Bump awesome font version from 4.7.0 to 5.15.3 - Thanks to [PR#45](https://github.com/tomoyukim/vscode-mermaid-editor/pull/45) by [@jkamenik](https://github.com/jkamenik)
+
 ### Security
+
 - Bump some packages following a security report by Github
 
 ## [0.11.0] - 2021-4-24
@@ -55,11 +67,13 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
   - Related to a requirement in [Issue#17](https://github.com/tomoyukim/vscode-mermaid-editor/issues/17).
 
 ### Removed
+
 - `mermaid-editor.generate.width` and `mermaid-editor.generate.height` are removed instead of the scale config.
 
 ### Fixed
 
 - [Issue#39](https://github.com/tomoyukim/vscode-mermaid-editor/issues/39)
+
   - Fix an error paring atrribute in a file with CRLF.
 
 - [Issue#40](https://github.com/tomoyukim/vscode-mermaid-editor/issues/40)
@@ -68,7 +82,6 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ### Security
 
 - Fix [vulnerability report](https://github.com/tomoyukim/vscode-mermaid-editor/pull/38) bumping mocha from 7.0.2 to 8.2.2.
-
 
 ## [0.10.1] - 2021-3-28
 
@@ -80,6 +93,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 - Fix `Collections.Queue is not a constructor` error.
   - Remove typescript-collections and add simple Queue class instead.
+
 ### Security
 
 - Fix [vulnerability report](https://github.com/tomoyukim/vscode-mermaid-editor/pull/33) from Github by updating webpack version from 4.44.1 to 5.28.0.
