@@ -10,7 +10,9 @@ import WebViewManager from './view/WebViewManager';
 import VSCodeWrapper from './VSCodeWrapper';
 import MermaidDocumentProvider from './models/editor/MermaidDocumentProvider';
 import AttributeParseService from './models/editor/AttributeParseService';
-import PreviewConfigProvider from './models/configration/PreviewConfigProvider';
+import PreviewConfigProvider, {
+  PreviewConfigProperty
+} from './models/configration/PreviewConfigProvider';
 import GeneratorConfigProvider from './models/configration/GeneratorConfigProvider';
 import MermaidConfigService from './models/configration/MermaidConfigService';
 import FileGeneratorService from './models/FileGeneratorService';
@@ -59,8 +61,12 @@ export function activate(context: vscode.ExtensionContext): void {
 
   const initialState = {
     mermaidDocument: mermaidDocumentProvider.document,
-    defaultMermaidConfig: '',
-    backgroundColor: ''
+    defaultMermaidConfig: previewConfigProvider.getConfig(
+      PreviewConfigProperty.DefaultMermaidConfig
+    ),
+    backgroundColor: previewConfigProvider.getConfig(
+      PreviewConfigProperty.BackgroundColor
+    )
   };
 
   mainController = new MainController(
