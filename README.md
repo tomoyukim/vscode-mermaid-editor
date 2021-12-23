@@ -6,6 +6,7 @@
 [![Ratings](https://vsmarketplacebadge.apphb.com/rating-short/tomoyukim.vscode-mermaid-editor.svg)](https://marketplace.visualstudio.com/items?itemName=tomoyukim.vscode-mermaid-editor)
 
 Mermaid Editor is vscode extension inspired by [official mermaid live editor](https://mermaidjs.github.io/mermaid-live-editor/) to provide the following features:
+
 - Live edit `.mmd` file with [mermaid.js](https://mermaidjs.github.io/) diagram
 - Syntax highliting.
 - Generate image file from `.mmd` file with preferred format (png, jpg, webp and svg).
@@ -13,7 +14,7 @@ Mermaid Editor is vscode extension inspired by [official mermaid live editor](ht
 
 ## Usage
 
-The extension is activated when opening `.mmd` file.
+The extension's activated when opening `.mmd` file.
 
 ### Open live preview
 
@@ -51,44 +52,47 @@ Zoom in/out is supported for live preview.
 
 This extension supports attribute to specify preferred configuration for each `.mmd` file. The attribute have to be described in comment of mermaid syntax.
 
-### @config{path_to_config}
+**NOTE: The attribute syntax with curly brackets (@config{}, @backgroundColor{}, @outputScale{}) was obsoleted. Use parenthesis (@config(), @backgroundColor(), @outputScale()) instead, please.**
+
+### @config(path_to_config)
 
 Each `.mmd` file can be associated with [mermaid configuration](https://mermaid-js.github.io/mermaid/#/mermaidAPI?id=configuration). With this attribute, `.mmd` file can read specified configuration. `path_to_config` have to be described as relative path to the config json file from associated `.mmd` file. If this attribute is not provided, default config file setting up in `mermaid-editor.preview.defaultMermaidConfig` is applied.
 
 ```
 sequenceDiagram
-%% @config{./path/to/config.json}
+%% @config(./path/to/config.json)
     Alice->>John: Hello John, how are you?
 ```
 
-### @backgroundColor{color}
+### @backgroundColor(color)
 
 Each `.mmd` file can be associated with preferred background color. With this attribute, `.mmd` can read specifed background color with CSS style property format.If this attribute is not provided, default background color setting up in `mermaid-editor.preview.backgroundColor` is applied. The followings are example.
 
 ```
 sequenceDiagram
-%% @backgroundColor{red}
+%% @backgroundColor(red)
     Alice->>John: Hello John, how are you?
 ```
 
 ```
 sequenceDiagram
-%% @backgroundColor{#ff0000}
+%% @backgroundColor(#ff0000)
     Alice->>John: Hello John, how are you?
 ```
 
 ```
 sequenceDiagram
-%% @backgroundColor{rgb(255, 0, 0)}
+%% @backgroundColor(rgb(255, 0, 0))
     Alice->>John: Hello John, how are you?
 ```
 
-### @outputScale{scale_factor}
+### @outputScale(scale_factor)
+
 Each `.mmd` file can be associated with preferred output scale. With this attribute, the diagram can be generated with preferred scale factor.If this attribute is not provided, default scale setting up in `mermaid-editor.generate.scale` is applied. Positive number is only permitted for this attribute. If invalid value is set, default value is used as above. The followings are example.
 
 ```
 sequenceDiagram
-%% @outputScale{2.5}
+%% @outputScale(2.5)
     Alice->>John: Hello John, how are you?
 ```
 

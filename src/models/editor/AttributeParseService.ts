@@ -1,6 +1,14 @@
+import { isEmpty } from 'lodash';
 import { EndOfLine } from 'vscode';
 
+type OnDeprecatedSyntax = () => void;
 class AttributeParseService {
+  private _onDeprecatedSyntax: OnDeprecatedSyntax | undefined; // TODO: remove at v1.0
+
+  constructor(onDeprecatedSyntax?: OnDeprecatedSyntax) {
+    this._onDeprecatedSyntax = onDeprecatedSyntax;
+  }
+
   private parseAttribute(
     text: string,
     attr: string,
@@ -21,33 +29,72 @@ class AttributeParseService {
   }
 
   public parseConfig(text: string, eol: EndOfLine = EndOfLine.LF): string {
-    return this.parseAttribute(
+    let attr = this.parseAttribute(
       text,
       '@config',
-      /^\s*%%\s*@config\{(.*)\}.*$/,
+      /^\s*%%\s*@config\((.*)\).*$/,
       eol
     );
+    if (isEmpty(attr)) {
+      // TODO: remove at v1.0
+      attr = this.parseAttribute(
+        text,
+        '@config',
+        /^\s*%%\s*@config\{(.*)\}.*$/,
+        eol
+      );
+      if (!isEmpty(attr)) {
+        this._onDeprecatedSyntax?.();
+      }
+    }
+    return attr;
   }
 
   public parseBackgroundColor(
     text: string,
     eol: EndOfLine = EndOfLine.LF
   ): string {
-    return this.parseAttribute(
+    let attr = this.parseAttribute(
       text,
       '@backgroundColor',
-      /^\s*%%\s*@backgroundColor\{(.*)\}.*$/,
+      /^\s*%%\s*@backgroundColor\((.*)\).*$/,
       eol
     );
+    if (isEmpty(attr)) {
+      // TODO: remove at v1.0
+      attr = this.parseAttribute(
+        text,
+        '@backgroundColor',
+        /^\s*%%\s*@backgroundColor\{(.*)\}.*$/,
+        eol
+      );
+      if (!isEmpty(attr)) {
+        this._onDeprecatedSyntax?.();
+      }
+    }
+    return attr;
   }
 
   public parseOutputScale(text: string, eol: EndOfLine = EndOfLine.LF): string {
-    return this.parseAttribute(
+    let attr = this.parseAttribute(
       text,
       '@outputScale',
-      /^\s*%%\s*@outputScale\{(.*)\}.*$/,
+      /^\s*%%\s*@outputScale\((.*)\).*$/,
       eol
     );
+    if (isEmpty(attr)) {
+      // TODO: remove at v1.0
+      attr = this.parseAttribute(
+        text,
+        '@outputScale',
+        /^\s*%%\s*@outputScale\{(.*)\}.*$/,
+        eol
+      );
+      if (!isEmpty(attr)) {
+        this._onDeprecatedSyntax?.();
+      }
+    }
+    return attr;
   }
 }
 

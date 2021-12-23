@@ -7,40 +7,40 @@ suite('AttributeParser Tests', function() {
   const backgroundColorAcceptableDiagrams = [
     `
     sequenceDiagram
-    %% @config{./sample_config.json}
-    %% @backgroundColor{#ff0000}
+    %% @config(./sample_config.json)
+    %% @backgroundColor(#ff0000)
     Alice->>John: Hello
     Alice->>John: Bye
     `,
     `
     sequenceDiagram
-    %% @config{./sample_config.json}
+    %% @config(./sample_config.json)
     Alice->>John: Hello
     Alice->>John: Bye
-    %%          @backgroundColor{#ff0000}
+    %%          @backgroundColor(#ff0000)
     `,
     `
-    %%@backgroundColor{#ff0000}
+    %%@backgroundColor(#ff0000)
     sequenceDiagram
     Alice->>John: Hello
     Alice->>John: Bye
     `,
     `
     sequenceDiagram
-    %% @backgroundColor{#ff0000}
-    %% @backgroundColor{#123456}
+    %% @backgroundColor(#ff0000)
+    %% @backgroundColor(#123456)
     Alice->>John: Hello
     Alice->>John: Bye
     `,
     `
     sequenceDiagram
-    %% @backgroundColor{ #ff0000 }
+    %% @backgroundColor( #ff0000 )
     Alice->>John: Hello
     Alice->>John: Bye
     `,
     `
     sequenceDiagram
-    %% @backgroundColor{    #ff0000     } <- this is background color
+    %% @backgroundColor(    #ff0000     ) <- this is background color
     Alice->>John: Hello
     Alice->>John: Bye
     `
@@ -49,40 +49,40 @@ suite('AttributeParser Tests', function() {
   const configAcceptableDiagrams = [
     `
     sequenceDiagram
-    %% @config{./test_config.json}
-    %% @backgroundColor{#ff0000}
+    %% @config(./test_config.json)
+    %% @backgroundColor(#ff0000)
     Alice->>John: Hello
     Alice->>John: Bye
     `,
     `
     sequenceDiagram
-    %% @backgroundColor{#ff0000}
+    %% @backgroundColor(#ff0000)
     Alice->>John: Hello
     Alice->>John: Bye
-    %%          @config{./test_config.json}
+    %%          @config(./test_config.json)
     `,
     `
-    %%@config{./test_config.json}
+    %%@config(./test_config.json)
     sequenceDiagram
     Alice->>John: Hello
     Alice->>John: Bye
     `,
     `
     sequenceDiagram
-    %% @config{./test_config.json}
-    %% @config{./dummy_config.json}
+    %% @config(./test_config.json)
+    %% @config(./dummy_config.json)
     Alice->>John: Hello
     Alice->>John: Bye
     `,
     `
     sequenceDiagram
-    %% @config{ ./test_config.json }
+    %% @config( ./test_config.json )
     Alice->>John: Hello
     Alice->>John: Bye
     `,
     `
     sequenceDiagram
-    %% @config{    ./test_config.json     } <- this is config file
+    %% @config(    ./test_config.json     ) <- this is config file
     Alice->>John: Hello
     Alice->>John: Bye
     `
@@ -91,40 +91,40 @@ suite('AttributeParser Tests', function() {
   const outputScaleAcceptableDiagrams = [
     `
     sequenceDiagram
-    %% @outputScale{1.0}
-    %% @backgroundColor{#ff0000}
+    %% @outputScale(1.0)
+    %% @backgroundColor(#ff0000)
     Alice->>John: Hello
     Alice->>John: Bye
     `,
     `
     sequenceDiagram
-    %% @backgroundColor{#ff0000}
+    %% @backgroundColor(#ff0000)
     Alice->>John: Hello
     Alice->>John: Bye
-    %%          @outputScale{1.0}
+    %%          @outputScale(1.0)
     `,
     `
-    %%@outputScale{1.0}
+    %%@outputScale(1.0)
     sequenceDiagram
     Alice->>John: Hello
     Alice->>John: Bye
     `,
     `
     sequenceDiagram
-    %% @outputScale{1.0}
-    %% @outputScale{2.0}
+    %% @outputScale(1.0)
+    %% @outputScale(2.0)
     Alice->>John: Hello
     Alice->>John: Bye
     `,
     `
     sequenceDiagram
-    %% @outputScale{ 1.0 }
+    %% @outputScale( 1.0 )
     Alice->>John: Hello
     Alice->>John: Bye
     `,
     `
     sequenceDiagram
-    %% @outputScale{    1.0     } <- this is outputScale
+    %% @outputScale(    1.0     ) <- this is outputScale
     Alice->>John: Hello
     Alice->>John: Bye
     `
@@ -142,7 +142,7 @@ suite('AttributeParser Tests', function() {
   test('parseBackgrondColor should return empty string', () => {
     const diagram = `
     sequenceDiagram
-    %% @backgroundColor  {#ff0000}
+    %% @backgroundColor  (#ff0000)
     Alice->>John: Hello
     Alice->>John: Bye
     `;
@@ -154,7 +154,7 @@ suite('AttributeParser Tests', function() {
   test('parseBackgrondColor should return correct color (CRLF)', () => {
     const diagram = `
     sequenceDiagram\r
-    %% @backgroundColor{#ff0000}\r
+    %% @backgroundColor(#ff0000)\r
     Alice->>John: Hello\r
     Alice->>John: Bye\r
     `;
@@ -178,7 +178,7 @@ suite('AttributeParser Tests', function() {
   test('parseConfig should return empty string', () => {
     const diagram = `
     sequenceDiagram
-    %% @config  {./test_config.json}
+    %% @config  (./test_config.json)
     Alice->>John: Hello
     Alice->>John: Bye
     `;
@@ -190,7 +190,7 @@ suite('AttributeParser Tests', function() {
   test('parseConfig should return correct config path (CRLF)', () => {
     const diagram = `
     sequenceDiagram\r
-    %% @config  {./test_config.json}\r
+    %% @config  (./test_config.json)\r
     Alice->>John: Hello\r
     Alice->>John: Bye\r
     `;
@@ -211,7 +211,7 @@ suite('AttributeParser Tests', function() {
   test('parseOutputScale should return empty string', () => {
     const diagram = `
     sequenceDiagram
-    %% @outputScale  {1.0}
+    %% @outputScale  (1.0)
     Alice->>John: Hello
     Alice->>John: Bye
     `;
@@ -223,7 +223,7 @@ suite('AttributeParser Tests', function() {
   test('parseOutputScale should return correct scale (CRLF)', () => {
     const diagram = `
     sequenceDiagram\r
-    %% @outputScale  {1.0}\r
+    %% @outputScale  (1.0)\r
     Alice->>John: Hello\r
     Alice->>John: Bye\r
     `;

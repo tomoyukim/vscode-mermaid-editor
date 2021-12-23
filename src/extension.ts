@@ -48,7 +48,11 @@ export function activate(context: vscode.ExtensionContext): void {
   );
   const mermaidDocumentProvider = new MermaidDocumentProvider(
     vscodeWrapper,
-    new AttributeParseService()
+    new AttributeParseService(() => {
+      vscodeWrapper.showInformationMessage(
+        'The attribute syntax with curly brackets was deprecated. Please use parenthesis instead.'
+      );
+    })
   );
   const generateConfigProvider = new GeneratorConfigProvider(
     vscodeWrapper,
