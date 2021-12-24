@@ -100,15 +100,16 @@ sequenceDiagram
 
 Settings for look & feel in preview or image generator.
 
-| Setting                                     | Default | Description                                                                                                                                                                 |
-| ------------------------------------------- | ------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| mermaid-editor.preview.defaultMermaidConfig |         | Relative path to the default configuration json file for mermaidjs.                                                                                                         |
-| mermaid-editor.preview.backgroundColor      | white   | Default background color for live preview and generated image.                                                                                                              |
-| mermaid-editor.preview.errorOutputOnSave    | true    | Show error output console whe saving file if there's error message.<br/> **Note**: Error output in the console itself is always available regardless of this configuration. |
-| mermaid-editor.generate.type                | svg     | Output image file type [svg, png, jpg, webp].                                                                                                                               |
-| mermaid-editor.generate.outputPath          |         | Relative path to the output target directory from project root.                                                                                                             |
-| mermaid-editor.generate.useCurrentPath      | true    | Use relative output path as same as target mmd file instead of 'outputPath'.                                                                                                |
-| mermaid-editor.generate.scale               | 1.0     | Scale of the output image. Only positive number (>0) is permitted. Otherwise, `1.0` is used.                                                                                |
+| Setting                                     | Default | Description                                                                                                                                                                    |
+| ------------------------------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| mermaid-editor.preview.defaultMermaidConfig |         | Relative path to the default configuration json file for mermaidjs.                                                                                                            |
+| mermaid-editor.preview.backgroundColor      | white   | Default background color for live preview and generated image.                                                                                                                 |
+| mermaid-editor.preview.errorOutputOnSave    | true    | Show error output console whe saving file if there's error message.<br/> **Note**: Error output in the console itself is always available regardless of this configuration.    |
+| mermaid-editor.generate.type                | svg     | Output image file type [svg, png, jpg, webp].                                                                                                                                  |
+| mermaid-editor.generate.outputPath          |         | Relative path to the output target directory from project root.                                                                                                                |
+| mermaid-editor.generate.useCurrentPath      | true    | Use relative output path as same as target mmd file instead of 'outputPath'.                                                                                                   |
+| mermaid-editor.generate.scale               | 1.0     | Scale of the output image. Only positive number (>0) is permitted. Otherwise, `1.0` is used.                                                                                   |
+| mermaid-editor.generate.quality             | 1.0     | Quality of the output image. A number between 0 and 1 to be used when creating images using file formats that support lossy compression like jpeg or webp. Otherwise, ignored. |
 
 ## Credits
 

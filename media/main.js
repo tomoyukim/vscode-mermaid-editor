@@ -48,7 +48,7 @@ function debouncedRunloop(fn) {
     style.transformOrigin = 'left top';
   }
 
-  function convertToImg(svgBase64, type, scale, callback) {
+  function convertToImg(svgBase64, type, scale, quality, callback) {
     if (type === 'svg') {
       callback(svgBase64, undefined);
       return;
@@ -77,7 +77,7 @@ function debouncedRunloop(fn) {
       const mimeType = type === 'jpg' ? 'image/jpeg' : `image/${type}`;
       callback(
         canvas
-          .toDataURL(mimeType /*, default quality */)
+          .toDataURL(mimeType, quality)
           .replace(new RegExp(`^data:${mimeType};base64,`), ''),
         undefined
       );
@@ -156,7 +156,7 @@ function debouncedRunloop(fn) {
         });
         return;
       case 'takeImage':
-        const { type, scale } = message;
+        const { type, scale, quality } = message;
 
         const bgColor = getComputedStyle(body).backgroundColor;
         const svg = preview.querySelector('svg');
@@ -166,7 +166,7 @@ function debouncedRunloop(fn) {
         const xml = new XMLSerializer().serializeToString(svg);
         const data = btoa(unescape(encodeURIComponent(xml)));
 
-        convertToImg(data, type, scale, (imgBase64, error) => {
+        convertToImg(data, type, scale, quality, (imgBase64, error) => {
           const message = error
             ? {
                 command: 'onFailTakeImage',

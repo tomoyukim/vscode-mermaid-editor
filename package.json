@@ -103,6 +103,11 @@
             "type": "number",
             "default": "1.0",
             "description": "scale of the output image."
+          },
+          "mermaid-editor.generate.quality": {
+            "type": "number",
+            "default": "1.0",
+            "description": "quality of the output image."
           }
         }
       }

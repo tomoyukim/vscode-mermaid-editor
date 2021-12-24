@@ -75,6 +75,7 @@ suite('GeneratorConfigProvider Tests', function() {
     when(mocks.configuration.useCurrentPath).thenReturn(true);
     when(mocks.configuration.type).thenReturn('jpg');
     when(mocks.configuration.scale).thenReturn('1.0');
+    when(mocks.configuration.quality).thenReturn('0.5');
 
     when(
       mocks.configurationProvider.getConfiguration(
@@ -100,6 +101,7 @@ suite('GeneratorConfigProvider Tests', function() {
 
     assert.strictEqual(imageConfig.value.type, 'jpg');
     assert.strictEqual(imageConfig.value.scale, '1.0');
+    assert.strictEqual(imageConfig.value.quality, '0.5');
 
     let config = generatorConfigProvider.getConfig(
       GeneratorConfigProperty.UseCurrentPath

@@ -11,6 +11,7 @@ export interface DiagramWebViewRenderParams {
 export interface CaptureImageParams {
   type: string;
   scale: number;
+  quality: number;
 }
 
 // type for WebView message event

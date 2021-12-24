@@ -280,7 +280,8 @@ class MainController {
 
       this._diagramWebView?.captureImage({
         type: config.value.type,
-        scale
+        scale,
+        quality: config.value.quality
       });
       GeneratorProgressStatusBar.show();
     }

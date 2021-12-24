@@ -30,6 +30,7 @@ type GeneratorConfigType =
 export type GeneratorImageConfig = {
   type: string;
   scale: number;
+  quality: number;
 };
 
 export const GeneratorConfigProperty = {
@@ -84,7 +85,8 @@ class GeneratorConfigProvider {
       useCurrentPath,
       outputPath,
       type,
-      scale
+      scale,
+      quality
     } = this._getExtensionConfiguration();
     switch (key) {
       case GeneratorConfigProperty.UseCurrentPath:
@@ -104,7 +106,7 @@ class GeneratorConfigProvider {
             }
           : undefined;
       case GeneratorConfigProperty.ImageConfig:
-        const imageConfig = { type, scale };
+        const imageConfig = { type, scale, quality };
         return {
           kind: GeneratorConfigProperty.ImageConfig,
           value: imageConfig
