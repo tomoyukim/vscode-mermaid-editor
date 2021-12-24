@@ -18,6 +18,27 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ### Security
 
+## [0.12.0] - 2021-12-24
+
+### Added
+
+- Introduced a new config `mermaid-editor.generate.quality` to set a image quality for creating images like jpeg or webp.
+  - Related to a requirement in [Issue#24](https://github.com/tomoyukim/vscode-mermaid-editor/issues/24).
+
+### Deprecated
+
+- The attribute syntax with curly brackets like `@config{}` was deprecated. Use a new syntax with parenthesis like `@config()` instead.
+  - Related to [Issue#35](https://github.com/tbomoyukim/vscode-mermaid-editor/issues/35).
+
+### Fixed
+
+- Fixed to create svg image with the background color.
+  - Related to [Issue#24](https://github.com/tbomoyukim/vscode-mermaid-editor/issues/24).
+
+### Security
+
+- Bump some packages following a security report by Github
+
 ## [0.11.5] - 2021-12-21
 
 ### Fixed
