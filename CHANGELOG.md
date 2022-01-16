@@ -18,6 +18,14 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ### Security
 
+## [0.13.0] - 2022-1-16
+
+### Security
+
+- Bump mermaid version to 8.13.8
+
+- Removed vsce from local dependencies
+
 ## [0.12.0] - 2021-12-24
 
 ### Added
