@@ -45,13 +45,6 @@
         ]
       }
     ],
-    "grammars": [
-      {
-        "language": "mermaid",
-        "scopeName": "diagram.mmd",
-        "path": "./syntaxes/mmd.tmLanguage.json"
-      }
-    ],
     "configuration": [
       {
         "type": "object",
