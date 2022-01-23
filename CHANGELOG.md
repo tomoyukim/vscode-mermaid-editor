@@ -18,6 +18,21 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ### Security
 
+## [0.14.0] - 2022-1-23
+
+### Changed
+
+- Bump mermaid version to 8.13.10 ([Issue#58](https://github.com/bpruitt-goddard/vscode-mermaid-syntax-highlight/pull/63))
+
+### Removed
+
+- Remove syntax highlighting - Thanks to [PR#59](https://github.com/bpruitt-goddard/vscode-mermaid-syntax-highlight/pull/63) by [@rngtng](https://github.com/rngtng)
+  - Current syntax highlighting doesn't work fine. Some users suggested me to use [vscode-mermaid-syntax-highlight](https://github.com/bpruitt-goddard/vscode-mermaid-syntax-highlight) and I agreed. For more detail, see [Issue#41](https://github.com/bpruitt-goddard/vscode-mermaid-syntax-highlight/pull/63)
+
+### Security
+
+- Fix nanoid version to 3.1.31
+
 ## [0.13.0] - 2022-1-16
 
 ### Security
