@@ -33,18 +33,6 @@
   ],
   "main": "./dist/extension",
   "contributes": {
-    "languages": [
-      {
-        "id": "mermaid",
-        "extensions": [
-          ".mmd"
-        ],
-        "aliases": [
-          "Mermaid",
-          "mermaid"
-        ]
-      }
-    ],
     "configuration": [
       {
         "type": "object",
