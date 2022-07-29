@@ -18,6 +18,20 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ### Security
 
+## [0.15.0] - 2022-7-29
+
+### Changed
+
+- Bump mermaid version to 9.1.3
+
+### Security
+
+- Bump some dependencies.
+  - [PR#61](https://github.com/tomoyukim/vscode-mermaid-editor/pull/61)
+  - [PR#64](https://github.com/tomoyukim/vscode-mermaid-editor/pull/64)
+  - [PR#65](https://github.com/tomoyukim/vscode-mermaid-editor/pull/65)
+  - vsce
+
 ## [0.14.0] - 2022-1-23
 
 ### Changed
