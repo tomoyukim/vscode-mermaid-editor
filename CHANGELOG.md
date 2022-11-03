@@ -18,6 +18,12 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ### Security
 
+## [0.16.0] - 2022-11-3
+
+### Changed
+
+- Bump mermaid version to 9.2.0
+
 ## [0.15.0] - 2022-7-29
 
 ### Changed
