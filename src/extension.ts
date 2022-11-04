@@ -101,7 +101,10 @@ export function activate(context: vscode.ExtensionContext): void {
     mainController.zoomTo()
   );
   registerCommand(context, constants.COMMAND_GENERATE_IMAGE, () =>
-    mainController.captureImage()
+    mainController.captureImage('file')
+  );
+  registerCommand(context, constants.COMMAND_COPY_IMAGE, () =>
+    mainController.captureImage('clipboard')
   );
 }
 

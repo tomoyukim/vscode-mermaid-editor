@@ -1,6 +1,7 @@
 export const COMMAND_PREVIEW_SHOW = 'mermaid-editor.preview';
 
-export const COMMAND_GENERATE_IMAGE = 'mermaid-editor.generate';
+export const COMMAND_GENERATE_IMAGE = 'mermaid-editor.generate.file';
+export const COMMAND_COPY_IMAGE = 'mermaid-editor.generate.clipboard';
 
 export const COMMAND_PREVIEW_ZOOM_TO = 'mermaid-editor.preview.zoomto';
 export const COMMAND_PREVIEW_ZOOM_RESET = 'mermaid-editor.preview.zoomreset';

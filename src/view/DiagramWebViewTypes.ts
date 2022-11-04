@@ -8,10 +8,13 @@ export interface DiagramWebViewRenderParams {
   backgroundColor: string;
 }
 
+export type CaptureImageTarget = 'file' | 'clipboard';
+
 export interface CaptureImageParams {
   type: string;
   scale: number;
   quality: number;
+  target: CaptureImageTarget;
 }
 
 // type for WebView message event
@@ -19,6 +22,10 @@ export interface WebViewEventOnTakeImage {
   command: 'onTakeImage';
   type: ImageFileType;
   data: string;
+}
+
+export interface WebViewEventOnCopyImage {
+  command: 'onCopyImage';
 }
 
 export interface WebViewEventOnFaileTakeImage {
@@ -33,6 +40,7 @@ export interface WebViewEventOnParseError {
 
 export type WebViewEvent =
   | WebViewEventOnTakeImage
+  | WebViewEventOnCopyImage
   | WebViewEventOnFaileTakeImage
   | WebViewEventOnParseError;
 
@@ -43,12 +51,19 @@ export interface CaptureImageSuccess {
   data: string;
 }
 
+export interface CopyImageClipboard {
+  kind: 'copy_image_clipboard';
+}
+
 export interface CaptureImageFailure {
   kind: 'capture_image/failure';
   error: Error;
 }
 
-export type CaptureImageEndEvent = CaptureImageSuccess | CaptureImageFailure;
+export type CaptureImageEndEvent =
+  | CaptureImageSuccess
+  | CopyImageClipboard
+  | CaptureImageFailure;
 
 // type for errors
 export interface DiagramParseError {

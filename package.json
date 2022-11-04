@@ -107,7 +107,15 @@
     ],
     "commands": [
       {
-        "command": "mermaid-editor.generate",
+        "command": "mermaid-editor.generate.clipboard",
+        "title": "Mermaid:Copy image",
+        "icon": {
+          "light": "./images/light/icon-copy.svg",
+          "dark": "./images/dark/icon-copy.svg"
+        }
+      },
+      {
+        "command": "mermaid-editor.generate.file",
         "title": "Mermaid:Generate image",
         "icon": {
           "light": "./images/light/icon-dl.svg",
@@ -149,7 +157,12 @@
     ],
     "keybindings": [
       {
-        "command": "mermaid-editor.generate",
+        "command": "mermaid-editor.generate.clipboard",
+        "key": "ctrl+alt+;",
+        "when": "mermaidPreviewActive"
+      },
+      {
+        "command": "mermaid-editor.generate.file",
         "key": "ctrl+alt+]",
         "when": "mermaidPreviewEnabled && resourceExtname == .mmd"
       },
@@ -178,7 +191,7 @@
       "editor/context": [
         {
           "when": "mermaidPreviewEnabled && resourceExtname == .mmd",
-          "command": "mermaid-editor.generate",
+          "command": "mermaid-editor.generate.file",
           "group": "navigation"
         },
         {
@@ -190,7 +203,7 @@
       "editor/title": [
         {
           "when": "mermaidPreviewEnabled && resourceExtname == .mmd",
-          "command": "mermaid-editor.generate",
+          "command": "mermaid-editor.generate.file",
           "group": "navigation"
         },
         {
@@ -207,11 +220,20 @@
           "when": "mermaidPreviewActive",
           "command": "mermaid-editor.preview.zoomout",
           "group": "navigation"
+        },
+        {
+          "when": "mermaidPreviewActive",
+          "command": "mermaid-editor.generate.clipboard",
+          "group": "navigation"
         }
       ],
       "commandPalette": [
         {
-          "command": "mermaid-editor.generate",
+          "command": "mermaid-editor.generate.clipboard",
+          "when": "mermaidPreviewActive"
+        },
+        {
+          "command": "mermaid-editor.generate.file",
           "when": "mermaidPreviewEnabled && resourceExtname == .mmd"
         },
         {

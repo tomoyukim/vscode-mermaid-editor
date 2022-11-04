@@ -9,6 +9,7 @@ Mermaid Editor is vscode extension inspired by [official mermaid live editor](ht
 
 - Live edit `.mmd` file with [mermaid.js](https://mermaidjs.github.io/) diagram
 - Generate image file from `.mmd` file with preferred format (png, jpg, webp and svg).
+- Copy image to clipboard directly.
 - Customize configuration for individual `mmd` diagram by using atrribute which is available in this extension.
 
 ## Usage
@@ -34,6 +35,13 @@ Generate command is only available when `.mmd` file is opened and live preview i
 
 ![](https://user-images.githubusercontent.com/1187581/78126965-4e690d00-744e-11ea-96be-d59cf0965e26.png)
 ![](https://user-images.githubusercontent.com/1187581/78127020-6345a080-744e-11ea-9ad0-d2f24dec4d1e.png)
+
+### Copy image to clipboard
+
+Copy command is only availab e when "Mermaid Editor Preview" is focused.
+
+- Click `Mermaid:Copy image` icon
+- `ctrl+alt+;` on `Mermaid Editor Preview`
 
 ### Change scale of live preview
 

@@ -48,7 +48,14 @@ function debouncedRunloop(fn) {
     style.transformOrigin = 'left top';
   }
 
-  function convertToImg(svgBase64, type, scale, quality, callback) {
+  function convertToImg(
+    svgBase64,
+    type,
+    scale,
+    quality,
+    toClipboard,
+    callback
+  ) {
     if (type === 'svg') {
       callback(svgBase64, undefined);
       return;
@@ -58,6 +65,7 @@ function debouncedRunloop(fn) {
     elem.setAttribute('style', 'display: none;');
     elem.setAttribute('id', 'cnvs');
     preview.parentNode.appendChild(elem);
+    elem.focus();
 
     const canvas = document.getElementById('cnvs');
     const ctx = canvas.getContext('2d');
@@ -74,13 +82,22 @@ function debouncedRunloop(fn) {
       elem.setAttribute('height', calcedHeight);
       ctx.drawImage(img, 0, 0, calcedWidth, calcedHeight);
 
-      const mimeType = type === 'jpg' ? 'image/jpeg' : `image/${type}`;
-      callback(
-        canvas
-          .toDataURL(mimeType, quality)
-          .replace(new RegExp(`^data:${mimeType};base64,`), ''),
-        undefined
-      );
+      // tmp
+      if (toClipboard) {
+        canvas.toBlob(blob => {
+          const data = [new ClipboardItem({ [blob.type]: blob })];
+          callback(data, undefined);
+        });
+        console.log('hey');
+      } else {
+        const mimeType = type === 'jpg' ? 'image/jpeg' : `image/${type}`;
+        callback(
+          canvas
+            .toDataURL(mimeType, quality)
+            .replace(new RegExp(`^data:${mimeType};base64,`), ''),
+          undefined
+        );
+      }
       canvas.parentNode.removeChild(canvas);
     };
     img.src = imgSrc;
@@ -89,6 +106,27 @@ function debouncedRunloop(fn) {
   function postParseError(error) {
     vscode.postMessage({
       command: 'onParseError',
+      error
+    });
+  }
+
+  function postOnTakeImage(type, data) {
+    vscode.postMessage({
+      command: 'onTakeImage',
+      data,
+      type
+    });
+  }
+
+  function postOnCopyImage() {
+    vscode.postMessage({
+      command: 'onCopyImage'
+    });
+  }
+
+  function postFailTakeImage(error) {
+    vscode.postMessage({
+      command: 'onFailTakeImage',
       error
     });
   }
@@ -156,7 +194,7 @@ function debouncedRunloop(fn) {
         });
         return;
       case 'takeImage':
-        const { type, scale, quality } = message;
+        const { type, scale, quality, target } = message;
 
         const bgColor = getComputedStyle(body).backgroundColor;
         const svg = preview.querySelector('svg');
@@ -166,19 +204,23 @@ function debouncedRunloop(fn) {
         const xml = new XMLSerializer().serializeToString(svg);
         const data = btoa(unescape(encodeURIComponent(xml)));
 
-        convertToImg(data, type, scale, quality, (imgBase64, error) => {
-          const message = error
-            ? {
-                command: 'onFailTakeImage',
-                error
-              }
-            : {
-                command: 'onTakeImage',
-                data: imgBase64,
-                type
-              };
-          vscode.postMessage(message);
-        });
+        const toClipboard = target === 'clipboard';
+        convertToImg(
+          data,
+          type,
+          scale,
+          quality,
+          toClipboard,
+          (imgData, error) => {
+            if (toClipboard) {
+              navigator.clipboard
+                .write(imgData) // imgBlob
+                .then(postOnCopyImage, postFailTakeImage);
+            } else {
+              error ? postFailTakeImage(error) : postOnTakeImage(type, imgData); // imgBase64
+            }
+          }
+        );
         return;
       case 'zoomTo':
         const { value } = message;

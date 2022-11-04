@@ -270,6 +270,11 @@ export default class DiagramWebView extends Renderer<
           type: message.type
         });
         return;
+      case 'onCopyImage':
+        this._captureEventEmitter.fire({
+          kind: 'copy_image_clipboard'
+        });
+        return;
       case 'onFailTakeImage':
         this._captureEventEmitter.fire({
           kind: 'capture_image/failure',

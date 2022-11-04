@@ -174,6 +174,7 @@ suite('DiagramWebView Tests', function() {
         assert.strictEqual(message.type, 'png');
         assert.strictEqual(message.scale, 1);
         assert.strictEqual(message.quality, 0.5);
+        assert.strictEqual(message.target, 'file');
         done();
       } catch (e) {
         done(e);
@@ -195,7 +196,8 @@ suite('DiagramWebView Tests', function() {
     diagramWebView.captureImage({
       type: ImageFileType.PNG,
       scale: 1,
-      quality: 0.5
+      quality: 0.5,
+      target: 'file'
     });
   });
 
@@ -520,6 +522,35 @@ suite('DiagramWebView Tests', function() {
       command: 'onTakeImage',
       type: ImageFileType.JPG,
       data: 'test data: xxxxyyyyzzzz'
+    });
+  });
+
+  test('should call onDidCaptureImage with copy image command', done => {
+    const mockedFileSystemService = mock<FileSystemService>();
+    const mockedWebView = mock<vscode.Webview>();
+    const mockedWebViewPanel = mock<vscode.WebviewPanel>();
+    when(mockedWebViewPanel.webview).thenReturn(instance(mockedWebView));
+
+    const diagramWebView = new DiagramWebView(
+      '/path/extension',
+      {
+        preserveFocus: false,
+        viewColumn: vscode.ViewColumn.Beside
+      },
+      instance(mockedFileSystemService),
+      instance(mockedWebViewPanel)
+    );
+    diagramWebView.onDidCaptureImage((event: CaptureImageEndEvent) => {
+      let error;
+      try {
+        assert.strictEqual(event.kind, 'copy_image_clipboard');
+      } catch (e) {
+        error = e;
+      }
+      done(error);
+    });
+    diagramWebView.onDidReceiveMessage({
+      command: 'onCopyImage'
     });
   });
 

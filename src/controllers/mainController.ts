@@ -22,6 +22,7 @@ import {
 import WebViewManager from '../view/WebViewManager';
 import DiagramWebView from '../view/DiagramWebView';
 import {
+  CaptureImageTarget,
   DiagramWebViewRenderParams,
   ErrorEvent
 } from '../view/DiagramWebViewTypes';
@@ -261,7 +262,7 @@ class MainController {
     }
   }
 
-  public async captureImage(): Promise<void> {
+  public async captureImage(target: CaptureImageTarget): Promise<void> {
     const config = this._generatorConfigProvider.getConfig(
       GeneratorConfigProperty.ImageConfig
     );
@@ -281,7 +282,8 @@ class MainController {
       this._diagramWebView?.captureImage({
         type: config.value.type,
         scale,
-        quality: config.value.quality
+        quality: config.value.quality,
+        target
       });
       GeneratorProgressStatusBar.show();
     }
@@ -296,7 +298,10 @@ class MainController {
       this._popupViewProvider.showErrorMessage(
         constants.MESSAGE_GENERATE_IMAGE_FAILURE
       );
-      return;
+    } else if (e.kind === 'copy_image_clipboard') {
+      this._popupViewProvider.showInformationMessage(
+        constants.MESSAGE_COPY_IMAGE_CLIPBOARD
+      );
     } else {
       const config = this._generatorConfigProvider.getConfig(
         GeneratorConfigProperty.OutputPath
