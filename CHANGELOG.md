@@ -18,6 +18,13 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ### Security
 
+## [0.17.0] - 2022-11-4
+
+### Added
+
+- Add new feature to copy the image to clipboard directly without saving file.
+  - Thanks to [@leighmcculloch](https://github.com/leighmcculloch)'s suggestion in [Issue#55](https://github.com/tomoyukim/vscode-mermaid-editor/issues/55)
+
 ## [0.16.0] - 2022-11-3
 
 ### Changed
