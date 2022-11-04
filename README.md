@@ -1,9 +1,9 @@
 # Mermaid Editor
 
 [![Build Status](https://dev.azure.com/tomoyukim-vscode-extension/vscode-mermaid-editor-pipeline/_apis/build/status/tomoyukim.vscode-mermaid-editor?branchName=master)](https://dev.azure.com/tomoyukim-vscode-extension/vscode-mermaid-editor-pipeline/_build/latest?definitionId=1&branchName=master)
-[![Version](https://vsmarketplacebadges.dev/version/tomoyukim.vscode-mermaid-editor.svg)](https://marketplace.visualstudio.com/items?itemName=tomoyukim.vscode-mermaid-editor)
-[![Installs](https://vsmarketplacebadges.dev/installs-short/tomoyukim.vscode-mermaid-editor.svg)](https://marketplace.visualstudio.com/items?itemName=tomoyukim.vscode-mermaid-editor)
-[![Ratings](https://vsmarketplacebadges.dev/rating-short/tomoyukim.vscode-mermaid-editor.svg)](https://marketplace.visualstudio.com/items?itemName=tomoyukim.vscode-mermaid-editor)
+[![Version](https://vsmarketplacebadge.apphb.com/version/tomoyukim.vscode-mermaid-editor.svg)](https://marketplace.visualstudio.com/items?itemName=tomoyukim.vscode-mermaid-editor)
+[![Installs](https://vsmarketplacebadge.apphb.com/installs-short/tomoyukim.vscode-mermaid-editor.svg)](https://marketplace.visualstudio.com/items?itemName=tomoyukim.vscode-mermaid-editor)
+[![Ratings](https://vsmarketplacebadge.apphb.com/rating-short/tomoyukim.vscode-mermaid-editor.svg)](https://marketplace.visualstudio.com/items?itemName=tomoyukim.vscode-mermaid-editor)
 
 Mermaid Editor is vscode extension inspired by [official mermaid live editor](https://mermaidjs.github.io/mermaid-live-editor/) to provide the following features:
 
