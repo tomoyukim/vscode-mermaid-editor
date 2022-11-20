@@ -153,7 +153,7 @@ class MainController {
       switch (error.kind) {
         case 'error/diagram-parse':
           this._errorMessageQueue.enqueue(
-            `[DigagramParseError]\n${error.message}`
+            `[DiagramParseError]\n${error.message}`
           );
           break;
         case 'error/mermaid-config-json-parse':
