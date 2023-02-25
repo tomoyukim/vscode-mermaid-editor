@@ -282,6 +282,7 @@
     "@types/mocha": "8.2.x",
     "@types/node": "10.17.x",
     "@types/vscode": "1.44.x",
+    "@types/vscode-webview": "^1.57.1",
     "@typescript-eslint/eslint-plugin": "5.8.x",
     "@typescript-eslint/parser": "5.8.x",
     "copy-webpack-plugin": "^9.0.1",
