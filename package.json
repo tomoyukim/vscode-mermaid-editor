@@ -304,7 +304,6 @@
     "@fortawesome/fontawesome-free": "5.15.4",
     "@types/lodash": "4.14.x",
     "@types/mkdirp": "1.0.x",
-    "d3": "5.7.x",
     "lodash": ">=4.17.21",
     "mermaid": "^9.4.0",
     "redux": "^4.0.5",
