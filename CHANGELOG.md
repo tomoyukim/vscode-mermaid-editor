@@ -18,6 +18,12 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ### Security
 
+## [0.18.1] - 2023-2-25
+
+### Fixed
+
+- Fix unit test broken by v0.18.0
+
 ## [0.18.0] - 2023-2-25
 
 ### Changed
