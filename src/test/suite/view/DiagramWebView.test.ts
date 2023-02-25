@@ -268,7 +268,8 @@ suite('DiagramWebView Tests', function() {
       try {
         if (
           uri.path !== '/path/extension/media/main.js' &&
-          uri.path !== '/path/extension/dist/vendor/mermaid/dist/mermaid.min.js' &&
+          uri.path !==
+            '/path/extension/dist/vendor/mermaid/dist/mermaid.min.js' &&
           uri.path !== '/path/extension/dist/vendor/fontawesome/css/all.min.css'
         ) {
           throw new Error('asWebviewUri is called with unexpected Uri object');
