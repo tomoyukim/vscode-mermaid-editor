@@ -1,16 +1,23 @@
 # Mermaid Editor
 
 [![Build Status](https://dev.azure.com/tomoyukim-vscode-extension/vscode-mermaid-editor-pipeline/_apis/build/status/tomoyukim.vscode-mermaid-editor?branchName=master)](https://dev.azure.com/tomoyukim-vscode-extension/vscode-mermaid-editor-pipeline/_build/latest?definitionId=1&branchName=master)
-[![Version](https://vsmarketplacebadge.apphb.com/version/tomoyukim.vscode-mermaid-editor.svg)](https://marketplace.visualstudio.com/items?itemName=tomoyukim.vscode-mermaid-editor)
-[![Installs](https://vsmarketplacebadge.apphb.com/installs-short/tomoyukim.vscode-mermaid-editor.svg)](https://marketplace.visualstudio.com/items?itemName=tomoyukim.vscode-mermaid-editor)
-[![Ratings](https://vsmarketplacebadge.apphb.com/rating-short/tomoyukim.vscode-mermaid-editor.svg)](https://marketplace.visualstudio.com/items?itemName=tomoyukim.vscode-mermaid-editor)
 
-Mermaid Editor is vscode extension inspired by [official mermaid live editor](https://mermaidjs.github.io/mermaid-live-editor/) to provide the following features:
+Mermaid Editor is VSCode extension inspired by [official mermaid live editor](https://mermaidjs.github.io/mermaid-live-editor/) which provides mainly the following features:
 
 - Live edit `.mmd` file with [mermaid.js](https://mermaidjs.github.io/) diagram
-- Generate image file from `.mmd` file with preferred format (png, jpg, webp and svg).
+- Generate image file from `.mmd` file with preferred format (**png**, **jpg**, **webp** and **svg**).
 - Copy image to clipboard directly.
 - Customize configuration for individual `mmd` diagram by using atrribute which is available in this extension.
+
+Mermaid Editor does not contain syntax highlighting for Mermaid charting language.
+But don't warry, a great plugin [Mermaid Markdown Syntax Highlighting](https://marketplace.visualstudio.com/items?itemName=bpruitt-goddard.mermaid-markdown-syntax-highlighting) works with Mermaid Editor.
+
+Mermaid Editor is also available on [Open VSX Registry](https://open-vsx.org/extension/tomoyukim/vscode-mermaid-editor) for developers who love FLOSS binaries of VSCode.
+
+Mermaid Editor is implemented as 100% local solution mainly using mermaid.js and VSCode SDK.
+It means Mermaid Editor does NOT require online environment and NOT send your code to any remote server in order to work.
+
+Enjoy!
 
 ## Usage
 
