@@ -239,6 +239,7 @@ suite('DiagramWebView Tests', function() {
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <title>Mermaid Editor Preview</title>
+      <link href="file:///path/extension/dist/vendor/fontawesome/css/all.min.css" rel="stylesheet">
       <style>
       body {
         background-color: deep-blue;
@@ -249,7 +250,6 @@ suite('DiagramWebView Tests', function() {
       <div id="preview" class="mermaid">
       Lorem Ipsum
       </div>
-      <script src="https://kit.fontawesome.com/d03d50bb07.js" crossorigin="anonymous"></script>
       <script src="file:///path/extension/dist/vendor/mermaid/dist/mermaid.min.js"></script>
       <script>mermaid.initialize({"test":"config","startOnLoad":true});</script>
       <script src="file:///path/extension/media/main.js"></script>
@@ -268,7 +268,8 @@ suite('DiagramWebView Tests', function() {
       try {
         if (
           uri.path !== '/path/extension/media/main.js' &&
-          uri.path !== '/path/extension/dist/vendor/mermaid/dist/mermaid.min.js'
+          uri.path !== '/path/extension/dist/vendor/mermaid/dist/mermaid.min.js' &&
+          uri.path !== '/path/extension/dist/vendor/fontawesome/css/all.min.css'
         ) {
           throw new Error('asWebviewUri is called with unexpected Uri object');
         }
@@ -310,6 +311,7 @@ suite('DiagramWebView Tests', function() {
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <title>Mermaid Editor Preview</title>
+      <link href="file:///path/extension/dist/vendor/fontawesome/css/all.min.css" rel="stylesheet">
       <style>
       body {
         background-color: deep-blue;
@@ -320,7 +322,6 @@ suite('DiagramWebView Tests', function() {
       <div id="preview" class="mermaid">
       Lorem Ipsum
       </div>
-      <script src="https://kit.fontawesome.com/d03d50bb07.js" crossorigin="anonymous"></script>
       <script src="file:///path/extension/dist/vendor/mermaid/dist/mermaid.min.js"></script>
       <script>mermaid.initialize({"startOnLoad":true});</script>
       <script src="file:///path/extension/media/main.js"></script>
