@@ -93,7 +93,8 @@ export default class DiagramWebView extends Renderer<
     backgroundColor: string,
     mermaidConfig: string,
     scriptUri: vscode.Uri,
-    mermaidUri: vscode.Uri
+    mermaidUri: vscode.Uri,
+    fontawesomeCssUri: vscode.Uri
   ): string {
     return `
     <!DOCTYPE html>
@@ -102,6 +103,7 @@ export default class DiagramWebView extends Renderer<
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <title>Mermaid Editor Preview</title>
+      <link href="${fontawesomeCssUri}" rel="stylesheet">
       <style>
       body {
         background-color: ${backgroundColor};
@@ -112,7 +114,6 @@ export default class DiagramWebView extends Renderer<
       <div id="preview" class="mermaid">
       ${code}
       </div>
-      <script src="https://kit.fontawesome.com/d03d50bb07.js" crossorigin="anonymous"></script>
       <script src="${mermaidUri}"></script>
       <script>mermaid.initialize(${mermaidConfig});</script>
       <script src="${scriptUri}"></script>
@@ -198,6 +199,15 @@ export default class DiagramWebView extends Renderer<
         )
       )
     );
+    const fontawesomeCssUri = this._panel.webview.asWebviewUri(
+      this._fileSystemService.file(
+        path.join(
+          this._extensionPath,
+          'dist/vendor',
+          'fontawesome/css/all.min.css'
+        )
+      )
+    );
     const mergedConfig = this._putStartOnLoadConfig(param.mermaidConfig);
     this._viewRenderRequestEventEmitter.fire();
 
@@ -206,7 +216,8 @@ export default class DiagramWebView extends Renderer<
       param.backgroundColor,
       mergedConfig,
       scriptUri,
-      mermaidUri
+      mermaidUri,
+      fontawesomeCssUri
     );
   }
 
