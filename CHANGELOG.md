@@ -18,6 +18,20 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ### Security
 
+## [0.18.0] - 2023-2-25
+
+### Changed
+
+- Bump mermaid version to 9.4.0
+  - Thanks to [@KajiTetsushi](https://github.com/KajiTetsushi)'s contribution in [PR#73](https://github.com/tomoyukim/vscode-mermaid-editor/pull/73)
+  - This version officially supports mindmap syntax that is required in [Issue#69](https://github.com/tomoyukim/vscode-mermaid-editor/issues/69)
+- Add more descriptions about Mermaid Editor including how this extension works without any remote solution
+  - Thanks to [@sadsimulation](https://github.com/sadsimulation)'s suggestion in [Issue#74](https://github.com/tomoyukim/vscode-mermaid-editor/issues/74)
+
+### Removed
+
+- Remove SVG badges from README in order to release Mermaid Editor to Open VSX.
+
 ## [0.17.1] - 2022-11-4
 
 ### Fixed
