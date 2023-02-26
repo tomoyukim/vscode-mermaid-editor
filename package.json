@@ -259,11 +259,6 @@
       ]
     }
   },
-  "husky": {
-    "hooks": {
-      "pre-push": "yarn lint"
-    }
-  },
   "scripts": {
     "vscode:prepublish": "webpack --mode production",
     "webpack": "webpack --mode development",
@@ -272,7 +267,8 @@
     "watch": "tsc -watch -p ./",
     "test": "node ./out/test/runTest",
     "pretest": "yarn run compile && yarn run lint",
-    "lint": "eslint src --ext ts"
+    "lint": "eslint src --ext ts",
+    "prepare": "is-ci || husky install"
   },
   "prettier": {
     "singleQuote": true
@@ -289,7 +285,9 @@
     "eslint-config-prettier": "^6.10.1",
     "eslint-plugin-prettier": "^3.1.2",
     "glob": "7.1.x",
-    "husky": "^5.2.0",
+    "husky": "^8.0.0",
+    "is-ci": "^3.0.1",
+    "lint-staged": "^13.1.2",
     "mocha": "^9.1.4",
     "prettier": "1.19.x",
     "ts-loader": "^9.3.1",
