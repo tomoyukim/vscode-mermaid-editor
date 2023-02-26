@@ -31,7 +31,7 @@ steps:
     condition: and(succeeded(), eq(variables['Agent.OS'], 'Linux'))
 
   - bash: |
-      echo ">>> Install dependencies
+      echo ">>> Install dependencies"
       yarn --frozen-lockfile
       echo ">>> Prepare for test"
       yarn pretest
