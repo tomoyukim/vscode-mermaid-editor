@@ -272,8 +272,7 @@
     "watch": "tsc -watch -p ./",
     "test": "node ./out/test/runTest",
     "pretest": "yarn run compile && yarn run lint",
-    "lint": "eslint src --ext ts",
-    "deploy": "vsce publish --yarn"
+    "lint": "eslint src --ext ts"
   },
   "prettier": {
     "singleQuote": true
