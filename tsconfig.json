@@ -14,5 +14,5 @@
     "esModuleInterop": true,
     "noImplicitAny": true
   },
-  "exclude": ["dist", "node_modules", ".vscode-test"]
+  "exclude": ["dist", "node_modules", ".vscode-test", "media/main.d.ts"]
 }
