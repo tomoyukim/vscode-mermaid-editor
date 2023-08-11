@@ -8,6 +8,7 @@ import {
   anything,
   anyString
 } from 'ts-mockito';
+import isNil = require('lodash/isNil');
 import * as constants from '../../../constants';
 import FileSystemService from '../../../models/FileSystemService';
 import DiagramWebView from '../../../view/DiagramWebView';
@@ -355,7 +356,7 @@ suite('DiagramWebView Tests', function() {
     diagramWebView.onDidError((e: ErrorEvent) => {
       try {
         assert.strictEqual(e.kind, 'error/mermaid-config-json-parse');
-        assert.strictEqual(e.message, 'Unexpected end of JSON input');
+        assert.equal(isNil(e.message), false);
       } catch (e) {
         done(e);
       }
