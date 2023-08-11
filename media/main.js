@@ -56,7 +56,9 @@ function debouncedRunloop(fn) {
     toClipboard,
     callback
   ) {
-    if (type === 'svg') {
+    if (type === 'svg' && !toClipboard) {
+      // issue#81 check "toClipboard" here
+      // writing to the clipboard failed since the callback doesn't return ClipboardItem.
       callback(svgBase64, undefined);
       return;
     }
@@ -85,6 +87,7 @@ function debouncedRunloop(fn) {
       // tmp
       if (toClipboard) {
         canvas.toBlob(blob => {
+          // note: blob.type is always "image/png" regardless of the passed type.
           const data = [new ClipboardItem({ [blob.type]: blob })];
           callback(data, undefined);
         });
