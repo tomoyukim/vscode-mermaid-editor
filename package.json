@@ -8,14 +8,8 @@
   "engines": {
     "vscode": "^1.44.0"
   },
-  "categories": [
-    "Other"
-  ],
-  "keywords": [
-    "mermaid",
-    "uml",
-    "diagram"
-  ],
+  "categories": ["Other"],
+  "keywords": ["mermaid", "uml", "diagram"],
   "galleryBanner": {
     "color": "#333333",
     "theme": "dark"
@@ -36,13 +30,8 @@
     "languages": [
       {
         "id": "mermaid",
-        "extensions": [
-          ".mmd"
-        ],
-        "aliases": [
-          "Mermaid",
-          "mermaid"
-        ]
+        "extensions": [".mmd", ".mermaid"],
+        "aliases": ["Mermaid", "mermaid"]
       }
     ],
     "configuration": [
@@ -164,12 +153,12 @@
       {
         "command": "mermaid-editor.generate.file",
         "key": "ctrl+alt+]",
-        "when": "mermaidPreviewEnabled && resourceExtname == .mmd"
+        "when": "mermaidPreviewEnabled && (resourceExtname == .mmd || resourceExtname ==.mermaid)"
       },
       {
         "command": "mermaid-editor.preview",
         "key": "ctrl+alt+[",
-        "when": "resourceExtname == .mmd"
+        "when": "resourceExtname == .mmd || resourceExtname ==.mermaid"
       },
       {
         "command": "mermaid-editor.preview.zoomin",
@@ -190,24 +179,24 @@
     "menus": {
       "editor/context": [
         {
-          "when": "mermaidPreviewEnabled && resourceExtname == .mmd",
+          "when": "mermaidPreviewEnabled && (resourceExtname == .mmd || resourceExtname ==.mermaid)",
           "command": "mermaid-editor.generate.file",
           "group": "navigation"
         },
         {
-          "when": "resourceExtname == .mmd",
+          "when": "resourceExtname == .mmd || resourceExtname ==.mermaid",
           "command": "mermaid-editor.preview",
           "group": "navigation"
         }
       ],
       "editor/title": [
         {
-          "when": "mermaidPreviewEnabled && resourceExtname == .mmd",
+          "when": "mermaidPreviewEnabled && (resourceExtname == .mmd || resourceExtname ==.mermaid)",
           "command": "mermaid-editor.generate.file",
           "group": "navigation"
         },
         {
-          "when": "resourceExtname == .mmd",
+          "when": "resourceExtname == .mmd || resourceExtname ==.mermaid",
           "command": "mermaid-editor.preview",
           "group": "navigation"
         },
@@ -234,11 +223,11 @@
         },
         {
           "command": "mermaid-editor.generate.file",
-          "when": "mermaidPreviewEnabled && resourceExtname == .mmd"
+          "when": "mermaidPreviewEnabled && (resourceExtname == .mmd || resourceExtname ==.mermaid)"
         },
         {
           "command": "mermaid-editor.preview",
-          "when": "resourceExtname == .mmd"
+          "when": "resourceExtname == .mmd || resourceExtname ==.mermaid"
         },
         {
           "command": "mermaid-editor.preview.zoomin",
