@@ -4,6 +4,7 @@ import * as vscode from 'vscode';
 import * as constants from './constants';
 import Logger from './Logger';
 import MainController from './controllers/mainController';
+import fetch from 'cross-fetch';
 
 import viewStateStore from './controllers/viewStateStore';
 import WebViewManager from './view/WebViewManager';
@@ -16,7 +17,32 @@ import PreviewConfigProvider, {
 import GeneratorConfigProvider from './models/configration/GeneratorConfigProvider';
 import MermaidConfigService from './models/configration/MermaidConfigService';
 import FileGeneratorService from './models/FileGeneratorService';
-import GeneratorProgressStatusBar from './GeneratorProgressStatusBar';
+import ProgressStatusBar, {
+  PROGRESS_GENERATING_IMAGE,
+  PROGRESS_FETCHING_LIBRARY
+} from './ProgressStatusBar';
+import MermaidLibraryProvider from './models/MermaidLibraryProvider';
+import MermaidLibraryService, {
+  MermaidLibraryChangeEvent
+} from './controllers/MermaidLibraryService';
+
+const fetchLatestLibraryUri = async () => {
+  try {
+    // TODO: should show progress in status bar
+    const res = await fetch(
+      'https://api.cdnjs.com/libraries/mermaid?fields=version,latest'
+    );
+    if (res.status >= 400) {
+      throw new Error('Bad response from server');
+    }
+    const fields = await res.json();
+    return fields;
+  } catch (e) {
+    // TODO
+    vscode.window.showErrorMessage(e.message);
+  }
+  return {};
+};
 
 function registerCommand(
   context: vscode.ExtensionContext,
@@ -37,14 +63,45 @@ export function activate(context: vscode.ExtensionContext): void {
     vscodeWrapper.createOutputChannel(constants.LOG_OUTPUT_CHANNEL)
   );
 
-  GeneratorProgressStatusBar.setStatusBarItem(
-    vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100)
+  const generatorProgressItem = vscode.window.createStatusBarItem(
+    vscode.StatusBarAlignment.Left,
+    100
+  );
+  generatorProgressItem.text = '$(sync) generating image...';
+  ProgressStatusBar.setStatusBarItem(
+    PROGRESS_GENERATING_IMAGE,
+    generatorProgressItem
+  );
+
+  const fetchProgressItem = vscode.window.createStatusBarItem(
+    vscode.StatusBarAlignment.Left,
+    100
+  );
+  fetchProgressItem.text = '$(sync) getting the CDN information...';
+  ProgressStatusBar.setStatusBarItem(
+    PROGRESS_FETCHING_LIBRARY,
+    fetchProgressItem
+  );
+
+  const mermaidLibraryProvider = new MermaidLibraryProvider(
+    context.extensionPath,
+    vscodeWrapper
+  );
+  const mermaidLibraryService = new MermaidLibraryService(
+    mermaidLibraryProvider,
+    context.globalState
+  );
+  mermaidLibraryService.onDidChangeMermaidLibrary(
+    (event: MermaidLibraryChangeEvent) => {
+      mainController.dispose();
+    }
   );
 
   const webViewManager = new WebViewManager(
     context.extensionPath,
     vscodeWrapper,
-    vscodeWrapper
+    vscodeWrapper,
+    mermaidLibraryService
   );
   const mermaidDocumentProvider = new MermaidDocumentProvider(
     vscodeWrapper,
@@ -106,10 +163,49 @@ export function activate(context: vscode.ExtensionContext): void {
   registerCommand(context, constants.COMMAND_COPY_IMAGE, () =>
     mainController.captureImage('clipboard')
   );
+  registerCommand(
+    context,
+    constants.COMMAND_UPDATE_MERMAID_LIBRARY,
+    async () => {
+      try {
+        ProgressStatusBar.show(PROGRESS_FETCHING_LIBRARY);
+        const { latest, version } = await fetchLatestLibraryUri();
+        ProgressStatusBar.hide(PROGRESS_FETCHING_LIBRARY);
+
+        if (latest) {
+          mermaidLibraryService.setLibrary(latest, version);
+          vscode.window.showInformationMessage(
+            constants.MESSAGE_UPDATE_MERMAID_LIBRARY(version)
+          );
+        }
+      } catch (e) {
+        vscode.window.showErrorMessage('test: error');
+      }
+    }
+  );
+  registerCommand(context, constants.COMMAND_RESET_MERMAID_LIBRARY, () => {
+    mermaidLibraryService.clearLibrary();
+    vscode.window.showInformationMessage(
+      constants.MESSAGE_RESET_MERMAID_LIBRARY
+    );
+  });
+  registerCommand(context, constants.COMMAND_SET_MERMAID_LIBRARY, async () => {
+    const text = await vscode.window.showInputBox();
+    if (text) {
+      try {
+        mermaidLibraryService.setLibrary(text);
+        vscode.window.showInformationMessage(
+          constants.MESSAGE_UPDATE_MERMAID_LIBRARY('the user value')
+        );
+      } catch (e) {
+        vscode.window.showErrorMessage('test: error');
+      }
+    }
+  });
 }
 
 export function deactivate(): void {
   mainController.dispose();
   Logger.dispose();
-  GeneratorProgressStatusBar.dispose();
+  ProgressStatusBar.dispose();
 }

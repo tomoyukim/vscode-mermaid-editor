@@ -12,6 +12,7 @@ import {
 } from './DiagramWebViewTypes';
 import Renderer, { RendererError } from './Renderer';
 import { ViewState, ViewStateAction } from '../controllers/viewStateStore';
+import MermaidLibraryService from '../controllers/MermaidLibraryService';
 
 type ShowOptions = {
   preserveFocus: boolean;
@@ -23,6 +24,7 @@ export default class DiagramWebView extends Renderer<
   ViewState,
   ViewStateAction
 > {
+  private _mermaidLibraryService: MermaidLibraryService;
   private _fileSystemService: FileSystemService;
   private _extensionPath: string;
   private _showOptions: ShowOptions;
@@ -44,10 +46,12 @@ export default class DiagramWebView extends Renderer<
     extensionPath: string,
     showOptions: ShowOptions,
     fileSystemService: FileSystemService,
-    panel: vscode.WebviewPanel
+    panel: vscode.WebviewPanel,
+    mermaidLibraryService: MermaidLibraryService
   ) {
     super();
 
+    this._mermaidLibraryService = mermaidLibraryService;
     this._fileSystemService = fileSystemService;
     this._extensionPath = extensionPath;
     this._showOptions = showOptions;
@@ -190,15 +194,13 @@ export default class DiagramWebView extends Renderer<
         path.join(this._extensionPath, 'media', 'main.js')
       )
     );
-    const mermaidUri = this._panel.webview.asWebviewUri(
-      this._fileSystemService.file(
-        path.join(
-          this._extensionPath,
-          'dist/vendor',
-          'mermaid/dist/mermaid.min.js'
-        )
-      )
-    );
+
+    const libraryUri = this._mermaidLibraryService.libraryUri;
+    const mermaidUri =
+      libraryUri.scheme === 'file'
+        ? this._panel.webview.asWebviewUri(libraryUri)
+        : libraryUri;
+
     const fontawesomeCssUri = this._panel.webview.asWebviewUri(
       this._fileSystemService.file(
         path.join(

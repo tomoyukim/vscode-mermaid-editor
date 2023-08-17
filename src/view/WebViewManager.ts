@@ -4,6 +4,7 @@ import * as constants from '../constants';
 import FileSystemService from '../models/FileSystemService';
 import DiagramWebView from './DiagramWebView';
 import WebViewPanelProvider from './WebViewPanelProvider';
+import MermaidLibraryService from '../controllers/MermaidLibraryService';
 
 interface WebViewState {
   scale: number;
@@ -26,6 +27,7 @@ class WebViewManager implements vscode.WebviewPanelSerializer {
   private _extensionPath: string;
   private _webViewPanelProvider: WebViewPanelProvider;
   private _fileSystemService: FileSystemService;
+  private _mermaidLibraryService: MermaidLibraryService;
   private _eventEmitter: vscode.EventEmitter<WebViewChangeEvent>;
 
   private _diagramWebView: DiagramWebView | undefined;
@@ -33,11 +35,13 @@ class WebViewManager implements vscode.WebviewPanelSerializer {
   constructor(
     extensionPath: string,
     webViewPanelProvider: WebViewPanelProvider,
-    fileSystemService: FileSystemService
+    fileSystemService: FileSystemService,
+    mermaidLibraryService: MermaidLibraryService
   ) {
     this._extensionPath = extensionPath;
     this._webViewPanelProvider = webViewPanelProvider;
     this._fileSystemService = fileSystemService;
+    this._mermaidLibraryService = mermaidLibraryService;
     this._eventEmitter = new vscode.EventEmitter<WebViewChangeEvent>();
 
     this._webViewPanelProvider.registerWebviewPanelSerializer(
@@ -70,7 +74,8 @@ class WebViewManager implements vscode.WebviewPanelSerializer {
       this._extensionPath,
       this._showOptions,
       this._fileSystemService,
-      webViewPanel
+      webViewPanel,
+      this._mermaidLibraryService
     );
     view.onDidDispose && view.onDidDispose(() => this.onDidDispose());
     return view;

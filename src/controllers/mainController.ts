@@ -34,7 +34,9 @@ import SystemCommandService from './SystemCommandService';
 import MermaidConfigService from '../models/configration/MermaidConfigService';
 import Logger from '../Logger';
 import { PopupViewProvider } from './PopupViewProvider';
-import GeneratorProgressStatusBar from '../GeneratorProgressStatusBar';
+import ProgressStatusBar, {
+  PROGRESS_GENERATING_IMAGE
+} from '../ProgressStatusBar';
 import Queue from '../utils/Queue';
 
 // for test
@@ -285,7 +287,7 @@ class MainController {
         quality: config.value.quality,
         target
       });
-      GeneratorProgressStatusBar.show();
+      ProgressStatusBar.show(PROGRESS_GENERATING_IMAGE);
     }
   }
 
@@ -330,7 +332,7 @@ class MainController {
         );
       }
     }
-    GeneratorProgressStatusBar.hide();
+    ProgressStatusBar.hide(PROGRESS_GENERATING_IMAGE);
   }
 
   public async onDidChangeWebView(
