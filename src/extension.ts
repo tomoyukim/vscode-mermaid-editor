@@ -22,9 +22,7 @@ import ProgressStatusBar, {
   PROGRESS_FETCHING_LIBRARY
 } from './ProgressStatusBar';
 import MermaidLibraryProvider from './models/MermaidLibraryProvider';
-import MermaidLibraryService, {
-  MermaidLibraryChangeEvent
-} from './controllers/MermaidLibraryService';
+import { MermaidLibraryChangeEvent } from './controllers/MermaidLibraryService';
 
 const fetchLatestLibraryUri = async () => {
   try {
@@ -85,13 +83,10 @@ export function activate(context: vscode.ExtensionContext): void {
 
   const mermaidLibraryProvider = new MermaidLibraryProvider(
     context.extensionPath,
+    context.globalState,
     vscodeWrapper
   );
-  const mermaidLibraryService = new MermaidLibraryService(
-    mermaidLibraryProvider,
-    context.globalState
-  );
-  mermaidLibraryService.onDidChangeMermaidLibrary(
+  mermaidLibraryProvider.onDidChangeMermaidLibrary(
     (event: MermaidLibraryChangeEvent) => {
       mainController.dispose();
     }
@@ -101,7 +96,7 @@ export function activate(context: vscode.ExtensionContext): void {
     context.extensionPath,
     vscodeWrapper,
     vscodeWrapper,
-    mermaidLibraryService
+    mermaidLibraryProvider
   );
   const mermaidDocumentProvider = new MermaidDocumentProvider(
     vscodeWrapper,
@@ -173,7 +168,7 @@ export function activate(context: vscode.ExtensionContext): void {
         ProgressStatusBar.hide(PROGRESS_FETCHING_LIBRARY);
 
         if (latest) {
-          mermaidLibraryService.setLibrary(latest, version);
+          mermaidLibraryProvider.setLibrary(latest, version);
           vscode.window.showInformationMessage(
             constants.MESSAGE_UPDATE_MERMAID_LIBRARY(version)
           );
@@ -184,7 +179,7 @@ export function activate(context: vscode.ExtensionContext): void {
     }
   );
   registerCommand(context, constants.COMMAND_RESET_MERMAID_LIBRARY, () => {
-    mermaidLibraryService.clearLibrary();
+    mermaidLibraryProvider.clearLibrary();
     vscode.window.showInformationMessage(
       constants.MESSAGE_RESET_MERMAID_LIBRARY
     );
@@ -193,7 +188,7 @@ export function activate(context: vscode.ExtensionContext): void {
     const text = await vscode.window.showInputBox();
     if (text) {
       try {
-        mermaidLibraryService.setLibrary(text);
+        mermaidLibraryProvider.setLibrary(text);
         vscode.window.showInformationMessage(
           constants.MESSAGE_UPDATE_MERMAID_LIBRARY('the user value')
         );
