@@ -1,8 +1,4 @@
 import * as vscode from 'vscode';
-import MermaidLibraryProvider from '../models/MermaidLibraryProvider';
-
-const KEY_MERMAID_LIBRARY = 'mermaidLibrary';
-const KEY_MERMAID_LIBRARY_VERSION = 'mermaidLibraryVersion';
 
 export interface MermaidLibraryChangeEvent {
   version: string | undefined;
@@ -14,6 +10,6 @@ export default interface MermaidLibraryService {
   readonly libraryUri: vscode.Uri;
   readonly isIntegratedLibraryUsed: boolean;
   setLibrary(path: string, version?: string): void;
-  clearLibrary(): void;
+  resetLibrary(): void;
   onDidChangeMermaidLibrary: vscode.Event<MermaidLibraryChangeEvent>;
 }

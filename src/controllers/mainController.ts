@@ -324,9 +324,11 @@ class MainController {
           constants.MESSAGE_GENERATE_IMAGE_SUCCESS
         );
       } catch (error) {
-        Logger.appendLine('[OutputFileFailure]');
-        Logger.appendLine(error.message);
-        Logger.show();
+        if (error instanceof Error) {
+          Logger.appendLine('[OutputFileFailure]');
+          Logger.appendLine(error.message);
+          Logger.show();
+        }
         this._popupViewProvider.showErrorMessage(
           constants.MESSAGE_GENERATE_IMAGE_FAILURE
         );

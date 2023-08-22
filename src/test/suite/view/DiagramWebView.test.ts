@@ -17,6 +17,7 @@ import {
   ErrorEvent
 } from '../../../view/DiagramWebViewTypes';
 import { ImageFileType } from '../../../models/FileGeneratorService';
+import MermaidLibraryService from '../../../controllers/MermaidLibraryService';
 
 suite('DiagramWebView Tests', function() {
   test('should construct DiagramWebView', done => {
@@ -37,6 +38,7 @@ suite('DiagramWebView Tests', function() {
         done(new Error('onDidReceiveMessage is not called.'));
       }
     });
+    const mockedMermaidLibraryService = mock<MermaidLibraryService>();
 
     new DiagramWebView(
       '/path/extension',
@@ -45,12 +47,14 @@ suite('DiagramWebView Tests', function() {
         viewColumn: vscode.ViewColumn.Beside
       },
       instance(mockedFileSystemService),
-      instance(webViewPanel)
+      instance(webViewPanel),
+      instance(mockedMermaidLibraryService)
     );
   });
 
   test('should return active/visible property', () => {
     const mockedFileSystemService = mock<FileSystemService>();
+    const mockedMermaidLibraryService = mock<MermaidLibraryService>();
 
     const webView = mock<vscode.Webview>();
     const webViewPanel = mock<vscode.WebviewPanel>();
@@ -65,7 +69,8 @@ suite('DiagramWebView Tests', function() {
         viewColumn: vscode.ViewColumn.Beside
       },
       instance(mockedFileSystemService),
-      instance(webViewPanel)
+      instance(webViewPanel),
+      instance(mockedMermaidLibraryService)
     );
     assert.strictEqual(diagramWebView.active, true);
     assert.strictEqual(diagramWebView.visible, true);
@@ -110,6 +115,7 @@ suite('DiagramWebView Tests', function() {
 
     const webViewPanel = mock<vscode.WebviewPanel>();
     when(webViewPanel.webview).thenReturn(instance(webView));
+    const mockedMermaidLibraryService = mock<MermaidLibraryService>();
 
     const diagramWebView = new DiagramWebView(
       '/path/extension',
@@ -118,7 +124,8 @@ suite('DiagramWebView Tests', function() {
         viewColumn: vscode.ViewColumn.Beside
       },
       instance(mockedFileSystemService),
-      instance(webViewPanel)
+      instance(webViewPanel),
+      instance(mockedMermaidLibraryService)
     );
     diagramWebView.zoomTo(1.2);
     diagramWebView.zoomIn();
@@ -148,6 +155,7 @@ suite('DiagramWebView Tests', function() {
 
     const webViewPanel = mock<vscode.WebviewPanel>();
     when(webViewPanel.webview).thenReturn(instance(webView));
+    const mockedMermaidLibraryService = mock<MermaidLibraryService>();
 
     const diagramWebView = new DiagramWebView(
       '/path/extension',
@@ -156,7 +164,8 @@ suite('DiagramWebView Tests', function() {
         viewColumn: vscode.ViewColumn.Beside
       },
       instance(mockedFileSystemService),
-      instance(webViewPanel)
+      instance(webViewPanel),
+      instance(mockedMermaidLibraryService)
     );
     diagramWebView.updateView({
       code: 'code',
@@ -184,6 +193,7 @@ suite('DiagramWebView Tests', function() {
 
     const webViewPanel = mock<vscode.WebviewPanel>();
     when(webViewPanel.webview).thenReturn(instance(webView));
+    const mockedMermaidLibraryService = mock<MermaidLibraryService>();
 
     const diagramWebView = new DiagramWebView(
       '/path/extension',
@@ -192,7 +202,8 @@ suite('DiagramWebView Tests', function() {
         viewColumn: vscode.ViewColumn.Beside
       },
       instance(mockedFileSystemService),
-      instance(webViewPanel)
+      instance(webViewPanel),
+      instance(mockedMermaidLibraryService)
     );
     diagramWebView.captureImage({
       type: ImageFileType.PNG,
@@ -219,6 +230,7 @@ suite('DiagramWebView Tests', function() {
         }
       }
     );
+    const mockedMermaidLibraryService = mock<MermaidLibraryService>();
 
     const diagramWebView = new DiagramWebView(
       '/path/extension',
@@ -227,7 +239,8 @@ suite('DiagramWebView Tests', function() {
         viewColumn: vscode.ViewColumn.Beside
       },
       instance(mockedFileSystemService),
-      instance(webViewPanel)
+      instance(webViewPanel),
+      instance(mockedMermaidLibraryService)
     );
     diagramWebView.reviel();
   });
@@ -284,6 +297,12 @@ suite('DiagramWebView Tests', function() {
 
     const mockedWebViewPanel = mock<vscode.WebviewPanel>();
     when(mockedWebViewPanel.webview).thenReturn(webView);
+    const mockedMermaidLibraryService = mock<MermaidLibraryService>();
+    when(mockedMermaidLibraryService.libraryUri).thenReturn(
+      vscode.Uri.parse(
+        'file:///path/extension/dist/vendor/mermaid/dist/mermaid.min.js'
+      )
+    );
 
     const diagramWebView = new DiagramWebView(
       '/path/extension',
@@ -292,7 +311,86 @@ suite('DiagramWebView Tests', function() {
         viewColumn: vscode.ViewColumn.Beside
       },
       instance(mockedFileSystemService),
-      instance(mockedWebViewPanel)
+      instance(mockedWebViewPanel),
+      instance(mockedMermaidLibraryService)
+    );
+    diagramWebView.render({
+      code: 'Lorem Ipsum',
+      mermaidConfig: '{ "test": "config" }',
+      backgroundColor: 'deep-blue'
+    });
+
+    assert.strictEqual(fileToBeCalled, true, '"file" is not called');
+    assert.strictEqual(webView.html, expectedHtml);
+    done();
+  });
+
+  test('should "render" generate appropriate html with mermaid library url', done => {
+    const expectedHtml = `
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Mermaid Editor Preview</title>
+      <link href="file:///path/extension/dist/vendor/fontawesome/css/all.min.css" rel="stylesheet">
+      <style>
+      body {
+        background-color: deep-blue;
+      }
+      </style>
+    </head>
+    <body>
+      <div id="preview" class="mermaid">
+      Lorem Ipsum
+      </div>
+      <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+      <script>mermaid.initialize({"test":"config","startOnLoad":true});</script>
+      <script src="file:///path/extension/media/main.js"></script>
+    </body>
+    </html>`;
+
+    let fileToBeCalled = false;
+    const mockedFileSystemService = mock<FileSystemService>();
+    when(mockedFileSystemService.file(anyString())).thenCall((path: string) => {
+      fileToBeCalled = true;
+      return vscode.Uri.file(path);
+    });
+
+    const mockedWebView = mock<vscode.Webview>();
+    when(mockedWebView.asWebviewUri(anything())).thenCall((uri: vscode.Uri) => {
+      try {
+        if (
+          uri.path !== '/path/extension/media/main.js' &&
+          uri.path !== '/path/extension/dist/vendor/fontawesome/css/all.min.css'
+        ) {
+          throw new Error('asWebviewUri is called with unexpected Uri object');
+        }
+      } catch (e) {
+        done(e);
+      }
+      return uri;
+    });
+    const webView = instance(mockedWebView);
+
+    const mockedWebViewPanel = mock<vscode.WebviewPanel>();
+    when(mockedWebViewPanel.webview).thenReturn(webView);
+    const mockedMermaidLibraryService = mock<MermaidLibraryService>();
+    when(mockedMermaidLibraryService.libraryUri).thenReturn(
+      vscode.Uri.parse(
+        'https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js'
+      )
+    );
+
+    const diagramWebView = new DiagramWebView(
+      '/path/extension',
+      {
+        preserveFocus: false,
+        viewColumn: vscode.ViewColumn.Beside
+      },
+      instance(mockedFileSystemService),
+      instance(mockedWebViewPanel),
+      instance(mockedMermaidLibraryService)
     );
     diagramWebView.render({
       code: 'Lorem Ipsum',
@@ -343,6 +441,12 @@ suite('DiagramWebView Tests', function() {
 
     const mockedWebViewPanel = mock<vscode.WebviewPanel>();
     when(mockedWebViewPanel.webview).thenReturn(webView);
+    const mockedMermaidLibraryService = mock<MermaidLibraryService>();
+    when(mockedMermaidLibraryService.libraryUri).thenReturn(
+      vscode.Uri.parse(
+        'file:///path/extension/dist/vendor/mermaid/dist/mermaid.min.js'
+      )
+    );
 
     const diagramWebView = new DiagramWebView(
       '/path/extension',
@@ -351,7 +455,8 @@ suite('DiagramWebView Tests', function() {
         viewColumn: vscode.ViewColumn.Beside
       },
       instance(mockedFileSystemService),
-      instance(mockedWebViewPanel)
+      instance(mockedWebViewPanel),
+      instance(mockedMermaidLibraryService)
     );
     diagramWebView.onDidError((e: ErrorEvent) => {
       try {
@@ -376,6 +481,7 @@ suite('DiagramWebView Tests', function() {
     const mockedWebView = mock<vscode.Webview>();
     const mockedWebViewPanel = mock<vscode.WebviewPanel>();
     when(mockedWebViewPanel.webview).thenReturn(instance(mockedWebView));
+    const mockedMermaidLibraryService = mock<MermaidLibraryService>();
 
     const diagramWebView = new DiagramWebView(
       '/path/extension',
@@ -384,7 +490,8 @@ suite('DiagramWebView Tests', function() {
         viewColumn: vscode.ViewColumn.Beside
       },
       instance(mockedFileSystemService),
-      instance(mockedWebViewPanel)
+      instance(mockedWebViewPanel),
+      instance(mockedMermaidLibraryService)
     );
     diagramWebView.onDidError((e: ErrorEvent) => {
       let error;
@@ -412,6 +519,7 @@ suite('DiagramWebView Tests', function() {
     when(mockedWebViewPanel.dispose()).thenCall(() => {
       disposeToBeCalled = true;
     });
+    const mockedMermaidLibraryService = mock<MermaidLibraryService>();
 
     const diagramWebView = new DiagramWebView(
       '/path/extension',
@@ -420,7 +528,8 @@ suite('DiagramWebView Tests', function() {
         viewColumn: vscode.ViewColumn.Beside
       },
       instance(mockedFileSystemService),
-      instance(mockedWebViewPanel)
+      instance(mockedWebViewPanel),
+      instance(mockedMermaidLibraryService)
     );
     diagramWebView.dispose();
     assert.strictEqual(diagramWebView.panel, undefined);
@@ -438,6 +547,8 @@ suite('DiagramWebView Tests', function() {
       .thenReturn(false);
 
     const webViewPanel = instance(mockedWebViewPanel);
+    const mockedMermaidLibraryService = mock<MermaidLibraryService>();
+
     const diagramWebView = new DiagramWebView(
       '/path/extension',
       {
@@ -445,7 +556,8 @@ suite('DiagramWebView Tests', function() {
         viewColumn: vscode.ViewColumn.Beside
       },
       instance(mockedFileSystemService),
-      webViewPanel
+      webViewPanel,
+      instance(mockedMermaidLibraryService)
     );
     diagramWebView.onDidChangeViewStateActivity(state => {
       let error;
@@ -471,6 +583,7 @@ suite('DiagramWebView Tests', function() {
       .thenReturn(false);
 
     const webViewPanel = instance(mockedWebViewPanel);
+    const mockedMermaidLibraryService = mock<MermaidLibraryService>();
     const diagramWebView = new DiagramWebView(
       '/path/extension',
       {
@@ -478,7 +591,8 @@ suite('DiagramWebView Tests', function() {
         viewColumn: vscode.ViewColumn.Beside
       },
       instance(mockedFileSystemService),
-      webViewPanel
+      webViewPanel,
+      instance(mockedMermaidLibraryService)
     );
     diagramWebView.onDidChangeViewStateVisibility(state => {
       let error;
@@ -498,6 +612,7 @@ suite('DiagramWebView Tests', function() {
     const mockedWebView = mock<vscode.Webview>();
     const mockedWebViewPanel = mock<vscode.WebviewPanel>();
     when(mockedWebViewPanel.webview).thenReturn(instance(mockedWebView));
+    const mockedMermaidLibraryService = mock<MermaidLibraryService>();
 
     const diagramWebView = new DiagramWebView(
       '/path/extension',
@@ -506,7 +621,8 @@ suite('DiagramWebView Tests', function() {
         viewColumn: vscode.ViewColumn.Beside
       },
       instance(mockedFileSystemService),
-      instance(mockedWebViewPanel)
+      instance(mockedWebViewPanel),
+      instance(mockedMermaidLibraryService)
     );
     diagramWebView.onDidCaptureImage((event: CaptureImageEndEvent) => {
       let error;
@@ -533,6 +649,7 @@ suite('DiagramWebView Tests', function() {
     const mockedWebView = mock<vscode.Webview>();
     const mockedWebViewPanel = mock<vscode.WebviewPanel>();
     when(mockedWebViewPanel.webview).thenReturn(instance(mockedWebView));
+    const mockedMermaidLibraryService = mock<MermaidLibraryService>();
 
     const diagramWebView = new DiagramWebView(
       '/path/extension',
@@ -541,7 +658,8 @@ suite('DiagramWebView Tests', function() {
         viewColumn: vscode.ViewColumn.Beside
       },
       instance(mockedFileSystemService),
-      instance(mockedWebViewPanel)
+      instance(mockedWebViewPanel),
+      instance(mockedMermaidLibraryService)
     );
     diagramWebView.onDidCaptureImage((event: CaptureImageEndEvent) => {
       let error;
@@ -562,6 +680,7 @@ suite('DiagramWebView Tests', function() {
     const mockedWebView = mock<vscode.Webview>();
     const mockedWebViewPanel = mock<vscode.WebviewPanel>();
     when(mockedWebViewPanel.webview).thenReturn(instance(mockedWebView));
+    const mockedMermaidLibraryService = mock<MermaidLibraryService>();
 
     const diagramWebView = new DiagramWebView(
       '/path/extension',
@@ -570,7 +689,8 @@ suite('DiagramWebView Tests', function() {
         viewColumn: vscode.ViewColumn.Beside
       },
       instance(mockedFileSystemService),
-      instance(mockedWebViewPanel)
+      instance(mockedWebViewPanel),
+      instance(mockedMermaidLibraryService)
     );
     diagramWebView.onDidCaptureImage((event: CaptureImageEndEvent) => {
       let error;
@@ -595,6 +715,7 @@ suite('DiagramWebView Tests', function() {
     const mockedWebView = mock<vscode.Webview>();
     const mockedWebViewPanel = mock<vscode.WebviewPanel>();
     when(mockedWebViewPanel.webview).thenReturn(instance(mockedWebView));
+    const mockedMermaidLibraryService = mock<MermaidLibraryService>();
 
     const diagramWebView = new DiagramWebView(
       '/path/extension',
@@ -603,7 +724,8 @@ suite('DiagramWebView Tests', function() {
         viewColumn: vscode.ViewColumn.Beside
       },
       instance(mockedFileSystemService),
-      instance(mockedWebViewPanel)
+      instance(mockedWebViewPanel),
+      instance(mockedMermaidLibraryService)
     );
     diagramWebView.onDidError((event: ErrorEvent) => {
       let error;
@@ -628,6 +750,7 @@ suite('DiagramWebView Tests', function() {
     const mockedWebView = mock<vscode.Webview>();
     const mockedWebViewPanel = mock<vscode.WebviewPanel>();
     when(mockedWebViewPanel.webview).thenReturn(instance(mockedWebView));
+    const mockedMermaidLibraryService = mock<MermaidLibraryService>();
 
     const diagramWebView = new DiagramWebView(
       '/path/extension',
@@ -636,7 +759,8 @@ suite('DiagramWebView Tests', function() {
         viewColumn: vscode.ViewColumn.Beside
       },
       instance(mockedFileSystemService),
-      instance(mockedWebViewPanel)
+      instance(mockedWebViewPanel),
+      instance(mockedMermaidLibraryService)
     );
 
     let calledCount = 0;

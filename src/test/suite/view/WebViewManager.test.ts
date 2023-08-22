@@ -6,6 +6,7 @@ import * as constants from '../../../constants';
 import WebViewManager from '../../../view/WebViewManager';
 import WebViewPanelProvider from '../../../view/WebViewPanelProvider';
 import FileSystemService from '../../../models/FileSystemService';
+import MermaidLibraryService from '../../../controllers/MermaidLibraryService';
 
 suite('WebViewManager Tests', function() {
   let registerWebViewPanelSerializerCalled = false;
@@ -21,11 +22,13 @@ suite('WebViewManager Tests', function() {
       registerWebViewPanelSerializerCalled = true;
     });
     const mockedFileSystemService = mock<FileSystemService>();
+    const mockedMermaidLibraryService = mock<MermaidLibraryService>();
 
     const webViewManager = new WebViewManager(
       '/path',
       instance(mockedWebViewPanelProvider),
-      instance(mockedFileSystemService)
+      instance(mockedFileSystemService),
+      instance(mockedMermaidLibraryService)
     );
 
     const mockedWebview = mock<vscode.Webview>();
@@ -111,11 +114,13 @@ suite('WebViewManager Tests', function() {
     when(
       mockedFileSystemService.file(path.join(expectedExtensionPath, 'media'))
     ).thenReturn(expectedMedia);
+    const mockedMermaidLibraryService = mock<MermaidLibraryService>();
 
     const webViewManager = new WebViewManager(
       expectedExtensionPath,
       instance(mockedWebViewPanelProvider),
-      instance(mockedFileSystemService)
+      instance(mockedFileSystemService),
+      instance(mockedMermaidLibraryService)
     );
     const webView = webViewManager.webView;
     assert.strictEqual(webView.panel, webViewPanel);
@@ -144,11 +149,13 @@ suite('WebViewManager Tests', function() {
       }
     });
     const mockedFileSystemService = mock<FileSystemService>();
+    const mockedMermaidLibraryService = mock<MermaidLibraryService>();
 
     const webViewManager = new WebViewManager(
       '/path',
       instance(mockedWebViewPanelProvider),
-      instance(mockedFileSystemService)
+      instance(mockedFileSystemService),
+      instance(mockedMermaidLibraryService)
     );
 
     // Set DiagramWebView
@@ -166,11 +173,13 @@ suite('WebViewManager Tests', function() {
   test('should call onDidChangeWebView with undefined when onDidDispose is called', done => {
     const mockedWebViewPanelProvider = mock<WebViewPanelProvider>();
     const mockedFileSystemService = mock<FileSystemService>();
+    const mockedMermaidLibraryService = mock<MermaidLibraryService>();
 
     const webViewManager = new WebViewManager(
       '/path',
       instance(mockedWebViewPanelProvider),
-      instance(mockedFileSystemService)
+      instance(mockedFileSystemService),
+      instance(mockedMermaidLibraryService)
     );
 
     // Set DiagramWebView

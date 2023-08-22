@@ -5,8 +5,9 @@ import MermaidLibraryService, {
   MermaidLibraryChangeEvent
 } from '../controllers/MermaidLibraryService';
 
-const KEY_MERMAID_LIBRARY = 'mermaidLibrary';
-const KEY_MERMAID_LIBRARY_VERSION = 'mermaidLibraryVersion';
+// for test
+export const KEY_MERMAID_LIBRARY = 'mermaidLibrary';
+export const KEY_MERMAID_LIBRARY_VERSION = 'mermaidLibraryVersion';
 
 export default class MermaidLibraryProvider implements MermaidLibraryService {
   private _eventEmitter: vscode.EventEmitter<MermaidLibraryChangeEvent>;
@@ -26,6 +27,10 @@ export default class MermaidLibraryProvider implements MermaidLibraryService {
     this._extensionPath = extensionPath;
     this._globalState = globalState;
     this._fileSystemService = fileSystemService;
+
+    // note: User can set an arbitrary library on CDN except for mermaid.js
+    // This whitelist aims to block to load arbitrary user script.
+    // Basically, users will need to take full responsibility for their action.
     this._whiteList = ['cdn.jsdelivr.net', 'cdnjs.cloudflare.com'];
   }
 
@@ -84,7 +89,10 @@ export default class MermaidLibraryProvider implements MermaidLibraryService {
 
   public setLibrary(path: string, version?: string) {
     const libraryUri = vscode.Uri.parse(path, true);
-    if (!this._whiteList.includes(libraryUri.authority)) {
+    if (
+      !['https', 'http'].includes(libraryUri.scheme) ||
+      !this._whiteList.includes(libraryUri.authority)
+    ) {
       throw new Error(`${path} is not supported.`);
     }
     this._globalState.update(KEY_MERMAID_LIBRARY, libraryUri.toString());
@@ -95,10 +103,16 @@ export default class MermaidLibraryProvider implements MermaidLibraryService {
     });
   }
 
-  public clearLibrary() {
+  public resetLibrary() {
     this._globalState.update(KEY_MERMAID_LIBRARY, undefined);
     this._globalState.update(KEY_MERMAID_LIBRARY_VERSION, undefined);
-    this._eventEmitter.fire({ version: undefined, uri: undefined });
+
+    this.libraryVersion.then(newVersion => {
+      this._eventEmitter.fire({
+        version: newVersion,
+        uri: this.libraryUri
+      });
+    });
   }
 
   public get onDidChangeMermaidLibrary(): vscode.Event<

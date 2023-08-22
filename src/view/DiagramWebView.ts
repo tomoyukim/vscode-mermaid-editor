@@ -79,9 +79,10 @@ export default class DiagramWebView extends Renderer<
     try {
       configObject = JSON.parse(mermaidConfig);
     } catch (error) {
+      const message = error instanceof Error ? error.message : 'unknown error';
       this._errorEventEmitter.fire({
         kind: 'error/mermaid-config-json-parse',
-        message: error.message
+        message
       });
     }
 

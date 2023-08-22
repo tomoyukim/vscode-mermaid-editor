@@ -30,14 +30,19 @@ const fetchLatestLibraryUri = async () => {
     const res = await fetch(
       'https://api.cdnjs.com/libraries/mermaid?fields=version,latest'
     );
-    if (res.status >= 400) {
-      throw new Error('Bad response from server');
+    if (!res.ok) {
+      throw new Error(
+        `Failure response from server (${res.status}, ${res.statusText})`
+      );
     }
     const fields = await res.json();
     return fields;
-  } catch (e) {
-    // TODO
-    vscode.window.showErrorMessage(e.message);
+  } catch (error) {
+    const message =
+      error instanceof Error
+        ? error.message
+        : 'unknown error during accessing cdnjs.com';
+    vscode.window.showErrorMessage(message);
   }
   return {};
 };
