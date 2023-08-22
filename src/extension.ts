@@ -58,6 +58,7 @@ function registerCommand(
 }
 
 let mainController: MainController;
+let mermaidVersionItem: vscode.StatusBarItem;
 
 export function activate(context: vscode.ExtensionContext): void {
   const vscodeWrapper = new VSCodeWrapper();
@@ -86,6 +87,11 @@ export function activate(context: vscode.ExtensionContext): void {
     fetchProgressItem
   );
 
+  mermaidVersionItem = vscode.window.createStatusBarItem(
+    vscode.StatusBarAlignment.Right,
+    100
+  );
+
   const mermaidLibraryProvider = new MermaidLibraryProvider(
     context.extensionPath,
     context.globalState,
@@ -103,6 +109,16 @@ export function activate(context: vscode.ExtensionContext): void {
     vscodeWrapper,
     mermaidLibraryProvider
   );
+  webViewManager.onDidChangeWebView(({ webView }) => {
+    if (!webView) {
+      mermaidVersionItem.hide();
+    } else if (webView.active) {
+      mermaidLibraryProvider.libraryVersion.then(version => {
+        mermaidVersionItem.text = `mermaid version:${version}`;
+        mermaidVersionItem.show();
+      });
+    }
+  });
   const mermaidDocumentProvider = new MermaidDocumentProvider(
     vscodeWrapper,
     new AttributeParseService(() => {
@@ -142,9 +158,12 @@ export function activate(context: vscode.ExtensionContext): void {
     vscodeWrapper
   );
   // register commands
-  registerCommand(context, constants.COMMAND_PREVIEW_SHOW, () =>
-    mainController.showPreview()
-  );
+  registerCommand(context, constants.COMMAND_PREVIEW_SHOW, async () => {
+    mainController.showPreview();
+    const currentVersion = await mermaidLibraryProvider.libraryVersion;
+    mermaidVersionItem.text = `mermaid version:${currentVersion}`;
+    mermaidVersionItem.show();
+  });
   registerCommand(context, constants.COMMAND_PREVIEW_ZOOM_IN, () =>
     mainController.zoomIn()
   );
@@ -184,7 +203,7 @@ export function activate(context: vscode.ExtensionContext): void {
     }
   );
   registerCommand(context, constants.COMMAND_RESET_MERMAID_LIBRARY, () => {
-    mermaidLibraryProvider.clearLibrary();
+    mermaidLibraryProvider.resetLibrary();
     vscode.window.showInformationMessage(
       constants.MESSAGE_RESET_MERMAID_LIBRARY
     );
@@ -202,10 +221,30 @@ export function activate(context: vscode.ExtensionContext): void {
       }
     }
   });
+  registerCommand(context, constants.COMMAND_SHOW_MERMAID_LIBRARY, async () => {
+    const currentUri = mermaidLibraryProvider.libraryUri;
+    const currentVersion = await mermaidLibraryProvider.libraryVersion;
+    Logger.appendLine('current mermaid library setting:');
+    Logger.appendLine(
+      mermaidLibraryProvider.isIntegratedLibraryUsed
+        ? `integrated library (v${currentVersion})`
+        : currentUri.toString()
+    );
+    Logger.appendDivider();
+    Logger.show();
+    /*
+    vscode.window.showInformationMessage(
+      `mermaid-editor: current mermaid library setting.\n${
+        currentUri ? currentUri : `integrated library (v${currentVersion})`
+      }`
+    );
+     */
+  });
 }
 
 export function deactivate(): void {
   mainController.dispose();
   Logger.dispose();
   ProgressStatusBar.dispose();
+  mermaidVersionItem.dispose();
 }

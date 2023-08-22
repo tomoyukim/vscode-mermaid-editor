@@ -11,6 +11,7 @@ export const COMMAND_PREVIEW_ZOOM_IN = 'mermaid-editor.preview.zoomin';
 export const COMMAND_UPDATE_MERMAID_LIBRARY = 'mermaid-editor.library.update';
 export const COMMAND_RESET_MERMAID_LIBRARY = 'mermaid-editor.library.reset';
 export const COMMAND_SET_MERMAID_LIBRARY = 'mermaid-editor.library.set';
+export const COMMAND_SHOW_MERMAID_LIBRARY = 'mermaid-editor.library.show';
 
 export const ZOOM_DEFAULT_SCALE = 1.0;
 export const ZOOM_MIN_SCALE = 0.5;

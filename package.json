@@ -134,15 +134,19 @@
       },
       {
         "command": "mermaid-editor.library.update",
-        "title": "Mermaid:Update Mermaid Library to the latest"
+        "title": "Mermaid:Update mermaid library to the latest"
       },
       {
         "command": "mermaid-editor.library.set",
-        "title": "Mermaid:Set an URL to hosted Mermaid Library on CDN"
+        "title": "Mermaid:Set an URL to hosted mermaid library on CDN"
       },
       {
         "command": "mermaid-editor.library.reset",
-        "title": "Mermaid:Reset Mermaid Library to the default"
+        "title": "Mermaid:Reset mermaid library to the default"
+      },
+      {
+        "command": "mermaid-editor.library.show",
+        "title": "Mermaid:Show current mermaid library setting"
       }
     ],
     "keybindings": [
