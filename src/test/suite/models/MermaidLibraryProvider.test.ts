@@ -1,4 +1,5 @@
 import * as assert from 'assert';
+import * as path from 'path';
 import * as vscode from 'vscode';
 import { mock, when, instance, reset, anything, anyString } from 'ts-mockito';
 
@@ -74,10 +75,14 @@ suite('MermaidLibraryProvider Tests', function() {
     when(mocks.globalState.get(KEY_MERMAID_LIBRARY)).thenReturn(undefined);
 
     let fileInstance, filePath;
-    const dummyFilePath = '/home/extension/dist/vendor/mermaid/package.json';
+    const dummyExtentionPath = '/home/extension';
+    const dummyFilePath = path.join(
+      dummyExtentionPath,
+      '/dist/vendor/mermaid/package.json'
+    );
     const dummyFile = vscode.Uri.file(`file://${dummyFilePath}`);
-    when(mocks.fileSystemProvider.file(anything())).thenCall(path => {
-      filePath = path;
+    when(mocks.fileSystemProvider.file(anything())).thenCall(_path => {
+      filePath = _path;
       return dummyFile;
     });
     when(mocks.fileSystemProvider.readFile(anything())).thenCall(file => {
@@ -86,7 +91,7 @@ suite('MermaidLibraryProvider Tests', function() {
     });
 
     const mermaidLibraryProvider = new MermaidLibraryProvider(
-      '/home/extension',
+      dummyExtentionPath,
       instance(mocks.globalState),
       instance(mocks.fileSystemProvider)
     );
@@ -121,16 +126,19 @@ suite('MermaidLibraryProvider Tests', function() {
     when(mocks.globalState.get(KEY_MERMAID_LIBRARY)).thenReturn(undefined);
 
     let filePath;
-    const dummyFilePath =
-      '/home/extension/dist/vendor/mermaid/dist/mermaid.min.js';
+    const dummyExtentionPath = '/home/extension';
+    const dummyFilePath = path.join(
+      dummyExtentionPath,
+      '/dist/vendor/mermaid/dist/mermaid.min.js'
+    );
     const dummyFile = vscode.Uri.file(dummyFilePath);
-    when(mocks.fileSystemProvider.file(anything())).thenCall(path => {
-      filePath = path;
+    when(mocks.fileSystemProvider.file(anything())).thenCall(_path => {
+      filePath = _path;
       return dummyFile;
     });
 
     const mermaidLibraryProvider = new MermaidLibraryProvider(
-      '/home/extension',
+      dummyExtentionPath,
       instance(mocks.globalState),
       instance(mocks.fileSystemProvider)
     );
