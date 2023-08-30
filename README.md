@@ -62,6 +62,20 @@ Zoom in/out is supported for live preview.
 
 ![](https://user-images.githubusercontent.com/1187581/78127053-76587080-744e-11ea-9861-c4a4dc71a4fe.png)
 
+### Change `mermaid.js` version without the extension update
+
+Changing `mermaid.js` integrated in the extension with an another version is supported.
+The following commands are available on the command palette.
+This is availabe only online because this feature depends on CDN services as described below.
+
+| Command                                             | Description                                                                                                                                                           |
+| --------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Mermaid:Update mermaid library to the latest        | Update `mermaid.js` through [cdnjs](https://cdnjs.com). This extension can refer to the latest version delivered by cdnjs instead of the integrated one after.        |
+| Mermaid:Set an URL to hosted mermaid library on CDN | Set an arbitrary URL for `mermaid.js` hosted on CDNs. Note that `https://www.jsdelivr.com` and `https://cdnjs.com` are only supported.                                |
+| Mermaid:Reset mermaid library to the default        | Reset `mermaid.js` library referred by this extension to the integrated one.                                                                                          |
+| Mermaid:Show current mermaid library setting        | Show `mermaid.js` library version referred by this extension now.                                                                                                     |
+
+
 ## Attributes
 
 This extension supports attribute to specify preferred configuration for each `mermaid.js` diagram file. The attribute have to be described in comment of mermaid syntax.
