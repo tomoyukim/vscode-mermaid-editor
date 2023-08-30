@@ -75,6 +75,7 @@ This is availabe only online because this feature depends on CDN services as des
 | Mermaid:Reset mermaid library to the default        | Reset `mermaid.js` library referred by this extension to the integrated one.                                                                                          |
 | Mermaid:Show current mermaid library setting        | Show `mermaid.js` library version referred by this extension now.                                                                                                     |
 
+![](https://github.com/tomoyukim/vscode-mermaid-editor/assets/1187581/5433b7a6-f522-4d0a-a4fc-07f84fc8323e)
 
 ## Attributes
 
