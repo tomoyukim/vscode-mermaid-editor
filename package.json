@@ -2,7 +2,7 @@
   "name": "vscode-mermaid-editor",
   "displayName": "Mermaid Editor",
   "description": "Live editor for mermaid.js in Visual Studio Code",
-  "version": "0.18.1",
+  "version": "0.19.0",
   "publisher": "tomoyukim",
   "license": "MIT",
   "engines": {
@@ -262,7 +262,8 @@
     "test": "node ./out/test/runTest",
     "pretest": "yarn run compile && yarn run lint",
     "lint": "eslint src --ext ts",
-    "prepare": "is-ci || husky install"
+    "prepare": "is-ci || husky install",
+    "vsce": "vsce"
   },
   "prettier": {
     "singleQuote": true
@@ -277,6 +278,7 @@
     "@types/vscode-webview": "^1.57.1",
     "@typescript-eslint/eslint-plugin": "6.4.x",
     "@typescript-eslint/parser": "6.4.x",
+    "@vscode/vsce": "^2.21.0",
     "copy-webpack-plugin": "^9.0.1",
     "eslint": "8.x.x",
     "eslint-config-prettier": "^6.10.1",
@@ -299,8 +301,7 @@
     "cross-fetch": "^4.0.0",
     "lodash": ">=4.17.21",
     "mermaid": "^10.3.0",
-    "redux": "^4.0.5",
-    "vsce": "^2.10.0"
+    "redux": "^4.0.5"
   },
   "resolutions": {
     "nanoid": "3.1.31"

@@ -10,3 +10,5 @@ tsconfig.json
 webpack.config.js
 **/*.map
 **/*.ts
+.envrc
+.direnv/
