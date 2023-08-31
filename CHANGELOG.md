@@ -18,6 +18,12 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ### Security
 
+## [0.19.1] - 2023-8-31
+
+### Changed
+
+- Upscale the logo
+
 ## [0.19.0] - 2023-8-31
 
 ### Added
