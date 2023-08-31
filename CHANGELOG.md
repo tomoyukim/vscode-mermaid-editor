@@ -18,6 +18,26 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ### Security
 
+## [0.19.0] - 2023-8-31
+
+### Added
+
+- Support `.mermaid` extension in addition to `.mmd`
+- Add a new feature to change mermaid library without the extension update
+
+### Changed
+
+- Introduce a new logo
+  - The old one has not been appropriate by supporting `.mermaid` extension additionally
+- Bump mermaid version to 10.3.0
+- Bump the minimum support vscode version to 1.75.0
+- Bump typescript to 5.1
+
+### Fixed
+
+- Fix the bug reported by [Issue#81](https://github.com/tomoyukim/vscode-mermaid-editor/issues/81)
+  - Clipboard copy did not work expectedly in case `svg` was selected for the output file format
+
 ## [0.18.1] - 2023-2-25
 
 ### Fixed
