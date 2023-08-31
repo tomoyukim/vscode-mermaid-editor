@@ -68,12 +68,14 @@ Changing `mermaid.js` integrated in the extension with an another version is sup
 The following commands are available on the command palette.
 This is availabe only online because this feature depends on CDN services as described below.
 
-| Command                                             | Description                                                                                                                                                           |
-| --------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Mermaid:Update mermaid library to the latest        | Update `mermaid.js` through [cdnjs](https://cdnjs.com). This extension can refer to the latest version delivered by cdnjs instead of the integrated one after.        |
-| Mermaid:Set an URL to hosted mermaid library on CDN | Set an arbitrary URL for `mermaid.js` hosted on CDNs. Note that `https://www.jsdelivr.com` and `https://cdnjs.com` are only supported.                                |
-| Mermaid:Reset mermaid library to the default        | Reset `mermaid.js` library referred by this extension to the integrated one.                                                                                          |
-| Mermaid:Show current mermaid library setting        | Show `mermaid.js` library version referred by this extension now.                                                                                                     |
+**ATTENTION: This extension does not fully assure to work fine with the other version of mermaid library. Please change it as your own risk.**
+
+| Command                                             | Description                                                                                                                                                                                                                               |
+| --------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Mermaid:Update mermaid library to the latest        | Update `mermaid.js` through [cdnjs](https://cdnjs.com). This extension can refer to the latest version delivered by cdnjs instead of the integrated one after.                                                                            |
+| Mermaid:Set an URL to hosted mermaid library on CDN | Set an arbitrary URL for `mermaid.js` hosted on CDNs. Note that `https://www.jsdelivr.com` and `https://cdnjs.com` are only supported. The other schemes or domains are not supported.                                                    |
+| Mermaid:Reset mermaid library to the default        | Reset `mermaid.js` library referred by this extension to the integrated one.                                                                                                                                                              |
+| Mermaid:Show current mermaid library setting        | Show the current `mermaid.js` library referred by this extension. The output is appeard in `mermaid-editor` channel of the "OUTPUT" tab. Note that `mermaid.js` version is also displayed in the status bar if the version is determined. |
 
 ![](https://github.com/tomoyukim/vscode-mermaid-editor/assets/1187581/5433b7a6-f522-4d0a-a4fc-07f84fc8323e)
 
